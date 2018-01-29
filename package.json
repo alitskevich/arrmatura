@@ -1,0 +1,33 @@
+{
+  "name": "ui-widgets",
+  "version": "2.1.10",
+  "description": "UI widgets",
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "babel-register": "^6.26.0",
+    "standard": "^10.0.3"
+  },
+  "scripts": {
+    "start": "http-server app",
+    "reset": "rm -rf node_modules && npm run nvm && npm i",
+    "mocha": "mocha -w --compilers js:babel-register test/**/*.test.js",
+    "nvm": "nvm install v6 && nvm use v6 || echo skip nvm update...",
+    "postinstall": "echo $NODE_ENV"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alitskevich/ui-widgets.git"
+  },
+  "author": "alitskevich",
+  "license": "MIT",
+  "dependencies": {},
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "**/out/",
+      "/lib/select2/",
+      "/lib/ckeditor/",
+      "tmp.js"
+    ]
+  }
+}
