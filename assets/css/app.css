@@ -1,0 +1,25 @@
+
+.menu {
+  z-index: 400!important;
+}
+
+@media (max-width: 960px) {
+
+  .off-canvas .off-canvas-content {
+    /* padding: .4rem .4rem .4rem .4rem!important; */
+  }
+  .navbar {
+    padding-left: 3em;
+  }
+}
+
+li span input:checked ~ span {
+  color: white;
+  background-color: blue;
+}
+
+.stack {
+  height:100%;
+  display: flex;
+  flex-direction: column;
+}

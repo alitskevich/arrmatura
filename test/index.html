@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+  <title>UI Tests</title>
+  <meta charset="utf-8">
+</head>
+<script type="text/x-template" id="$Application">
+    <ul class="ui list">
+        <!-- comment -->
+        <li each="item of data" data-value="{{item.id}}">
+        <p if="item.name">{{item.name}} &nbsp; </p></li>
+        <block if="isEmpty">
+          <then><small class="empty 'single quote'">:emptyMessage</small></then>
+          <else><p>Total: {{data.length}}</p></else>
+        </block>
+        <block if="isNonEmpty">
+          <then><small class="empty">:emptyMessage</small></then>
+          <else>Total: {{data.length}}</else>
+        </block>
+        <TranscludeSample><p>{{data.length}}</p></TranscludeSample>
+    </ul>
+</script>
+<body>
+  <script type="module" src="/test.js"></script>
+</body>
+
+</html>

@@ -1,22 +1,26 @@
 {
-  "name": "ui-widgets",
-  "version": "2.1.10",
-  "description": "UI widgets",
+  "name": "dzi-ui",
+  "version": "2.1.11",
+  "description": "minimalistic UI framework",
   "devDependencies": {
+    "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
+    "babel-loader": "^7.1.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
     "babel-register": "^6.26.0",
-    "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "webpack": "^4.1.1"
   },
   "scripts": {
-    "start": "http-server app",
-    "reset": "rm -rf node_modules && npm run nvm && npm i",
-    "mocha": "mocha -w --compilers js:babel-register test/**/*.test.js",
-    "nvm": "nvm install v6 && nvm use v6 || echo skip nvm update...",
-    "postinstall": "echo $NODE_ENV"
+    "start": "http-server",
+    "build": "webpack-cli",
+    "test": "http-server && chrome test.html"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/alitskevich/ui-widgets.git"
+    "url": "https://github.com/alitskevich/dzi-ui.git"
   },
   "author": "alitskevich",
   "license": "MIT",
@@ -25,8 +29,8 @@
     "parser": "babel-eslint",
     "ignore": [
       "**/out/",
-      "/lib/select2/",
-      "/lib/ckeditor/",
+      "/dist/",
+      "/node_modules/",
       "tmp.js"
     ]
   }
