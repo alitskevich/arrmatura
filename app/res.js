@@ -17,7 +17,7 @@ export default {
     page: 17,
     total: 1254,
     items: [
-      {name: 'Demo', genre: '1'},
+      {name: 'Demo', genre: '1', duration: '2'},
       {name: 'Demo2', duration: '2'},
       {name: 'Demo3', value: '3'},
       {name: 'Demo4', rate: '4'},

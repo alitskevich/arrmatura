@@ -12,7 +12,7 @@ export class Table {
         <tbody>
         <tr ui:each="item of data.items">
             <td><a href="#detail?id={{item.id}}">{{cell1}}</a></td>
-            <td ui:each="col of columns">{{cell}}</td>
+            <td ui:each="col of columns"><ui:type>{{cell}}</ui:type></td>
         </tr>
         </tbody>
     </table>`
@@ -27,5 +27,8 @@ export class Table {
   }
   getCell () {
     return this.item[this.col.id]
+  }
+  getType () {
+    return this.itemIndex % 2 === 0 ? 'b' : 'i'
   }
 }

@@ -7,12 +7,11 @@ export class Tree {
           <i class="icon folder"></i>
           <div class="content">
             <li click="{{update}}" data-value="{{id}}">
-                <div class="header">{{name}}</div>
-                <div class="description">{{dname}}</div>
+              <div class="header">{{name}}</div>
+              <div class="description">{{dname}}</div>
             </li>
-            <Tree ui:if="item.children" data="{{item.children}}" valueChanged="{{valueChanged}}"/>
+            <Tree ui:if="item.children" data="{{item.children}}"/>
           </div>
-          <ui:empty><small class="empty"><b>Empty tree</b></small></ui:empty>
         </div>
     </div>`
   }
