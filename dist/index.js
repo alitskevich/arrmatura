@@ -116,7 +116,7 @@ var register = function register(ctor) {
   // narrow non-function ctor
   ctor = typeof ctor === 'function' ? ctor : Object.assign(function () {}, ctor);
   // narrow name
-  var name = ctor.NAME || ctor.name || (/^function\s+([\w$]+)\s*\(/.exec(ctor.toString()) || [])[1] || '$C' + COUNTER++;
+  var name = ctor.NAME = ctor.NAME || ctor.name || (/^function\s+([\w$]+)\s*\(/.exec(ctor.toString()) || [])[1] || '$C' + COUNTER++;
   // narrow template
   var text = ctor.TEMPLATE || ctor.prototype.TEMPLATE && ctor.prototype.TEMPLATE() || (doc.getElementById(name) || { innerText: '<noop name="' + name + '"/>' }).innerText;
   // compile
@@ -134,7 +134,7 @@ function launch() {
     types[_key] = arguments[_key];
   }
 
-  bootstrap.apply(undefined, [window.document.body].concat(types)).render();
+  bootstrap.apply(undefined, [null].concat(types)).render();
 }
 // bootstap a components tree
 function bootstrap(elt) {
@@ -159,13 +159,53 @@ function bootstrap(elt) {
   return new Bootstrap(elt || doc.body, types[0]);
 }
 
+var Application = exports.Application = function () {
+  function Application() {
+    _classCallCheck(this, Application);
+  }
+
+  _createClass(Application, [{
+    key: 'init',
+
+    // hook on init
+    value: function init() {}
+    // event-driven:
+
+  }, {
+    key: 'dispatch',
+    value: function dispatch(key, payload) {}
+  }, {
+    key: 'subscribe',
+    value: function subscribe(key, subscriberId, cb) {}
+  }, {
+    key: 'unsubscribe',
+    value: function unsubscribe(subscriberId) {}
+    // resolves properties
+
+  }, {
+    key: 'get',
+    value: function get(key) {
+      return key;
+    }
+    // resolves static resources
+
+  }, {
+    key: 'res',
+    value: function res(key) {
+      return key;
+    }
+  }]);
+
+  return Application;
+}();
+
 var Bootstrap = function () {
   function Bootstrap(elt, ctor) {
     _classCallCheck(this, Bootstrap);
 
     this.$elt = elt;
     this.meta = new Map();
-    this.meta.set(0, { ctor: ctor, props: {}, subs: [] });
+    this.meta.set(0, { tag: ctor.NAME, props: {}, subs: [] });
   }
 
   _createClass(Bootstrap, [{
@@ -183,7 +223,7 @@ var Bootstrap = function () {
 }();
 
 // ==========
-// DOM Element
+// Virtual DOM Element
 // ----------
 
 
@@ -373,13 +413,12 @@ var Elmnt = function () {
 
 
 var Component = function () {
-  function Component(m) {
+  function Component(m, Ctor) {
     var _this5 = this;
 
     _classCallCheck(this, Component);
 
-    var C = m.ctor;
-    this.$ = new C();
+    this.$ = new Ctor();
     this.$.assign = function (d) {
       return _this5.assign(d);
     };
@@ -474,10 +513,6 @@ var Component = function () {
       if (posE === -1) {
         var getter = $['get' + k[0].toUpperCase() + k.slice(1)];
         var v = getter ? getter.call($, k) : $[k];
-        if (v === undefined) {
-
-          // throw new Error('No defined property value for ' + $ + k)
-        }
         return v;
       }
       var posB = 0;
@@ -497,7 +532,7 @@ var Component = function () {
 }();
 
 // ==========
-// Rendering
+// Rendering. MetaTree -> ViewTree(Components,Elements)
 // ----------
 
 
@@ -548,8 +583,8 @@ function _render($, meta, parentElt) {
             m = _step3$value[1];
 
         if (!ch.has(uid)) {
-          var Ctor = m.ctor ? Component : Elmnt;
-          var _c = new Ctor(m);
+          var componentCtor = REGISTRY.get(m.tag);
+          var _c = componentCtor ? new Component(m, componentCtor) : new Elmnt(m);
           _c.uid = uid;
           _c.parentElt = parentElt;
           _c.parent = $;
@@ -678,7 +713,7 @@ function done(c) {
 }
 
 // ==========
-// Template Resolution
+// Template Resolution. GeneratorTree + Data -> MetaTree
 // ----------
 
 function resolve(map, c, meta) {
@@ -691,7 +726,6 @@ function resolve(map, c, meta) {
     }, map);
   }
   var type = meta.type,
-      tag = meta.tag,
       props = meta.props,
       subs = meta.subs,
       uid = meta.uid,
@@ -699,11 +733,12 @@ function resolve(map, c, meta) {
       each = meta.each,
       key = meta.key;
 
+  var tag = type(c);
   if (iff && !iff(c)) {
     return resolve(map, c, iff.else);
   }
 
-  if (tag === 'ui:transclude') {
+  if (tag === 'transclude') {
     var partial = props.reduce(function (a, f) {
       return f(c, a);
     }, {}).key;
@@ -720,14 +755,12 @@ function resolve(map, c, meta) {
       c.$[each.itemId] = d;
       c.$[each.itemId + 'Index'] = index;
       var id = uid + '-$' + (d.id || index);
-      return resolve(m, c, { type: type, tag: tag, props: props, subs: subs, uid: id, iff: iff });
+      return resolve(m, c, { type: type, props: props, subs: subs, uid: id });
     }, map);
   }
-  var ctor = type(c);
   var r = {
     owner: c,
     tag: tag,
-    ctor: ctor,
     props: {},
     key: key,
     subs: subs.length ? subs.reduce(function (m, s) {
@@ -759,21 +792,21 @@ function resolve(map, c, meta) {
     }
   }
 
-  return map.set((r.ctor ? r.ctor.NAME : tag) + uid, r);
+  return map.set(tag + uid, r);
 }
 
 // ==========
-// Template Compilation
+// Template Compilation. NodeTree -> GeneratorTree
 // ----------
 
 function compileType(tag) {
   var dtype = tag.slice(0, 3) === 'ui:' ? tag.slice(3) : null;
-  return dtype ? dtype === 'fragment' ? function (c) {
-    return REGISTRY.get('fragment');
+  return dtype ? dtype === 'fragment' || dtype === 'transclude' ? function (c) {
+    return dtype;
   } : function (c) {
-    return REGISTRY.get(c.get(dtype));
+    return c.get(dtype);
   } : function (c) {
-    return REGISTRY.get(tag);
+    return tag;
   };
 }
 
@@ -783,11 +816,14 @@ function compile(_ref) {
       uid = _ref.uid,
       subs = _ref.subs;
 
-  var r = { uid: uid, tag: tag, type: compileType(tag), props: compileAttrs(attrs), key: attrs.get('ui:key') };
+  var r = { uid: uid, type: compileType(tag), props: compileAttrs(attrs), key: attrs.get('ui:key') };
 
   var aIf = attrs.get('ui:if');
   if (aIf) {
-    r.iff = function (c) {
+    var neg = aIf[0] === '!' ? aIf.slice(1) : null;
+    r.iff = neg ? function (c) {
+      return !c.get(neg);
+    } : function (c) {
       return !!c.get(aIf);
     };
     if (subs.length) {
@@ -827,8 +863,8 @@ function compile(_ref) {
   return r;
 }
 
-var RE_SINGLE_PLACEHOLDER = /^\{\{([a-zA-Z0-9._$]+)\}\}$/;
-var RE_PLACEHOLDER = /\{\{([a-zA-Z0-9._$]+)\}\}/g;
+var RE_SINGLE_PLACEHOLDER = /^\{\{([a-zA-Z0-9._$|]+)\}\}$/;
+var RE_PLACEHOLDER = /\{\{([a-zA-Z0-9._$|]+)\}\}/g;
 function compileAttrs(attrs) {
   var r = [];
   var aProps = null;
@@ -900,6 +936,25 @@ function compileAttrs(attrs) {
   return r;
 }
 
+function compilePlaceholder(k, v) {
+  var keys = v.split('|');
+  var key = keys[0];
+  if (keys.length === 1) {
+    return function (c, p) {
+      p[k] = c.get(key);return p;
+    };
+  } else {
+    var fnx = keys.slice(1).map(function (k) {
+      return k.trim();
+    });
+    return function (c, p) {
+      p[k] = fnx.reduce(function (r, k) {
+        return c.app.pipes && c.app.pipes[k] ? c.app.pipes[k](r) : r;
+      }, c.get(key));return p;
+    };
+  }
+}
+
 function compileAttrValue(k, v) {
   if (!v.includes('{{')) {
     var r = v === 'true' ? true : v === 'false' ? false : v;
@@ -908,14 +963,18 @@ function compileAttrValue(k, v) {
     };
   }
   if (v.match(RE_SINGLE_PLACEHOLDER)) {
-    var key = v.slice(2, -2);
-    return function (c, p) {
-      p[k] = c.get(key);return p;
-    };
+    return compilePlaceholder(k, v.slice(2, -2));
   }
+  var fnx = [];
+  v.replace(RE_PLACEHOLDER, function (s, key) {
+    return fnx.push(compilePlaceholder('p' + fnx.length, key));
+  });
   return function (c, p) {
+    var idx = 0;
+    var pp = {};
     p[k] = v.replace(RE_PLACEHOLDER, function (s, key) {
-      var r = c.get(key);
+      var r = fnx[idx](c, pp)['p' + idx];
+      idx++;
       return r == null ? '' : r;
     });
     return p;
@@ -923,7 +982,7 @@ function compileAttrValue(k, v) {
 }
 
 // ==========
-// XML Parse for templates
+// XML Parse for templates. XML -> NodeTree
 // ----------
 
 var parseXML = exports.parseXML = function () {
@@ -1078,166 +1137,6 @@ var parseXML = exports.parseXML = function () {
     // tail text omitted
     return ctx[0].getChild(0);
   };
-}();
-
-// ==========
-// Sample store
-// ----------
-function notify(result, cb) {
-  if (result instanceof Promise) {
-    result.then(function (r) {
-      return cb(null, r);
-    }).catch(cb);
-  } else {
-    cb(null, result);
-  }
-}
-
-var Store = exports.Store = function () {
-  function Store(defaults, R) {
-    _classCallCheck(this, Store);
-
-    this.R = R || {};
-    this.subscribers = new Map();
-    this.reset(defaults);
-  }
-
-  _createClass(Store, [{
-    key: 'get',
-    value: function get(key) {
-      var getter = this['get' + key[0].toUpperCase() + key.slice(1)];
-      return getter ? getter.call(this, this.data) : key.split('.').reduce(function (r, k) {
-        return !r ? null : r[k];
-      }, this.data);
-    }
-  }, {
-    key: 'assign',
-    value: function assign(delta) {
-      Object.assign(this.data, delta);
-    }
-  }, {
-    key: 'reset',
-    value: function reset(defaults) {
-      this.data = defaults || {};
-    }
-  }, {
-    key: 'dispatch',
-    value: function dispatch(key, payload, cb0) {
-      var _this7 = this;
-
-      var cb = function cb(error, delta) {
-        _this7.assign(error ? { error: error } : delta);
-        cb0(error, _this7.data);
-        _this7.subscribers.forEach(function (_ref3) {
-          var cb = _ref3.cb,
-              key = _ref3.key;
-          return notify(_this7.get(key), cb);
-        });
-      };
-      try {
-        var method = this['do' + key[0].toUpperCase() + key.slice(1)];
-        var result = method.call(this, this.data, payload);
-        notify(result, cb);
-      } catch (ex) {
-        cb(ex);
-      }
-    }
-  }, {
-    key: 'unsubscribe',
-    value: function unsubscribe(subscriberId) {
-      this.subscribers.delete(subscriberId);
-    }
-  }, {
-    key: 'subscribe',
-    value: function subscribe(key, subscriberId, cb) {
-      this.subscribers.set(subscriberId, { cb: cb, key: key });
-      notify(this.get(key), cb);
-    }
-
-    // resolves static resources
-
-  }, {
-    key: 'res',
-    value: function res(key) {
-      return this.R[key] || (this.R[key] = this.get(key) || key.split('_').map(function (s) {
-        return s.slice(0, 1).toUpperCase() + s.slice(1);
-      }).join(' '));
-    }
-  }]);
-
-  return Store;
-}();
-
-// ==========
-// Sample application
-// ----------
-
-var Application = exports.Application = function () {
-  function Application() {
-    _classCallCheck(this, Application);
-
-    this.store = this.createStore();
-  }
-  // hook on init
-
-
-  _createClass(Application, [{
-    key: 'init',
-    value: function init() {
-      var _this8 = this;
-
-      var onhash = function onhash() {
-        return _this8.onhashchange(window.location.hash.slice(1));
-      };
-      window.onhashchange = onhash;
-      onhash();
-    }
-  }, {
-    key: 'createStore',
-    value: function createStore() {
-      throw new Error('Store is not defined');
-    }
-  }, {
-    key: 'dispatch',
-    value: function dispatch(key, payload) {
-      var _this9 = this;
-
-      this.store.dispatch(key, payload, function (error, data) {
-        return _this9.assign({ error: error });
-      });
-    }
-  }, {
-    key: 'subscribe',
-    value: function subscribe(key, subscriberId, cb) {
-      this.store.subscribe(key, subscriberId, cb);
-    }
-  }, {
-    key: 'unsubscribe',
-    value: function unsubscribe(subscriberId) {
-      this.store.unsubscribe(subscriberId);
-    }
-    // resolves dynamic properties
-
-  }, {
-    key: 'get',
-    value: function get(key) {
-      return this.store.get(key);
-    }
-    // resolves static resources
-
-  }, {
-    key: 'res',
-    value: function res(key) {
-      return this.store.res(key);
-    }
-  }, {
-    key: 'onhashchange',
-    value: function onhashchange(hash) {
-      // to override
-    }
-  }]);
-
-  return Application;
 }();
 
 /***/ })
