@@ -5,6 +5,7 @@ that powers the front-end with the true dynamic components.
 
 ## Application
 
+An Application is top-level component which may provide app-scope features such as side-effects, resources, pipes.
 ```js
 export class SampleApplication {
   // hook on init
@@ -25,6 +26,10 @@ export class SampleApplication {
   // resolves static resources. used by `:key`.
   res (key) {
     return this.store.res(key)
+  }
+  // pipes used to adjust component properties values
+  get pipes(){
+    return PIPES
   }
 }
 ```
@@ -75,11 +80,11 @@ class MyComponent {
 
 ### tags
 
-- `<ui:fragment>` - a transparent container
-- `<ui:then>` - a positive conditional container
-- `<ui:else>` - a negative conditional container
-- `<ui:transclude>` - a placeholder for a component content to be transcluded in place of.
-- `<ui:PROP>` - a true dynamic tag/component based on a value of a `prop` property
+- `<ui:fragment>` - a transparent container. Useful to wrap multiple tags, apply `ui:if`, `ui:each`
+- `<ui:then>` - a positive conditional container. Used with `ui:if` parent.
+- `<ui:else>` - a negative conditional container. Used with `ui:if` parent.
+- `<ui:transclude [key="key"]>` - a placeholder for a component content to be inserted instead of.
+- `<ui:some>` - a true dynamic tag/component based on a value of a `some` property
 
 ### attributes
 
@@ -91,13 +96,13 @@ class MyComponent {
 ### attribute expressions (also used for inner text)
 
 - `"value"` - any primitive string. 'true', 'false' are narrowed to boolean.
-- `":resId"` - value of an application resource by `resId`
+- `":resId"` - invokes `app.res(resId)`
 - `"{{prop[|pipe]*}}"` - value of `prop` property. Optional left-to-right chain pipes defined in `app.pipes` object.
 - `"prefix{{prop[|pipe]*}}suffix"` - interpolate string with value of `prop` property
 
 ### attribute side-effects
 
-- `"<- expr"` - produces and register a callback which to recieve from and subscribe to `app.subscribe(key, target, cb)`.
+- `"<- expr"` - produces and register a callback to subscribe to `app.subscribe(key, target, cb)`.
 - `"-> expr"` - produces an event handler which to send a data payload to an `app.dispatcher(key, payload)`.
 
 ### syntactic sugar (often allows `bare-template` component definition):
