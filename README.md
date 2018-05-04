@@ -9,22 +9,23 @@ An Application is top-level component which may provide app-scope features such 
 
 ```js
 export class SampleApplication {
-  // invoked via `-> ...`
+  // handles `-> ...` side-effect
   dispatch (key, payload) {
     this.store.dispatch(key, payload, (error, data) => this.assign({error}))
   }
-  // invoked via `<- ...`
+  // handles `<- ...` side-effect
   subscribe (key, subscriberId, cb) {
     this.store.subscribe(key, subscriberId, cb)
   }
+  // invoked from component `done()`
   unsubscribe (subscriberId) {
     this.store.unsubscribe(subscriberId)
   }
-  // resolves static resources. used by `:key`.
+  // resolves static resources from `:key` pattern.
   res (key) {
     return RES[key] || key
   }
-  // pipes used to adjust component properties values
+  // pipes used to adjust component properties values, `{{prop|pipe}}`
   get pipes() {
     return PIPES
   }
@@ -35,15 +36,15 @@ export class SampleApplication {
 
 ```js
 class MyComponent {
-    // returns a component template text as a strict XML
+    // returns a component template XML
     TEMPLATE(){
         return `<img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
     }
-    // called once on component init
+    // this hook called once on component init
     init(ctx){
         return () => deferedCode
     }
-    // called once on component done
+    // this hook called once on component done
     done(){
     }
     // optional getter used to resolve specific property value.
@@ -55,9 +56,9 @@ class MyComponent {
     setSrc(value){
         this.url = URL.parse(value)
     }
-    // will be pathed by library. do not override.
+    // will be patched by framework. do not override.
     // assign(delta) { <library code> }
-    // optional interceptor used to resolve expression placeholders.
+    // optional interceptor used to resolve expression placeholders (like `Proxy`).
     // get(key) { return this.state[key] }
 }
 ```
@@ -81,13 +82,13 @@ class MyComponent {
 - `<ui:then>` - a positive conditional container. Used with `ui:if` parent.
 - `<ui:else>` - a negative conditional container. Used with `ui:if` parent.
 - `<ui:transclude [key="key"]>` - a placeholder for a component content to be inserted instead of.
-- `<ui:some>` - a true dynamic tag/component based on a value of a `some` property
+- `<ui:Some>` - a true dynamic tag/component based on a value of a `Some` property
 
 ### attributes
 
 - `ui:if="prop"` conditional inclusion based on a value of a `prop` property
 - `ui:each="item of prop"` - iteration over items of list from a `prop` property placing current list item in `item`.(`item.id` is used here to match and re-use item components)
-- `ui:props="expr"` - spread values of object from `expr` expression into properties of a target component.
+- `ui:props="expr"` - spreads values of object from `expr` expression into properties of a target component.
 - `ui:key="some"` - to mark a inner component to be transcluded in place of `<ui:transclude key="some"/>`.
 
 ### attribute expressions (also used for inner text)
@@ -95,7 +96,7 @@ class MyComponent {
 - `"value"` - any primitive string. 'true', 'false' are narrowed to boolean.
 - `":resId"` - invokes `app.res(resId)`
 - `"{{prop[|pipe]*}}"` - value of `prop` property. Optional left-to-right chain pipes defined in `app.pipes` object.
-- `"prefix{{prop[|pipe]*}}suffix"` - interpolate string with value of `prop` property
+- `"prefix{{prop}}suffix"` - interpolate string with value of `prop` property
 
 ### attribute side-effects
 
