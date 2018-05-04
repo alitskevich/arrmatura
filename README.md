@@ -5,30 +5,27 @@ that powers the front-end with the true dynamic components.
 
 ## Application
 
-An Application is top-level component which may provide app-scope features such as side-effects, resources, pipes.
+An Application is top-level component which may provide app-scope features such as side-effects, resources and pipes.
+
 ```js
 export class SampleApplication {
-  // hook on init
-  init () {
-  }
-  // recieve `-> ...`
+  // invoked via `-> ...`
   dispatch (key, payload) {
     this.store.dispatch(key, payload, (error, data) => this.assign({error}))
   }
-  // invoked by `<- ...`
+  // invoked via `<- ...`
   subscribe (key, subscriberId, cb) {
     this.store.subscribe(key, subscriberId, cb)
   }
-  // invoked at `done()`
   unsubscribe (subscriberId) {
     this.store.unsubscribe(subscriberId)
   }
   // resolves static resources. used by `:key`.
   res (key) {
-    return this.store.res(key)
+    return RES[key] || key
   }
   // pipes used to adjust component properties values
-  get pipes(){
+  get pipes() {
     return PIPES
   }
 }
@@ -49,7 +46,7 @@ class MyComponent {
     // called once on component done
     done(){
     }
-    // optional getter used to resolve specific template expression placeholder.
+    // optional getter used to resolve specific property value.
     // (If no getter specified, then just `this.src` used)
     getSrc(){
         return this.url.toString()
@@ -71,7 +68,7 @@ class MyComponent {
 <script type="text/x-template" id="MyHeader">
   <header class="header">
     <h1>{{title}}</h1>
-    <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> add"/> 
+    <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> add"/>
   </header>
 </script>
 ```
@@ -105,7 +102,7 @@ class MyComponent {
 - `"<- expr"` - produces and register a callback to subscribe to `app.subscribe(key, target, cb)`.
 - `"-> expr"` - produces an event handler which to send a data payload to an `app.dispatcher(key, payload)`.
 
-### syntactic sugar (often allows `bare-template` component definition):
+### syntactic sugar (often allows `bare-template` component definition)
 
 - use flags for conditional classes like `class="active:{{flag}}"`
 - use equals operation for conditional classes like `class="active:{{v1}}={{v2}}"`
