@@ -120,7 +120,7 @@ var register = function register(ctor) {
   // narrow template
   var text = ctor.TEMPLATE || ctor.prototype.TEMPLATE && ctor.prototype.TEMPLATE() || (doc.getElementById(name) || { innerText: '<noop name="' + name + '"/>' }).innerText;
   // compile
-  var compiled = compile(parseXML(text));
+  var compiled = compile(parseXML(text, name));
   ctor.$TEMPLATE = function ($) {
     return resolve(new Map(), $, compiled);
   };
@@ -422,27 +422,30 @@ var Component = function () {
     this.$.assign = function (d) {
       return _this5.assign(d);
     };
+    this.$.defer = function (fn) {
+      if (fn) {
+        (_this5.defered || (_this5.defered = [])).push(fn);
+      }
+    };
   }
 
   _createClass(Component, [{
     key: 'init',
     value: function init() {
       if (this.$.init) {
-        this.$defered = this.$.init(this);
+        this.$.init(this);
       }
     }
   }, {
     key: 'done',
     value: function done() {
-      if (this.$defered) {
-        this.$defered();
-        this.$defered = null;
-      }
-      if (this.$.done) {
-        this.$.done();
-      }
-      if (this.app.unsubscribe) {
-        this.app.unsubscribe(this);
+      var _this6 = this;
+
+      if (this.defered) {
+        this.defered.forEach(function (f) {
+          return f.call(_this6, _this6);
+        });
+        delete this.defered;
       }
     }
   }, {
@@ -879,7 +882,7 @@ function compileAttrs(attrs) {
     if (v[0] === ':') {
       var key = v.slice(1);
       return r.push(function (c, p) {
-        p[k] = c.app.res(key);return p;
+        p[k] = c.app.res ? c.app.res(key) : key;return p;
       });
     }
     if (v[0] === '<' && v[1] === '-') {
@@ -888,27 +891,35 @@ function compileAttrs(attrs) {
       return r.push(function (c, p) {
         // custom assign
         p['$' + k] = function () {
-          var _this6 = this;
+          var _this7 = this;
 
           var old = this.$[ref];
           var url = fctr(c, {})[ref];
           if (url !== old) {
-            var _assign;
+            var _assign2;
 
             var ckey = k + '_counter';
             var cbusy = k + '_busy';
             var cerror = k + '_error';
             var counter = (this.$[ckey] || 0) + 1;
-            var cb = function cb(error, data) {
-              if (counter === _this6.$[ckey]) {
-                var _this6$assign;
+            if (!this.app.fetch) {
+              var _assign;
 
-                _this6.assign((_this6$assign = {}, _defineProperty(_this6$assign, k, data), _defineProperty(_this6$assign, ref, url), _defineProperty(_this6$assign, cbusy, false), _defineProperty(_this6$assign, cerror, error), _this6$assign));
+              var err = new Error('No App.fetch()');
+              console.error(err);
+              this.assign((_assign = {}, _defineProperty(_assign, ref, undefined), _defineProperty(_assign, cbusy, false), _defineProperty(_assign, cerror, err), _assign));
+              return;
+            }
+            var cb = function cb(error, data) {
+              if (counter === _this7.$[ckey]) {
+                var _this7$assign;
+
+                _this7.assign((_this7$assign = {}, _defineProperty(_this7$assign, k, data), _defineProperty(_this7$assign, ref, url), _defineProperty(_this7$assign, cbusy, false), _defineProperty(_this7$assign, cerror, error), _this7$assign));
               }
             };
-            this.assign((_assign = {}, _defineProperty(_assign, ref, url), _defineProperty(_assign, cbusy, true), _defineProperty(_assign, ckey, counter), _defineProperty(_assign, cerror, null), _assign));
+            this.assign((_assign2 = {}, _defineProperty(_assign2, ref, url), _defineProperty(_assign2, cbusy, true), _defineProperty(_assign2, ckey, counter), _defineProperty(_assign2, cerror, null), _assign2));
             setTimeout(function () {
-              return _this6.app && _this6.app.subscribe(url, _this6, cb);
+              return _this7.app.fetch(url, _this7.$, cb);
             }, 10);
           }
         };
@@ -919,7 +930,7 @@ function compileAttrs(attrs) {
       var _fctr = compileAttrValue(k, v.slice(2).trim());
       return r.push(function (c, p) {
         p[k] = function (data) {
-          return c.app.dispatch(_fctr(c, {})[k], data);
+          return c.app.emit ? c.app.emit(_fctr(c, {})[k], data) : console.error('No App.emit()');
         };
         return p;
       });
@@ -1100,7 +1111,7 @@ var parseXML = exports.parseXML = function () {
     return tab + '<' + tag + sattrs + (!ssubs && !stext ? '/>' : '>\n' + ssubs + stext + '\n' + tab + '</' + tag + '>');
   }
 
-  return function (_s) {
+  return function (_s, key) {
     var s = ('' + _s).trim().replace(RE_XML_COMMENT, '');
     var ctx = [new Node()];
     var lastIndex = 0;
@@ -1118,7 +1129,7 @@ var parseXML = exports.parseXML = function () {
       // closing tag
       if (e[2]) {
         if (ctx[0].tag !== e[3]) {
-          throw new Error('XML Parse closing tag does not match at: ' + e.index + ' near ' + e.input.slice(Math.max(e.index - 15, 0), Math.min(e.index + 15, e.input.length)));
+          throw new Error((key || '') + ' XML Parse closing tag does not match at: ' + e.index + ' near ' + e.input.slice(Math.max(e.index - 15, 0), Math.min(e.index + 15, e.input.length)));
         }
         ctx.shift();
       } else {
