@@ -14,8 +14,8 @@ export class SampleApplication {
     this.store.dispatch(key, payload, (error, data) => this.assign({error}))
   }
   // handles `<- ...` side-effect
-  fetch (key, subscriberId, cb) {
-    this.store.subscribe(key, subscriberId, cb)
+  fetch (key, target, cb) {
+    this.store.subscribe(key, target, cb)
   }
   // resolves static resources from `:key` pattern.
   res (key) {
@@ -37,7 +37,7 @@ class MyComponent {
         return `<img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
     }
     // this hook called once on component init
-    init(ctx){
+    init(){
     }
     // optional getter used to resolve specific property value.
     // (If no getter specified, then just `this.src` used)
@@ -62,8 +62,8 @@ class MyComponent {
 ```html
 <script type="text/x-template" id="MyHeader">
   <header class="header">
-    <h1>{{title}}</h1>
-    <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> add"/>
+    <h1 ui:if="title">{{title}}</h1>
+    <input type="text" class="new-todo" placeholder=":new_todo_hint" enter="-> add"/>
   </header>
 </script>
 ```
@@ -87,15 +87,15 @@ class MyComponent {
 
 ### attribute expressions (also used for inner text)
 
-- `"value"` - any primitive string. 'true', 'false' are narrowed to boolean.
-- `":resId"` - invokes `app.res(resId)`
-- `"{{prop[|pipe]*}}"` - value of `prop` property. Optional left-to-right chain pipes defined in `app.pipes` object.
-- `"prefix{{prop}}suffix"` - interpolate string with value of `prop` property
+- `"value"` any primitive string. ('true', 'false' are narrowed to boolean.)
+- `":resId"` gets resources from `app.res(resId)`
+- `"{{prop[|pipe]*}}"` value of `prop` property. Optional left-to-right chain pipes defined in `app.pipes` object.
+- `"prefix{{prop}}suffix"` interpolate string with value of `prop` property
 
 ### attribute side-effects
 
-- `"<- key"` - make subscription with `app.fetch(key, cb)`.
-- `"-> key"` - produces an event handler to send a `data-*` payload to an `app.emit(key, payload)`.
+- `"<- key"` requires data to be provided outside by `app.fetch(key, cb)`.
+- `"-> key"` produces event handler that emits a `data-*` payload to an `app.emit(key, payload)`.
 
 ### syntactic sugar (often allows `bare-template` component definition)
 
