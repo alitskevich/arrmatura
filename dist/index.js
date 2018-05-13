@@ -107,10 +107,38 @@ var COUNTER = 1;
 var doc = window.document;
 
 // ==========
-// Bootstrap
+// ensure app API
 // ----------
+var ensureApi = function ensureApi(app) {
+  var objectApiStubs = {
+    // emit event:
+    emit: function emit(key, payload) {
+      console.error('app.emit() is not defined.');
+    },
 
-// type registry
+    // fetch
+    fetch: function fetch(key, target, cb) {
+      cb(new Error('app.fetch() is not defined.'));
+    },
+
+    // pipes
+    pipes: {},
+    // resources
+    resource: function resource(key) {
+      return key;
+    }
+  };
+  Object.keys(objectApiStubs).forEach(function (k) {
+    if (!app[k]) {
+      app[k] = objectApiStubs[k];
+    }
+  });
+  return app;
+};
+
+// ==========
+// Type registry
+// ----------
 var REGISTRY = new Map();
 var register = function register(ctor) {
   // narrow non-function ctor
@@ -128,6 +156,10 @@ var register = function register(ctor) {
   REGISTRY.set(name, ctor);
 };
 
+// ==========
+// Bootstrap
+// ----------
+
 // bootstap a components tree and render immediately on <body/>
 function launch() {
   for (var _len = arguments.length, types = Array(_len), _key = 0; _key < _len; _key++) {
@@ -143,7 +175,7 @@ function bootstrap(elt) {
   }
 
   if (types.length === 0) {
-    types = [Application];
+    types = [Component];
   }
   types.forEach(register);
   // register transparent container: <ui:fragment>
@@ -158,46 +190,6 @@ function bootstrap(elt) {
   // use `<body>` as mount element by default
   return new Bootstrap(elt || doc.body, types[0]);
 }
-
-var Application = exports.Application = function () {
-  function Application() {
-    _classCallCheck(this, Application);
-  }
-
-  _createClass(Application, [{
-    key: 'init',
-
-    // hook on init
-    value: function init() {}
-    // event-driven:
-
-  }, {
-    key: 'dispatch',
-    value: function dispatch(key, payload) {}
-  }, {
-    key: 'subscribe',
-    value: function subscribe(key, subscriberId, cb) {}
-  }, {
-    key: 'unsubscribe',
-    value: function unsubscribe(subscriberId) {}
-    // resolves properties
-
-  }, {
-    key: 'get',
-    value: function get(key) {
-      return key;
-    }
-    // resolves static resources
-
-  }, {
-    key: 'res',
-    value: function res(key) {
-      return key;
-    }
-  }]);
-
-  return Application;
-}();
 
 var Bootstrap = function () {
   function Bootstrap(elt, ctor) {
@@ -591,7 +583,7 @@ function _render($, meta, parentElt) {
           _c.uid = uid;
           _c.parentElt = parentElt;
           _c.parent = $;
-          _c.app = $.app || _c.$;
+          _c.app = $.app || ensureApi(_c.$);
           ch.set(uid, _c);
         }
       }
@@ -855,7 +847,7 @@ function compile(_ref) {
         dataId = _aEach$split2[2];
 
     var dataGetter = dataId[0] === ':' ? function (c) {
-      return c.app.res(dataId.slice(1));
+      return c.app.resource(dataId.slice(1));
     } : function (c) {
       return c.get(dataId);
     };
@@ -882,7 +874,7 @@ function compileAttrs(attrs) {
     if (v[0] === ':') {
       var key = v.slice(1);
       return r.push(function (c, p) {
-        p[k] = c.app.res ? c.app.res(key) : key;return p;
+        p[k] = c.app.resource(key);return p;
       });
     }
     if (v[0] === '<' && v[1] === '-') {
@@ -896,20 +888,12 @@ function compileAttrs(attrs) {
           var old = this.$[ref];
           var url = fctr(c, {})[ref];
           if (url !== old) {
-            var _assign2;
+            var _assign;
 
             var ckey = k + '_counter';
             var cbusy = k + '_busy';
             var cerror = k + '_error';
             var counter = (this.$[ckey] || 0) + 1;
-            if (!this.app.fetch) {
-              var _assign;
-
-              var err = new Error('No App.fetch()');
-              console.error(err);
-              this.assign((_assign = {}, _defineProperty(_assign, ref, undefined), _defineProperty(_assign, cbusy, false), _defineProperty(_assign, cerror, err), _assign));
-              return;
-            }
             var cb = function cb(error, data) {
               if (counter === _this7.$[ckey]) {
                 var _this7$assign;
@@ -917,7 +901,7 @@ function compileAttrs(attrs) {
                 _this7.assign((_this7$assign = {}, _defineProperty(_this7$assign, k, data), _defineProperty(_this7$assign, ref, url), _defineProperty(_this7$assign, cbusy, false), _defineProperty(_this7$assign, cerror, error), _this7$assign));
               }
             };
-            this.assign((_assign2 = {}, _defineProperty(_assign2, ref, url), _defineProperty(_assign2, cbusy, true), _defineProperty(_assign2, ckey, counter), _defineProperty(_assign2, cerror, null), _assign2));
+            this.assign((_assign = {}, _defineProperty(_assign, ref, url), _defineProperty(_assign, cbusy, true), _defineProperty(_assign, ckey, counter), _defineProperty(_assign, cerror, null), _assign));
             setTimeout(function () {
               return _this7.app.fetch(url, _this7.$, cb);
             }, 10);
@@ -930,7 +914,7 @@ function compileAttrs(attrs) {
       var _fctr = compileAttrValue(k, v.slice(2).trim());
       return r.push(function (c, p) {
         p[k] = function (data) {
-          return c.app.emit ? c.app.emit(_fctr(c, {})[k], data) : console.error('No App.emit()');
+          return c.app.emit(_fctr(c, {})[k], data);
         };
         return p;
       });
@@ -960,7 +944,7 @@ function compilePlaceholder(k, v) {
     });
     return function (c, p) {
       p[k] = fnx.reduce(function (r, k) {
-        return c.app.pipes && c.app.pipes[k] ? c.app.pipes[k](r) : r;
+        return c.app.pipes[k] ? c.app.pipes[k](r) : r;
       }, c.get(key));return p;
     };
   }

@@ -11,14 +11,14 @@ An Application is the top-level component which may provide app-scope features s
 export class SampleApplication {
   // handles `-> ...` side-effect
   emit (key, payload) {
-    this.store.dispatch(key, payload, (error, data) => this.assign({error}))
+    store.dispatch(key, payload, (error, data) => this.assign({error}))
   }
   // handles `<- ...` side-effect
   fetch (key, target, cb) {
-    this.store.subscribe(key, target, cb)
+    store.subscribe(key, target, cb)
   }
   // resolves static resources from `:key` pattern.
-  res (key) {
+  resource (key) {
     return RES[key] || key
   }
   // pipes used to adjust component properties values, `{{prop|pipe}}`
