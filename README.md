@@ -14,8 +14,8 @@ export class SampleApplication {
     store.dispatch(key, payload, (error, data) => this.assign({error}))
   }
   // handles `<- ...` side-effect
-  fetch (key, target, cb) {
-    store.subscribe(key, target, cb)
+  fetchInto (key, target, propName) {
+    store.subscribe(key, target, propName)
   }
   // resolves static resources from `:key` pattern.
   resource (key) {
@@ -30,30 +30,36 @@ export class SampleApplication {
 
 ## Component
 
+Component is UI building block consist of template, state accessors, life-time hooks.
 ```js
 class MyComponent {
-    // returns a component template XML
+    // returns a template of a component
     TEMPLATE(){
-        return `<img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
+        return /*template*/`<img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
     }
-    // this hook called once on component init
+    // hook called once on component init
     init(){
+      // may invoke this.defer(finalizerFn)
     }
-    // optional getter used to resolve specific property value.
-    // (If no getter specified, then just `this.src` used)
+    // optional getter used to resolve specific template property placeholder.
+    // (Otherwise `this.src` will be read)
     getSrc(){
         return this.url.toString()
     }
-    // optional setter used from `assign()`
+    // optional setter invoked from `assign()`
+    // (Otherwise `this.src` will be written into)
     setSrc(value){
         this.url = URL.parse(value)
     }
-    // update component state. Patched by framework.
+    // updates component state. Patched by framework. May use '__assign__' in overriden method.
     assign(delta) { ... }
+    // renders component UI. Patched by framework. May use '__render__' in overriden method.
+    render() { ... }
     // adds function to be called on component done. Patched by framework.
     defer(cb){ ... }
-    // optional. interceptor used to resolve expression placeholders (like `Proxy`).
-    // get(key) { return this.state[key] }
+    // optional interceptor. may be used to resolve all template expression placeholders 
+    // (like a `Proxy`).
+    get(key) { return this.state[key] }
 }
 ```
 
@@ -70,20 +76,20 @@ class MyComponent {
 
 ## Template Cheatsheet
 
+### attributes
+
+- `ui:if="prop"` conditional presence based on a value of a `prop` property
+- `ui:each="item of prop"` - iteration over items of list from a `prop` property. Current list item is set into `item`.(`item.id` is used here to match and re-use item components)
+- `ui:props="expr"` - spreads values of object from `expr` expression into properties of a component.
+- `ui:key="some"` - to mark a inner content element to be transcluded in place of `<ui:transclude key="some"/>`.
+
 ### tags
 
 - `<ui:fragment>` - a transparent container. Useful to wrap multiple tags, apply `ui:if`, `ui:each`
-- `<ui:then>` - a positive conditional container. Used with `ui:if` parent.
-- `<ui:else>` - a negative conditional container. Used with `ui:if` parent.
-- `<ui:transclude [key="key"]>` - a placeholder for a component content to be inserted instead of.
+- `<ui:then>` - a positive conditional container. Used with `ui:if`.
+- `<ui:else>` - a negative conditional container. Used with `ui:if`.
+- `<ui:transclude [key="key"]>` - a placeholder for a component content to be inserted in place of.
 - `<ui:Some>` - a true dynamic tag/component based on a value of a `Some` property
-
-### attributes
-
-- `ui:if="prop"` conditional inclusion based on a value of a `prop` property
-- `ui:each="item of prop"` - iteration over items of list from a `prop` property. Current list item is set into `item`.(`item.id` is used here to match and re-use item components)
-- `ui:props="expr"` - spreads values of object from `expr` expression into properties of a component.
-- `ui:key="some"` - to mark a inner content element to be transcluded instead of `<ui:transclude key="some"/>`.
 
 ### attribute expressions (also used for inner text)
 
@@ -94,8 +100,8 @@ class MyComponent {
 
 ### attribute side-effects
 
-- `"<- key"` requires data to be provided outside by `app.fetch(key, cb)`.
-- `"-> key"` produces event handler that emits a `data-*` payload to an `app.emit(key, payload)`.
+- `data="<- key"` ask data to be provided from outside (`app.fetchInto(key, target, propName)`).
+- `click="-> key"` produces event handler that emits a `data-*` payload to an `app.emit(key, payload)`.
 
 ### syntactic sugar (often allows `bare-template` component definition)
 
@@ -112,6 +118,6 @@ class MyComponent {
 Dzi.launch(AppComponent, ...otherComponents)
 ```
 
-## Style
+## Sample
 
 [TODOS](https://alitskevich.github.io/dzi-todomvc/)
