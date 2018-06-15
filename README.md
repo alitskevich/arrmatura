@@ -10,12 +10,13 @@ An Application is the top-level component which may provide app-scope features s
 ```js
 export class SampleApplication {
   // handles `-> ...` side-effect
-  emit (key, payload) {
-    store.dispatch(key, payload, (error, data) => this.assign({error}))
+  emit (url, payload) {
+    store.dispatch(url, payload)
   }
   // handles `<- ...` side-effect
-  fetchInto (key, target, propName) {
-    store.subscribe(key, target, propName)
+  fetch (url, cb) {
+    const cancelFn = store.subscribe(url, cb)
+    return cancelFn
   }
   // resolves static resources from `:key` pattern.
   resource (key) {
@@ -35,7 +36,8 @@ Component is UI building block consist of template, state accessors, life-time h
 class MyComponent {
     // returns a template of a component
     TEMPLATE(){
-        return /*template*/`<img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
+        return /*template*/`
+        <img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
     }
     // hook called once on component init
     init(){
@@ -100,8 +102,8 @@ class MyComponent {
 
 ### attribute side-effects
 
-- `data="<- key"` ask data to be provided from outside (`app.fetchInto(key, target, propName)`).
-- `click="-> key"` produces event handler that emits a `data-*` payload to an `app.emit(key, payload)`.
+- `data="<- url"` ask data to be provided from outside (`app.fetch(url, cb)`).
+- `click="-> url"` produces event handler that emits a `data-*` payload to an `app.emit(url, payload)`.
 
 ### syntactic sugar (often allows `bare-template` component definition)
 
