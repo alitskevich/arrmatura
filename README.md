@@ -37,10 +37,17 @@ class MyComponent {
     // returns a template of a component
     TEMPLATE(){
         return /*template*/`
-        <img src="{{src}}" data-src="{{other}}" click="{{assign}}"/>`
+        <ul>
+          <li ui:each="item of items" ui:if="item.enabled">
+            <img id="img1" src="{{item.src}}" data-value="{{item.value}}" click="{{assign}}"/>
+            <span>{{itemIndex}}. {{item.name}}</span>
+          </li>
+        </ul>
+        `
     }
     // hook called once on component init
     init(){
+      // may address DOM elements by id: this.img1.style="width:100px"
       // may invoke this.defer(finalizerFn)
     }
     // optional getter used to resolve specific template property placeholder.
@@ -81,7 +88,7 @@ class MyComponent {
 ### attributes
 
 - `ui:if="prop"` conditional presence based on a value of a `prop` property
-- `ui:each="item of prop"` - iteration over items of list from a `prop` property. Current list item is set into `item`.(`item.id` is used here to match and re-use item components)
+- `ui:each="item of prop"` - iteration over items of list from a `prop` property. Current list item is set into `item`. (`item.id` is used here to match and re-use item components) (`itemIndex` contains current index)
 - `ui:props="expr"` - spreads values of object from `expr` expression into properties of a component.
 - `ui:key="some"` - to mark a inner content element to be transcluded in place of `<ui:transclude key="some"/>`.
 
@@ -102,13 +109,13 @@ class MyComponent {
 
 ### attribute side-effects
 
-- `data="<- url"` ask data to be provided from outside (`app.fetch(url, cb)`).
+- `data="<- url"` subscribes to data from outside (`app.fetch(url, cb)`).
 - `click="-> url"` produces event handler that emits a `data-*` payload to an `app.emit(url, payload)`.
 
 ### syntactic sugar (often allows `bare-template` component definition)
 
 - use flags for conditional classes like `class="active:{{item.flag}}"`
-- use equals operation for conditional classes like `class="active:{{item.id}}={{value}}"`
+- use equals operation for conditional classes like `class="active:{{item.id}}=={{value}}"`
 - use `enter` event handler for `<input type="input">`
 - use `toggle` event handler for `<input type="checkbox">`
 - use colon to iterate over resource `ui:each="item of :resId"`
