@@ -39,7 +39,7 @@ class MyComponent {
         return /*template*/`
         <ul>
           <li ui:each="item of items" ui:if="item.enabled">
-            <img id="img1" src="{{item.src}}" data-value="{{item.value}}" click="{{assign}}"/>
+            <img ui:ref="img1" src="{{item.src}}" data-value="{{item.value}}" click="{{assign}}"/>
             <span>{{itemIndex}}. {{item.name}}</span>
           </li>
         </ul>
@@ -60,9 +60,9 @@ class MyComponent {
     setSrc(value){
         this.url = URL.parse(value)
     }
-    // updates component state. Patched by framework. May use '__assign__' in overriden method.
+    // updates component state. Patched by framework. May use 'super_render' in overriden method.
     assign(delta) { ... }
-    // renders component UI. Patched by framework. May use '__render__' in overriden method.
+    // renders component UI. Patched by framework. May use 'super_render' in overriden method.
     render() { ... }
     // adds function to be called on component done. Patched by framework.
     defer(cb){ ... }
@@ -91,6 +91,7 @@ class MyComponent {
 - `ui:each="item of prop"` - iteration over items of list from a `prop` property. Current list item is set into `item`. (`item.id` is used here to match and re-use item components) (`itemIndex` contains current index)
 - `ui:props="expr"` - spreads values of object from `expr` expression into properties of a component.
 - `ui:key="some"` - to mark a inner content element to be transcluded in place of `<ui:transclude key="some"/>`.
+- `ui:ref="some"` - to make reference to an element in current component.
 
 ### tags
 
