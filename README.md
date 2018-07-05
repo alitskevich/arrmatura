@@ -32,47 +32,45 @@ export class SampleApplication {
 ## Component
 
 Component is UI building block consist of template, state accessors, life-time hooks.
+
 ```js
 class MyComponent {
-    // returns a template of a component
-    TEMPLATE(){
-        return /*template*/`
-        <ul>
-          <li ui:each="item of items" ui:if="item.enabled">
-            <img ui:ref="img1" src="{{item.src}}" data-value="{{item.value}}" click="{{assign}}"/>
-            <span>{{itemIndex}}. {{item.name}}</span>
-          </li>
-        </ul>
-        `
-    }
-    // hook called once on component init
-    init(){
-      // may address DOM elements by id: this.img1.style="width:100px"
-      // may invoke this.defer(finalizerFn)
-    }
-    // optional getter used to resolve specific template property placeholder.
-    // (Otherwise `this.src` will be read)
-    getSrc(){
-        return this.url.toString()
-    }
-    // optional setter invoked from `assign()`
-    // (Otherwise `this.src` will be written into)
-    setSrc(value){
-        this.url = URL.parse(value)
-    }
-    // updates component state. Patched by framework. May use 'super_render' in overriden method.
-    assign(delta) { ... }
-    // renders component UI. Patched by framework. May use 'super_render' in overriden method.
-    render() { ... }
-    // adds function to be called on component done. Patched by framework.
-    defer(cb){ ... }
-    // optional interceptor. may be used to resolve all template expression placeholders 
-    // (like a `Proxy`).
-    get(key) { return this.state[key] }
+  // returns a template of a component
+  TEMPLATE(){
+    return /*template*/`
+    <ul>
+      <li ui:each="item of items" ui:if="item.enabled">
+        <img ui:ref="img1" src="{{item.src}}" data-value="{{item.value}}" click="{{assign}}"/>
+        <span>{{itemIndex}}. {{item.name}}</span>
+      </li>
+    </ul>`
+  }
+  // hook called once on component init
+  init(){
+    // can refer its elements having `ui:ref`: this.img1.style="width:100px"
+    // may return defered function
+  }
+  // updates component state and re-render. Patched by framework.
+  assign(delta) {
+    // May use 'this.super_assign(delta)' in overriden method.
+  }
+  // optional getter used to resolve specific template property placeholder.
+  // (Otherwise read from `this.src`)
+  getSrc(){
+      return this.url.toString()
+  }
+  // optional setter invoked from `assign()`
+  // (Otherwise writes into `this.src`)
+  setSrc(value){
+      this.url = URL.parse(value)
+  }
+  // optional interceptor. to be used to resolve all template expression placeholders
+  // (like a `Proxy`).
+  get(key) { return this.state[key] }
 }
 ```
 
-... or `bare-template` definition
+... or `bare-template` definition in html file:
 
 ```html
 <script type="text/x-template" id="MyHeader">
@@ -83,44 +81,143 @@ class MyComponent {
 </script>
 ```
 
-## Template Cheatsheet
+## Templates
 
-### attributes
+### Fragments
 
-- `ui:if="prop"` conditional presence based on a value of a `prop` property
-- `ui:each="item of prop"` - iteration over items of list from a `prop` property. Current list item is set into `item`. (`item.id` is used here to match and re-use item components) (`itemIndex` contains current index)
-- `ui:props="expr"` - spreads values of object from `expr` expression into properties of a component.
-- `ui:key="some"` - to mark a inner content element to be transcluded in place of `<ui:transclude key="some"/>`.
-- `ui:ref="some"` - to make reference to an element in current component.
+Fragment element `<ui:fragment>` is a transparent container and works just like a parens.
 
-### tags
+  ```html
+  <ui:fragment ui:if="enabled">
+    <innerContent1/>...<innerContentN/>
+  </ui:fragment>
+  ```
 
-- `<ui:fragment>` - a transparent container. Useful to wrap multiple tags, apply `ui:if`, `ui:each`
-- `<ui:then>` - a positive conditional container. Used with `ui:if`.
-- `<ui:else>` - a negative conditional container. Used with `ui:if`.
-- `<ui:transclude [key="key"]>` - a placeholder for a component content to be inserted in place of.
-- `<ui:Some>` - a true dynamic tag/component based on a value of a `Some` property
+>Useful to apply `ui:if`, `ui:each` to multiple elements as a whole.
+>
+>Also can be used as a root element.
 
-### attribute expressions (also used for inner text)
+### Conditionals
 
-- `"value"` any primitive string. ('true', 'false' are narrowed to boolean.)
-- `":resId"` gets resources from `app.res(resId)`
-- `"{{prop[|pipe]*}}"` value of `prop` property. Optional left-to-right chain pipes defined in `app.pipes` object.
-- `"prefix{{prop}}suffix"` interpolate string with value of `prop` property
+#### Basic syntax
 
-### attribute side-effects
+Attribute `ui:if` enables an element(and its inner context) if value of a specific component property is truthy.
 
-- `data="<- url"` subscribes to data from outside (`app.fetch(url, cb)`).
-- `click="-> url"` produces event handler that emits a `data-*` payload to an `app.emit(url, payload)`.
+  ```html
+  <tag ui:if="prop">
+  ```
 
-### syntactic sugar (often allows `bare-template` component definition)
+> No brackets here.
+>
+> No expressions, except can use excl to invert condition `ui:if="!prop"`
+
+#### Extended syntax
+
+  ```html
+  <ui:fragment ui:if="enabled">
+    <ui:then><innerContent1/></ui:then>
+    <ui:else><innerContentN/></ui:else>
+  </ui:fragment>
+  ```
+
+### Iterations
+
+ `ui:each` attribute created multiple copies of an element iterating over items of from specified component property.
+
+  ```html
+  <ul>
+    <li ui:each="item of items">
+      <span>{{itemIndex}}. {{item.name}}</span>
+    </li>
+  </ul>
+  ```
+
+> Current list item is set into `this.item` and accessible programmatically.
+>
+> iterative elements are matched and re-used based on `item.id`
+>
+> `itemIndex` contains current index
+>
+> Beside properties, it's able to iterate instantly over specific resource `<ul ui:each="item of :resId">`
+
+### properties (_and inner text_)
+
+`prop="value"` sets any primitive `value` into `prop` property of an element just like plain HTML.
+
+>'true', 'false' are narrowed to boolean.
+
+`prop=":resId"` sets resources from `app.resource(resId)` into `prop`.
+
+`prop="{{from}}"` sets value of `from` component property into `prop`.
+>values of `function` type are implicitly bound to component instance.
+
+#### interpolation
+
+`prop="prefix{{from}}suffix"` interpolates string with value of `from` property to be set into `prop`
+
+#### pipes
+
+`"prop={{from|pipe|pipe2...}}"` applies chain of pipes defined in `app.pipes`.
+
+#### spreading
+
+- `ui:props="expr"` spreads the `expr` expression object values into properties of an element.
+
+### dynamic elements
+
+- `<ui:SomeType>` - specifies an element of type based on a value of a `SomeType` property
+
+### side-effects
+
+`data="<- url"` subscribes to data from outside (`app.fetch(url, cb)`).
+
+`click="-> url"` produces function that emits a `data-*` payload to an `app.emit(url, payload)`.
+
+### Translusion
+
+`<ui:transclude>` - a placeholder to be relaced by inner content of a component.
+
+  ```html
+  component usage:
+  <C1>
+    <innerContent1/>
+  </C1>
+
+  in tempalate of C1:
+  <div class="c1">
+    <transclude/>
+  </div>
+  ```
+
+#### partial translude
+
+ There can be more than one transclusions
+
+  ```html
+  component usage:
+  <C1>
+    <innerContent1 ui:key="header"/>
+    <innerContent2 ui:key="footer"/>
+  </C1>
+
+  in tempalate of C1:
+  <div>
+    <transclude key="header"/>
+    <hr/>
+    <transclude key="footer"/>
+  </div>
+  ```
+
+### references
+
+- `ui:ref="some"` - makes an element be accessible programmatically within current component at `init()`.
+
+#### DOM extras
 
 - use flags for conditional classes like `class="active:{{item.flag}}"`
 - use equals operation for conditional classes like `class="active:{{item.id}}=={{value}}"`
 - use `enter` event handler for `<input type="input">`
 - use `toggle` event handler for `<input type="checkbox">`
-- use colon to iterate over resource `ui:each="item of :resId"`
-- use excl to invert conditional `ui:if="!prop"`
 
 ## Run
 
