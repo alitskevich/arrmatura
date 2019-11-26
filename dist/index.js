@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./lib/dom.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./lib/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -1603,6 +1603,30 @@ function launch() {
 if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
   window.launch = launch;
 }
+
+/***/ }),
+
+/***/ "./lib/index.js":
+/*!**********************!*\
+  !*** ./lib/index.js ***!
+  \**********************/
+/*! exports provided: Component, registerTypes, launch */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component.js */ "./lib/component.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return _component_js__WEBPACK_IMPORTED_MODULE_0__["Component"]; });
+
+/* harmony import */ var _register_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./register.js */ "./lib/register.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "registerTypes", function() { return _register_js__WEBPACK_IMPORTED_MODULE_1__["registerTypes"]; });
+
+/* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dom.js */ "./lib/dom.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "launch", function() { return _dom_js__WEBPACK_IMPORTED_MODULE_2__["launch"]; });
+
+
+
+
 
 /***/ }),
 
