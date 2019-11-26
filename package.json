@@ -1,37 +1,25 @@
 {
-  "name": "dzi-ui",
+  "name": "arrmatura",
   "version": "2.1.11",
-  "description": "minimalistic UI framework",
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.1",
-    "babel-loader": "^7.1.4",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2016": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "standard": "^10.0.3",
-    "webpack": "^4.1.1"
-  },
+  "description": "framework",
   "scripts": {
     "start": "http-server",
-    "build": "webpack-cli",
-    "test": "http-server && chrome test.html"
+    "build": "npx webpack-cli && cp -R dist docs/ && cp -R dist ~/grodno/vendor/armatura/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/alitskevich/dzi-ui.git"
+    "url": "https://github.com/alitskevich/arrmatura.git"
   },
   "author": "alitskevich",
   "license": "MIT",
-  "dependencies": {},
-  "standard": {
-    "parser": "babel-eslint",
-    "ignore": [
-      "**/out/",
-      "/dist/",
-      "/node_modules/",
-      "tmp.js"
-    ]
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.7.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }
