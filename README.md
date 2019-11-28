@@ -12,7 +12,8 @@ It is
 
  ## Purpose 
 
-`Armatura` is a first-citizen a minimalistic UI framework, that extends pure HTML with true dynamic components.
+`Armatura` is a first-citizen minimalistic UI framework, 
+that extends pure HTML with true dynamic components.
 
 Despite born-for-dom, it is also well-suited to develop wide range of modular component-based applications.
 
@@ -23,7 +24,7 @@ Despite born-for-dom, it is also well-suited to develop wide range of modular co
 
 # Get Started
 
-    npm i armatura
+    npm i arrmatura
 
 ```javascript
     import {launch} from 'arrmatura';
@@ -42,9 +43,11 @@ Despite born-for-dom, it is also well-suited to develop wide range of modular co
     })
 ```
 
-# Links
+# Documentation
 
 - [Glossary](md/GLOSSARY.md)
 - [Templates](md/TEMPLATE.md)
 - [Custom components](md/CUSTOM.md)
+# Samples
+
 - [TODOS Application](https://alitskevich.github.io/dzi-todomvc)

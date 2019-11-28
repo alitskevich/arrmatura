@@ -1,0 +1,8 @@
+{
+    "files.autoSave": "onFocusChange",
+    "html.format.wrapAttributes": "preserve-aligned",
+    "html.validate.styles": false,
+    "eslint.autoFixOnSave": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+}

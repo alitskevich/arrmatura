@@ -91,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./lib/dom.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./lib/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -176,9 +176,14 @@ function pipe(value, key) {
 
   try {
     var fn = res.call(this, id);
-    var owner = this.actualOwner;
-    return fn.apply(owner.impl, [value].concat(_toConsumableArray(args.map(function (a) {
-      return a[0] === '@' ? owner.prop(a.slice(1)) : a;
+    var $ = this.owner;
+
+    while ($.owner && $.isFragment) {
+      $ = $.owner;
+    }
+
+    return fn.apply($.impl, [value].concat(_toConsumableArray(args.map(function (a) {
+      return a[0] === '@' ? $.prop(a.slice(1)) : a;
     }))));
   } catch (ex) {
     console.error('ERROR: Object.pipes.' + id, ex);
@@ -303,7 +308,8 @@ function compileFor(_ref) {
     itemId: itemId
   };
   var r = {
-    tag: 'ui:fragment',
+    tag: 'ui:for',
+    isFragment: true,
     uid: 'for:' + expr + uid,
     $for: $for,
     key: attrs.get('key')
@@ -371,7 +377,8 @@ function compileIf(_ref2) {
   var aIf = attrs.get('ui:if');
   var iff = {};
   var r = {
-    tag: 'ui:fragment',
+    tag: 'ui:if',
+    isFragment: true,
     uid: 'if:' + aIf + uid,
     key: attrs.get('key'),
     $if: iff
@@ -454,7 +461,8 @@ function compileTag(_ref3) {
       nodes = _ref3.nodes;
   var expr = attrs.get('tag');
   var r = {
-    tag: 'ui:fragment',
+    tag: 'ui:tag',
+    isFragment: true,
     uid: 'tag:' + expr + uid,
     $tag: compile({
       attrs: filterMapKey(attrs, 'tag'),
@@ -585,6 +593,12 @@ function compileNode(node) {
     return compileTag(node);
   }
 
+  if (node.tag === 'ui:fragment') {
+    return Object.assign(compile(node), {
+      isFragment: true
+    });
+  }
+
   return compile(node);
 }
 
@@ -594,38 +608,37 @@ function compileNode(node) {
 /*!**************************!*\
   !*** ./lib/component.js ***!
   \**************************/
-/*! exports provided: methodName, Component */
+/*! exports provided: Component */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "methodName", function() { return methodName; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
 /* harmony import */ var _render_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./render.js */ "./lib/render.js");
 /* harmony import */ var _resolve_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./resolve.js */ "./lib/resolve.js");
-function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest(); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* eslint-disable no-console */
 
@@ -647,6 +660,88 @@ var methodName = function methodName(x) {
   var s = "".concat(x);
   return pre + s[0].toUpperCase() + s.slice(1);
 };
+
+function bindFn(f) {
+  var $ = this;
+  var map = $.$boundFnMap || ($.$boundFnMap = new Map());
+  var fn = map.get(f);
+
+  if (!fn) {
+    var bound = f.bind($.impl);
+
+    fn = function fn() {
+      var r = bound.apply(void 0, arguments);
+
+      if (r) {
+        $.up(r);
+      }
+    };
+
+    map.set(f, fn);
+  }
+
+  return fn;
+}
+
+var upAsync = function upAsync($, promise, key) {
+  var racer = $.raceCondition('set:' + (key || 'up'));
+
+  var up = function up(r) {
+    return racer(function () {
+      return $.up(r);
+    });
+  };
+
+  if (key && key !== '...') {
+    var akey = key.replace('Promise', '');
+    promise.then(function (val) {
+      var _up;
+
+      return up((_up = {}, _defineProperty(_up, akey + 'Error', null), _defineProperty(_up, akey, val), _up));
+    }, function (error) {
+      return up(_defineProperty({}, akey + 'Error', error));
+    });
+  } else {
+    promise.then(up, function (error) {
+      return up({
+        error: error
+      });
+    });
+  }
+
+  return promise;
+};
+
+var propGetter = function propGetter($, key) {
+  var map = $.$propFnMap || ($.$propFnMap = {});
+  var fn = map[key];
+
+  if (fn) {
+    return fn;
+  }
+
+  var impl = $.impl;
+
+  var _key$split = key.split('.'),
+      _key$split2 = _toArray(_key$split),
+      pk = _key$split2[0],
+      path = _key$split2.slice(1);
+
+  var gettr = impl[methodName(pk, 'get')];
+  var extractor1 = gettr ? function () {
+    return gettr.call(impl);
+  } : function () {
+    var $$ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : impl.get ? impl.get(impl) : impl;
+    return pk in $$ ? $$[pk] : $.owner && $.owner.prop && $.isFragment ? $.owner.prop(pk) : undefined;
+  };
+  fn = !path.length ? extractor1 : function () {
+    return path.reduce(function (r, p) {
+      return r ? r[p] : r;
+    }, extractor1());
+  };
+  return map[key] = fn;
+};
+
 var Component =
 /*#__PURE__*/
 function () {
@@ -685,92 +780,6 @@ function () {
 
 
   _createClass(Component, [{
-    key: "resolveFragmentTemplate",
-    value: function resolveFragmentTemplate() {
-      var _this2 = this;
-
-      var acc = new Map();
-
-      if (this.$for) {
-        // ui:for
-        var $for = this.$for;
-        var data = this.impl.$data;
-        var itemId = $for.itemId,
-            itemNode = $for.itemNode,
-            emptyNode = $for.emptyNode,
-            loadingNode = $for.loadingNode;
-        var tag = itemNode.tag,
-            updates = itemNode.updates,
-            _itemNode$initials = itemNode.initials,
-            initials = _itemNode$initials === void 0 ? {} : _itemNode$initials,
-            nodes = itemNode.nodes,
-            uid = itemNode.uid;
-
-        if (data && data.length) {
-          if (!data.forEach) {
-            throw new Error('wrong ui:for data', data);
-          }
-
-          data.forEach(function (d, index) {
-            var _Object$assign;
-
-            var id = "".concat(uid, "-$").concat(d.id || index);
-            var $ownerImpl = Object.assign(Object.create(_this2.owner.impl), (_Object$assign = {}, _defineProperty(_Object$assign, itemId, d), _defineProperty(_Object$assign, itemId + 'Index', index), _Object$assign));
-
-            var up = function up(Δ) {
-              return _this2.owner.up(Δ);
-            };
-
-            var $owner = Object.assign(Object.create(_this2.owner), {
-              impl: $ownerImpl,
-              $propFnMap: {},
-              up: up
-            });
-
-            Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])($owner, {
-              tag: tag,
-              initials: initials,
-              updates: updates,
-              nodes: nodes,
-              uid: id
-            }, acc);
-          });
-        } else if (!data) {
-          if (loadingNode) {
-            Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this.owner, loadingNode, acc);
-          }
-        } else if (!data.length) {
-          if (emptyNode) {
-            Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this.owner, emptyNode, acc);
-          }
-        }
-      } else if (this.$if) {
-        // ui:if
-        var $if = this.$if;
-        var $data = this.impl.$data;
-        var node = $data ? $if.then : $if["else"];
-
-        Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this, node, acc);
-      } else if (this.$tag) {
-        // ui:tag
-        var _tag = this.impl.$data;
-
-        if (_tag) {
-          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this, _objectSpread({}, this.$tag, {
-            tag: _tag,
-            uid: _tag + ':' + this.uid
-          }), acc);
-        }
-      } else if (this.content) {
-        // content
-        this.content.forEach(function (v, k) {
-          return acc.set(k, v);
-        });
-      }
-
-      return acc;
-    }
-  }, {
     key: "render",
     value: function render() {
       this.ctx.cursor = this.prevElt;
@@ -784,7 +793,11 @@ function () {
   }, {
     key: "resolveTemplate",
     value: function resolveTemplate() {
-      return this.tag === 'ui:fragment' ? this.resolveFragmentTemplate() : Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this, this.impl.constructor.$TEMPLATE());
+      if (this.impl.resolveTemplate) {
+        return this.impl.resolveTemplate(this);
+      }
+
+      return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this, this.impl.constructor.$TEMPLATE());
     }
     /**
      * Life-cycle hooks.
@@ -793,7 +806,7 @@ function () {
   }, {
     key: "init",
     value: function init() {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this.isDone || this.isInited) {
         return;
@@ -803,7 +816,7 @@ function () {
 
       if (this.inits) {
         this.inits.forEach(function (f) {
-          return _this3.defer(f(_this3));
+          return _this2.defer(f(_this2));
         });
         delete this.inits;
       }
@@ -819,7 +832,7 @@ function () {
   }, {
     key: "done",
     value: function done() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.isDone) {
         return;
@@ -832,10 +845,12 @@ function () {
       } // console.log('done', this.tag, this.uid)
 
 
-      this.eachChild(function (c) {
-        c.parent = null;
-        c.done();
-      });
+      if (this.children) {
+        this.children.forEach(function (c) {
+          c.parent = null;
+          c.done();
+        });
+      }
 
       if (this.parent) {
         this.parent.children["delete"](this.uid);
@@ -847,13 +862,13 @@ function () {
 
       if (this.defered) {
         this.defered.forEach(function (f) {
-          return f(_this4);
+          return f(_this3);
         });
         delete this.defered;
       }
 
       ['parent', 'children', 'owner', 'impl', 'app', 'ctx'].forEach(function (k) {
-        delete _this4[k];
+        delete _this3[k];
       });
     }
     /**
@@ -875,37 +890,6 @@ function () {
       }
     }
   }, {
-    key: "upAsync",
-    value: function upAsync(promise, key) {
-      var $ = this;
-      var racer = $.raceCondition('set:' + (key || 'up'));
-
-      var up = function up(r) {
-        return racer(function () {
-          return $.up(r);
-        });
-      };
-
-      if (key && key !== '...') {
-        var akey = key.replace('Promise', '');
-        promise.then(function (val) {
-          var _up;
-
-          return up((_up = {}, _defineProperty(_up, akey + 'Error', null), _defineProperty(_up, akey, val), _up));
-        }, function (error) {
-          return up(_defineProperty({}, akey + 'Error', error));
-        });
-      } else {
-        promise.then(up, function (error) {
-          return up({
-            error: error
-          });
-        });
-      }
-
-      return promise;
-    }
-  }, {
     key: "set",
     value: function set(Δ) {
       var $ = this;
@@ -916,7 +900,7 @@ function () {
         changed = impl.set(Δ);
       } else if (Δ) {
         if (Δ.then) {
-          $.upAsync(Δ);
+          upAsync($, Δ);
         } else {
           Object.entries(Δ).forEach(function (_ref) {
             var _ref2 = _slicedToArray(_ref, 2),
@@ -924,7 +908,7 @@ function () {
                 their = _ref2[1];
 
             if (their && their.then) {
-              $.upAsync(their, k);
+              upAsync($, their, k);
             } else if (k && typeof their !== 'undefined' && their !== impl[k]) {
               var setter = impl['set' + k[0].toUpperCase() + k.slice(1)];
 
@@ -945,40 +929,8 @@ function () {
   }, {
     key: "prop",
     value: function prop(propId) {
-      var value = this.propGetter(propId)();
-      return typeof value === 'function' ? this.bindFn(value) : value;
-    }
-  }, {
-    key: "propGetter",
-    value: function propGetter(key) {
-      var $ = this;
-      var map = $.$propFnMap || ($.$propFnMap = {});
-      var fn = map[key];
-
-      if (fn) {
-        return fn;
-      }
-
-      var impl = $.impl;
-
-      var _key$split = key.split('.'),
-          _key$split2 = _toArray(_key$split),
-          pk = _key$split2[0],
-          path = _key$split2.slice(1);
-
-      var gettr = impl[methodName(pk, 'get')];
-      var extractor1 = gettr ? function () {
-        return gettr.call(impl);
-      } : function () {
-        var $$ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : impl.get ? impl.get(impl) : impl;
-        return pk in $$ ? $$[pk] : $.owner && $.owner.prop && $.tag === 'ui:fragment' ? $.owner.prop(pk) : undefined;
-      };
-      fn = !path.length ? extractor1 : function () {
-        return path.reduce(function (r, p) {
-          return r ? r[p] : r;
-        }, extractor1());
-      };
-      return map[key] = fn;
+      var value = propGetter(this, propId)();
+      return typeof value === 'function' ? bindFn.call(this, value) : value;
     }
     /**
      *  Arrows.
@@ -987,12 +939,12 @@ function () {
   }, {
     key: "notify",
     value: function notify() {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.listeners && !this.notifying) {
         this.notifying = true;
         this.listeners.forEach(function (e) {
-          return e(_this5.impl);
+          return e(_this4.impl);
         });
         this.notifying = false;
       }
@@ -1011,7 +963,7 @@ function () {
   }, {
     key: "connect",
     value: function connect(key, applicator) {
-      var _this6 = this;
+      var _this5 = this;
 
       var _key$split3 = key.split('.'),
           _key$split4 = _slicedToArray(_key$split3, 2),
@@ -1029,7 +981,7 @@ function () {
         try {
           var value = ref.$.prop(target);
 
-          _this6.up(applicator ? value && value.then ? value.then(applicator) : applicator(value) : value);
+          _this5.up(applicator ? value && value.then ? value.then(applicator) : applicator(value) : value);
         } catch (ex) {
           console.error('connect ' + type + ':' + target, ex);
         }
@@ -1038,8 +990,15 @@ function () {
   }, {
     key: "emit",
     value: function emit(key, data) {
+      var $ = this;
+
       if (!key || !key.includes('.')) {
-        return this.actualOwner.up(key ? _defineProperty({}, key, data) : data);
+        // eslint-disable-next-line no-empty
+        while ($.owner && $.isFragment) {
+          $ = $.owner;
+        }
+
+        return $.up(key ? _defineProperty({}, key, data) : data);
       }
 
       var _key$split5 = key.split('.'),
@@ -1051,7 +1010,7 @@ function () {
         data: data
       }, data);
 
-      var ref = type === 'this' ? this.impl : this.app[type];
+      var ref = type === 'this' ? $.impl : $.app[type];
 
       if (!ref) {
         console.warn('emit: No such ref ' + type);
@@ -1082,14 +1041,13 @@ function () {
   }, {
     key: "raceCondition",
     value: function raceCondition(key) {
-      var _this7 = this;
-
       var COUNTERS = this.$weak || (this.$weak = new Map());
       var counter = 1 + (COUNTERS.get(key) || 0);
       COUNTERS.set(key, counter);
       return function (fn) {
         if (counter === COUNTERS.get(key)) {
-          _this7.app.run(fn);
+          counter = 0;
+          fn();
         }
       };
     }
@@ -1101,67 +1059,15 @@ function () {
       }
     }
   }, {
-    key: "eachChild",
-    value: function eachChild(fn) {
-      var ch = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.children;
-
-      if (ch) {
-        ch.forEach(fn);
-      }
-    }
-  }, {
-    key: "error",
-    value: function error() {
+    key: "log",
+    value: function log() {
       var _console;
 
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      (_console = console).error.apply(_console, [this.tag + this.uid].concat(args));
-    }
-  }, {
-    key: "log",
-    value: function log() {
-      var _console2;
-
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
-
-      (_console2 = console).log.apply(_console2, [this.tag + this.uid].concat(args));
-    }
-  }, {
-    key: "bindFn",
-    value: function bindFn(f) {
-      var $ = this;
-      var map = $.$boundFnMap || ($.$boundFnMap = new Map());
-      var fn = map.get(f);
-
-      if (!fn) {
-        var bound = f.bind($.impl);
-
-        fn = function fn() {
-          var r = bound.apply(void 0, arguments);
-
-          if (r) {
-            $.up(r);
-          }
-        };
-
-        map.set(f, fn);
-      }
-
-      return fn;
-    }
-  }, {
-    key: "actualOwner",
-    get: function get() {
-      var $ = this; // eslint-disable-next-line no-empty
-
-      for (; $.owner && $.tag === 'ui:fragment'; $ = $.owner) {}
-
-      return $;
+      (_console = console).log.apply(_console, [this.tag + this.uid].concat(args));
     }
   }]);
 
@@ -1174,14 +1080,11 @@ function () {
 /*!********************!*\
   !*** ./lib/dom.js ***!
   \********************/
-/*! exports provided: DOM_SETTERS, DOM_VALUE_COMPARATORS, Element, launch */
+/*! exports provided: launch */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DOM_SETTERS", function() { return DOM_SETTERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DOM_VALUE_COMPARATORS", function() { return DOM_VALUE_COMPARATORS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Element", function() { return Element; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "launch", function() { return launch; });
 /* harmony import */ var _render_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./render.js */ "./lib/render.js");
 /* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component.js */ "./lib/component.js");
@@ -1407,6 +1310,7 @@ var DOM_VALUE_COMPARATORS = {
     return their === mine;
   }
 };
+
 var Element =
 /*#__PURE__*/
 function () {
@@ -1487,7 +1391,7 @@ function () {
       var mines = this.$attributes;
 
       for (var key in theirs) {
-        if (theirs.hasOwnProperty(key) && !(DOM_VALUE_COMPARATORS[key] || DOM_VALUE_COMPARATORS._)(e, theirs[key], mines[key])) {
+        if (Object.prototype.hasOwnProperty.call(theirs, key) && !(DOM_VALUE_COMPARATORS[key] || DOM_VALUE_COMPARATORS._)(e, theirs[key], mines[key])) {
           var value = theirs[key];
           var setter = DOM_SETTERS[key]; // console.log('setAttribute' + this.$.tag, key, value)
 
@@ -1556,53 +1460,221 @@ function () {
   return Element;
 }();
 
-var App =
-/*#__PURE__*/
-function () {
-  function App(props, $) {
-    _classCallCheck(this, App);
+var WebClientApp = function WebClientApp(props, $) {
+  _classCallCheck(this, WebClientApp);
 
-    Object.assign(this, props);
-    $.elt = $.ctx = props.rootElement || document.body;
-  }
+  Object.assign(this, props);
+  $.elt = $.ctx = props.rootElement || document.body;
+};
 
-  _createClass(App, [{
-    key: "render",
-    value: function render($, _render2) {
-      this.run(function () {
-        return _render2($);
-      });
-    }
-  }, {
-    key: "run",
-    value: function run(fn) {
-      window.requestAnimationFrame(function () {
-        return fn.call(window, document);
-      });
-    }
-  }]);
-
-  return App;
-}();
-
+WebClientApp.Element = Element;
 function launch() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       types = _ref.types,
-      props = _objectWithoutProperties(_ref, ["types"]);
+      _ref$App = _ref.App,
+      App = _ref$App === void 0 ? WebClientApp : _ref$App,
+      props = _objectWithoutProperties(_ref, ["types", "App"]);
 
-  App.template = "<".concat(types[0].name || types[0].NAME, "/>");
-  Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["registerTypes"])([App, Element].concat(types));
-  var app = new _component_js__WEBPACK_IMPORTED_MODULE_1__["Component"](App, {
+  App.template = App.template || "<".concat(types[0].name || types[0].NAME, "/>");
+  Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["registerTypes"])([App, App.Element].concat(types));
+  var a = new _component_js__WEBPACK_IMPORTED_MODULE_1__["Component"](App, {
     props: props
   });
-  app.render();
-  app.init();
-  return app.impl;
+
+  var fn = function fn() {
+    Object(_render_js__WEBPACK_IMPORTED_MODULE_0__["render"])(a);
+
+    a.init();
+  };
+
+  if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
+    window.requestAnimationFrame(fn);
+  } else {
+    fn();
+  }
+
+  return a.impl;
 }
 
 if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
   window.launch = launch;
 }
+
+/***/ }),
+
+/***/ "./lib/fragment.js":
+/*!*************************!*\
+  !*** ./lib/fragment.js ***!
+  \*************************/
+/*! exports provided: Fragment, FragmentFor, FragmentIf, FragmentTag */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Fragment", function() { return Fragment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentFor", function() { return FragmentFor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentIf", function() { return FragmentIf; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentTag", function() { return FragmentTag; });
+/* harmony import */ var _resolve_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resolve.js */ "./lib/resolve.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+var Fragment =
+/*#__PURE__*/
+function () {
+  function Fragment() {
+    _classCallCheck(this, Fragment);
+  }
+
+  _createClass(Fragment, [{
+    key: "resolveTemplate",
+    value: function resolveTemplate($) {
+      return $.content;
+    }
+  }]);
+
+  return Fragment;
+}();
+var FragmentFor =
+/*#__PURE__*/
+function () {
+  function FragmentFor() {
+    _classCallCheck(this, FragmentFor);
+  }
+
+  _createClass(FragmentFor, [{
+    key: "resolveTemplate",
+    value: function resolveTemplate($) {
+      var acc = new Map();
+      var data = $.impl.$data;
+      var _$$$for = $.$for,
+          itemId = _$$$for.itemId,
+          itemNode = _$$$for.itemNode,
+          emptyNode = _$$$for.emptyNode,
+          loadingNode = _$$$for.loadingNode;
+      var tag = itemNode.tag,
+          updates = itemNode.updates,
+          _itemNode$initials = itemNode.initials,
+          initials = _itemNode$initials === void 0 ? {} : _itemNode$initials,
+          nodes = itemNode.nodes,
+          uid = itemNode.uid;
+
+      if (data && data.length) {
+        if (!data.forEach) {
+          throw new Error('wrong ui:for data', data);
+        }
+
+        data.forEach(function (d, index) {
+          var _Object$assign;
+
+          var id = "".concat(uid, "-$").concat(d.id || index);
+          var $ownerImpl = Object.assign(Object.create($.owner.impl), (_Object$assign = {}, _defineProperty(_Object$assign, itemId, d), _defineProperty(_Object$assign, itemId + 'Index', index), _Object$assign));
+
+          var up = function up(Δ) {
+            return $.owner.up(Δ);
+          };
+
+          var $owner = Object.assign(Object.create($.owner), {
+            impl: $ownerImpl,
+            $propFnMap: {},
+            up: up
+          });
+
+          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($owner, {
+            tag: tag,
+            initials: initials,
+            updates: updates,
+            nodes: nodes,
+            uid: id
+          }, acc);
+        });
+      } else if (!data) {
+        if (loadingNode) {
+          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, loadingNode, acc);
+        }
+      } else if (!data.length) {
+        if (emptyNode) {
+          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, emptyNode, acc);
+        }
+      }
+
+      return acc;
+    }
+  }]);
+
+  return FragmentFor;
+}();
+var FragmentIf =
+/*#__PURE__*/
+function () {
+  function FragmentIf() {
+    _classCallCheck(this, FragmentIf);
+  }
+
+  _createClass(FragmentIf, [{
+    key: "resolveTemplate",
+    value: function resolveTemplate($) {
+      var $if = $.$if;
+      var $data = $.impl.$data;
+      var node = $data ? $if.then : $if["else"];
+      return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($, node);
+    }
+  }]);
+
+  return FragmentIf;
+}();
+var FragmentTag =
+/*#__PURE__*/
+function () {
+  function FragmentTag() {
+    _classCallCheck(this, FragmentTag);
+  }
+
+  _createClass(FragmentTag, [{
+    key: "resolveTemplate",
+    value: function resolveTemplate($) {
+      var acc = new Map();
+      var tag = $.impl.$data;
+
+      if (tag) {
+        Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($, _objectSpread({}, $.$tag, {
+          tag: tag,
+          uid: tag + ':' + $.uid
+        }), acc);
+      }
+
+      return acc;
+    }
+  }]);
+
+  return FragmentTag;
+}();
+
+/***/ }),
+
+/***/ "./lib/index.js":
+/*!**********************!*\
+  !*** ./lib/index.js ***!
+  \**********************/
+/*! exports provided: launch */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _dom_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dom.js */ "./lib/dom.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "launch", function() { return _dom_js__WEBPACK_IMPORTED_MODULE_0__["launch"]; });
+
+
 
 /***/ }),
 
@@ -1619,6 +1691,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getByTag", function() { return getByTag; });
 /* harmony import */ var _xml_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./xml.js */ "./lib/xml.js");
 /* harmony import */ var _compile_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./compile.js */ "./lib/compile.js");
+/* harmony import */ var _fragment_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./fragment.js */ "./lib/fragment.js");
+
 
 
 var COUNTER = 1;
@@ -1633,7 +1707,7 @@ var fnName = function fnName(ctor) {
   return (/^function\s+([\w$]+)\s*\(/.exec(ctor.toString()) || [])[1] || nextId('$C');
 };
 
-var REGISTRY = new Map();
+var REGISTRY = new Map([['ui:fragment', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["Fragment"]], ['ui:for', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentFor"]], ['ui:if', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentIf"]], ['ui:tag', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentTag"]]]);
 
 var reg = function reg(ctr) {
   var ctor = typeof ctr === 'function' ? ctr : Object.assign(function () {}, ctr);
@@ -1664,9 +1738,6 @@ var reg = function reg(ctr) {
   }
 };
 
-reg({
-  NAME: 'ui:fragment'
-});
 var registerTypes = function registerTypes(types) {
   return types.forEach(reg);
 };
@@ -1700,15 +1771,21 @@ var render = function render(c) {
   var $content = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : c.resolveTemplate();
 
   if (!$content || !$content.size) {
-    c.eachChild(function (cc) {
-      return cc.done();
-    });
+    if (c.children) {
+      c.children.forEach(function (cc) {
+        return cc.done();
+      });
+    }
+
     return;
   }
 
-  c.eachChild(function (cc) {
-    return !$content.has(cc.uid) ? cc.done() : 0;
-  });
+  if (c.children) {
+    c.children.forEach(function (cc) {
+      return !$content.has(cc.uid) ? cc.done() : 0;
+    });
+  }
+
   var ch = c.children || (c.children = new Map());
   $content.forEach(function (_ref, uid) {
     var tag = _ref.tag,
@@ -1720,7 +1797,8 @@ var render = function render(c) {
         ref = _ref.ref,
         $if = _ref.$if,
         $for = _ref.$for,
-        $tag = _ref.$tag;
+        $tag = _ref.$tag,
+        isFragment = _ref.isFragment;
     var cc = ch.get(uid);
 
     if (!cc) {
@@ -1737,7 +1815,8 @@ var render = function render(c) {
         uid: uid,
         owner: owner,
         inits: inits,
-        parent: c
+        parent: c,
+        isFragment: isFragment
       });
       ch.set(uid, cc);
     }
@@ -1747,9 +1826,12 @@ var render = function render(c) {
     cc.prevElt = c.elt.cursor;
     cc.up(props);
   });
-  c.eachChild(function (cc) {
-    return !cc.isInited ? cc.init() : 0;
-  });
+
+  if (c.children) {
+    c.children.forEach(function (cc) {
+      return !cc.isInited ? cc.init() : 0;
+    });
+  }
 };
 
 /***/ }),
@@ -1765,9 +1847,11 @@ var render = function render(c) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resolveTemplate", function() { return resolveTemplate; });
 var resolveSlot = function resolveSlot(owner, id, acc) {
-  var $ = owner; // eslint-disable-next-line no-empty
+  var $ = owner;
 
-  for (; $.owner && $.tag === 'ui:fragment'; $ = $.owner) {}
+  while ($.owner && $.isFragment) {
+    $ = $.owner;
+  }
 
   $.content && $.content.forEach(function (v) {
     if (id) {
@@ -1808,7 +1892,8 @@ function resolveRegular(acc, owner, _ref) {
       ref = _ref.ref,
       $if = _ref.$if,
       $for = _ref.$for,
-      $tag = _ref.$tag;
+      $tag = _ref.$tag,
+      isFragment = _ref.isFragment;
 
   if (tag === 'ui:slot') {
     return resolveSlot(owner, id, acc);
@@ -1828,7 +1913,8 @@ function resolveRegular(acc, owner, _ref) {
     $for: $for,
     $tag: $tag,
     props: props,
-    content: content
+    content: content,
+    isFragment: isFragment
   });
 }
 
@@ -1925,19 +2011,15 @@ var parseAttrs = function parseAttrs(s) {
     return r;
   }
 
-  while (1) {
-    var e = RE_ATTRS.exec(s);
-
-    if (!e) {
-      return r;
-    }
-
+  for (var e = RE_ATTRS.exec(s); e; e = RE_ATTRS.exec(s)) {
     if (!e[2]) {
       r.set(e[1], "true");
     } else {
       r.set(e[1], decodeXmlEntities(skipQoutes(e[2].slice(1))));
     }
   }
+
+  return r;
 };
 
 var stringifyAttrs = function stringifyAttrs(attrs) {

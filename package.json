@@ -4,7 +4,9 @@
   "description": "framework",
   "scripts": {
     "start": "http-server",
-    "build": "npx webpack-cli && cp -R dist docs/ && cp -R dist ~/grodno/vendor/armatura/"
+    "build": "npx webpack-cli",
+    "share-grodno": "cp docs/index.js* ~/grodno/vendor/armatura",
+    "share-dma": "cp docs/index.js* ~/aimd-dma-client/vendor/armatura"
   },
   "repository": {
     "type": "git",
@@ -12,7 +14,7 @@
   },
   "author": "alitskevich",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "docs/index.js",
   "devDependencies": {
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",
