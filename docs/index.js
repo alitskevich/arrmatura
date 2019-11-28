@@ -176,12 +176,7 @@ function pipe(value, key) {
 
   try {
     var fn = res.call(this, id);
-    var $ = this.owner;
-
-    while ($.owner && $.isFragment) {
-      $ = $.owner;
-    }
-
+    var $ = this;
     return fn.apply($.impl, [value].concat(_toConsumableArray(args.map(function (a) {
       return a[0] === '@' ? $.prop(a.slice(1)) : a;
     }))));
@@ -309,7 +304,6 @@ function compileFor(_ref) {
   };
   var r = {
     tag: 'ui:for',
-    isFragment: true,
     uid: 'for:' + expr + uid,
     $for: $for,
     key: attrs.get('key')
@@ -327,7 +321,7 @@ function compileFor(_ref) {
     (r.inits || (r.inits = [])).push(function (c) {
       return c.connect(key, function (rr) {
         return {
-          $data: pipec(c, rr)
+          $data: pipec(c.owner, rr)
         };
       });
     });
@@ -378,7 +372,6 @@ function compileIf(_ref2) {
   var iff = {};
   var r = {
     tag: 'ui:if',
-    isFragment: true,
     uid: 'if:' + aIf + uid,
     key: attrs.get('key'),
     $if: iff
@@ -404,7 +397,7 @@ function compileIf(_ref2) {
     } : function (c) {
       return function (rr) {
         return {
-          $data: !!pipec(c, rr)
+          $data: !!pipec(c.owner, rr)
         };
       };
     };
@@ -462,7 +455,6 @@ function compileTag(_ref3) {
   var expr = attrs.get('tag');
   var r = {
     tag: 'ui:tag',
-    isFragment: true,
     uid: 'tag:' + expr + uid,
     $tag: compile({
       attrs: filterMapKey(attrs, 'tag'),
@@ -514,7 +506,7 @@ function compile(r) {
       var pipec = withPipes(pipes);
       (r.inits || (r.inits = [])).push(function (c) {
         return c.connect(key, function (rr) {
-          return pipec(c, rr);
+          return pipec(c.owner, rr);
         });
       });
     } else {
@@ -542,7 +534,7 @@ function compile(r) {
 
         (r.inits || (r.inits = [])).push(function (c) {
           return c.connect(_key, function (rr) {
-            return _defineProperty({}, k, _pipec(c, rr));
+            return _defineProperty({}, k, _pipec(c.owner, rr));
           });
         });
       } else if (v2 === '->') {
@@ -561,7 +553,7 @@ function compile(r) {
 
         var emitter = function emitter(c) {
           return c[ekey] || (c[ekey] = function (data, cb) {
-            return c.emit(expr(c), _pipec2(c, data), cb);
+            return c.emit(expr(c), _pipec2(c.owner, data), cb);
           });
         };
 
@@ -591,12 +583,6 @@ function compileNode(node) {
 
   if (node.tag === 'ui:tag') {
     return compileTag(node);
-  }
-
-  if (node.tag === 'ui:fragment') {
-    return Object.assign(compile(node), {
-      isFragment: true
-    });
   }
 
   return compile(node);
@@ -732,7 +718,7 @@ var propGetter = function propGetter($, key) {
     return gettr.call(impl);
   } : function () {
     var $$ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : impl.get ? impl.get(impl) : impl;
-    return pk in $$ ? $$[pk] : $.owner && $.owner.prop && $.isFragment ? $.owner.prop(pk) : undefined;
+    return pk in $$ ? $$[pk] : undefined;
   };
   fn = !path.length ? extractor1 : function () {
     return path.reduce(function (r, p) {
@@ -812,7 +798,7 @@ function () {
         return;
       }
 
-      this.isInited = true; // console.log('init', this.tag, this.uid)
+      this.isInited = true;
 
       if (this.inits) {
         this.inits.forEach(function (f) {
@@ -842,8 +828,7 @@ function () {
 
       if (this.impl.done) {
         this.impl.done(this);
-      } // console.log('done', this.tag, this.uid)
-
+      }
 
       if (this.children) {
         this.children.forEach(function (c) {
@@ -993,11 +978,6 @@ function () {
       var $ = this;
 
       if (!key || !key.includes('.')) {
-        // eslint-disable-next-line no-empty
-        while ($.owner && $.isFragment) {
-          $ = $.owner;
-        }
-
         return $.up(key ? _defineProperty({}, key, data) : data);
       }
 
@@ -1627,7 +1607,7 @@ function () {
       var $if = $.$if;
       var $data = $.impl.$data;
       var node = $data ? $if.then : $if["else"];
-      return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($, node);
+      return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, node);
     }
   }]);
 
@@ -1647,7 +1627,7 @@ function () {
       var tag = $.impl.$data;
 
       if (tag) {
-        Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($, _objectSpread({}, $.$tag, {
+        Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, _objectSpread({}, $.$tag, {
           tag: tag,
           uid: tag + ':' + $.uid
         }), acc);
@@ -1797,14 +1777,16 @@ var render = function render(c) {
         ref = _ref.ref,
         $if = _ref.$if,
         $for = _ref.$for,
-        $tag = _ref.$tag,
-        isFragment = _ref.isFragment;
+        $tag = _ref.$tag;
     var cc = ch.get(uid);
 
     if (!cc) {
-      props = props && props.data && initials && initials.data ? _objectSpread({}, props, {}, initials, {
-        data: _objectSpread({}, initials.data, {}, props.data)
-      }) : _objectSpread({}, props, {}, initials);
+      if (initials) {
+        props = props && props.data && initials.data ? _objectSpread({}, props, {}, initials, {
+          data: _objectSpread({}, initials.data, {}, props.data)
+        }) : _objectSpread({}, props, {}, initials);
+      }
+
       cc = new _component_js__WEBPACK_IMPORTED_MODULE_1__["Component"](Object(_register_js__WEBPACK_IMPORTED_MODULE_0__["getByTag"])(tag), {
         props: props,
         tag: tag,
@@ -1815,8 +1797,7 @@ var render = function render(c) {
         uid: uid,
         owner: owner,
         inits: inits,
-        parent: c,
-        isFragment: isFragment
+        parent: c
       });
       ch.set(uid, cc);
     }
@@ -1848,11 +1829,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resolveTemplate", function() { return resolveTemplate; });
 var resolveSlot = function resolveSlot(owner, id, acc) {
   var $ = owner;
-
-  while ($.owner && $.isFragment) {
-    $ = $.owner;
-  }
-
   $.content && $.content.forEach(function (v) {
     if (id) {
       if (v.tag === $.tag + ':' + id && v.content) {
@@ -1892,8 +1868,7 @@ function resolveRegular(acc, owner, _ref) {
       ref = _ref.ref,
       $if = _ref.$if,
       $for = _ref.$for,
-      $tag = _ref.$tag,
-      isFragment = _ref.isFragment;
+      $tag = _ref.$tag;
 
   if (tag === 'ui:slot') {
     return resolveSlot(owner, id, acc);
@@ -1913,8 +1888,7 @@ function resolveRegular(acc, owner, _ref) {
     $for: $for,
     $tag: $tag,
     props: props,
-    content: content,
-    isFragment: isFragment
+    content: content
   });
 }
 
