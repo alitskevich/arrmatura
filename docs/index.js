@@ -299,13 +299,13 @@ function compileFor(_ref) {
       itemId = _attrs$get$split2[0],
       expr = _attrs$get$split2[2];
 
-  var $for = {
+  var $spec = {
     itemId: itemId
   };
   var r = {
     tag: 'ui:for',
     uid: 'for:' + expr + uid,
-    $for: $for,
+    $spec: $spec,
     key: attrs.get('key')
   };
 
@@ -337,7 +337,7 @@ function compileFor(_ref) {
     });
 
     if (emptyNode) {
-      $for.emptyNode = emptyNode.nodes.map(compileNode);
+      $spec.emptyNode = emptyNode.nodes.map(compileNode);
       $nodes = $nodes.filter(function (e) {
         return e !== emptyNode;
       });
@@ -348,14 +348,14 @@ function compileFor(_ref) {
     });
 
     if (loadingNode) {
-      $for.loadingNode = loadingNode.nodes.map(compileNode);
+      $spec.loadingNode = loadingNode.nodes.map(compileNode);
       $nodes = $nodes.filter(function (e) {
         return e !== loadingNode;
       });
     }
   }
 
-  $for.itemNode = compileNode({
+  $spec.itemNode = compileNode({
     tag: tag,
     attrs: filterMapKey(attrs, 'ui:for'),
     uid: uid,
@@ -374,7 +374,7 @@ function compileIf(_ref2) {
     tag: 'ui:if',
     uid: 'if:' + aIf + uid,
     key: attrs.get('key'),
-    $if: iff
+    $spec: iff
   };
   var neg = aIf[0] === '!';
   var expr = neg ? aIf.slice(1) : aIf;
@@ -456,7 +456,7 @@ function compileTag(_ref3) {
   var r = {
     tag: 'ui:tag',
     uid: 'tag:' + expr + uid,
-    $tag: compile({
+    $spec: compile({
       attrs: filterMapKey(attrs, 'tag'),
       nodes: nodes
     })
@@ -631,9 +631,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var COUNTER = 1;
 
+var fnId = function fnId(e) {
+  return e;
+};
+
 var nextId = function nextId() {
   var p = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
   return p + COUNTER++;
+};
+
+var applyValue = function applyValue(value) {
+  var fn = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : fnId;
+  return value && value.then ? value.then(fn) : fn(value);
 };
 
 var methodName = function methodName(x) {
@@ -768,22 +777,17 @@ function () {
   _createClass(Component, [{
     key: "render",
     value: function render() {
-      this.ctx.cursor = this.prevElt;
-
-      if (this.impl.render) {
-        this.impl.render(this, _render_js__WEBPACK_IMPORTED_MODULE_0__["render"]);
-      } else {
-        Object(_render_js__WEBPACK_IMPORTED_MODULE_0__["render"])(this);
+      if (this.isDone) {
+        return;
       }
+
+      this.ctx.cursor = this.prevElt;
+      return this.impl.render ? this.impl.render(this, _render_js__WEBPACK_IMPORTED_MODULE_0__["render"]) : Object(_render_js__WEBPACK_IMPORTED_MODULE_0__["render"])(this);
     }
   }, {
     key: "resolveTemplate",
     value: function resolveTemplate() {
-      if (this.impl.resolveTemplate) {
-        return this.impl.resolveTemplate(this);
-      }
-
-      return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this, this.impl.constructor.$TEMPLATE());
+      return this.impl.resolveTemplate ? this.impl.resolveTemplate(this) : Object(_resolve_js__WEBPACK_IMPORTED_MODULE_1__["resolveTemplate"])(this, this.impl.constructor.$TEMPLATE());
     }
     /**
      * Life-cycle hooks.
@@ -801,17 +805,39 @@ function () {
       this.isInited = true;
 
       if (this.inits) {
-        this.inits.forEach(function (f) {
-          return _this2.defer(f(_this2));
+        var initials = this.impl.init && this.impl.init(this) || {};
+        var all = [];
+        this.inits.map(function (f) {
+          return f(_this2);
+        }).forEach(function (r) {
+          if (!r) return;
+          var hotValue = r.hotValue,
+              cancel = r.cancel;
+
+          _this2.defer(cancel); // this.up(hotValue)
+
+
+          if (hotValue && hotValue.then) {
+            all.push(hotValue);
+          } else {
+            Object.assign(initials, hotValue);
+          }
         });
         delete this.inits;
-      }
+        this.up(initials);
 
-      if (this.impl.init) {
-        var d = this.impl.init(this);
+        if (all.length) {
+          Promise.all(all).then(function (args) {
+            return _this2.up(args.reduce(Object.assign, {}));
+          });
+        }
+      } else {
+        if (this.impl.init) {
+          var d = this.impl.init(this);
 
-        if (d) {
-          this.up(d);
+          if (d) {
+            this.up(d);
+          }
         }
       }
     }
@@ -918,60 +944,63 @@ function () {
       return typeof value === 'function' ? bindFn.call(this, value) : value;
     }
     /**
-     *  Arrows.
+     *  Left Arrow.
      */
 
   }, {
     key: "notify",
     value: function notify() {
-      var _this4 = this;
-
       if (this.listeners && !this.notifying) {
         this.notifying = true;
         this.listeners.forEach(function (e) {
-          return e(_this4.impl);
+          return e();
         });
         this.notifying = false;
       }
     }
   }, {
     key: "subscribe",
-    value: function subscribe(fn) {
+    value: function subscribe(target, fn) {
+      var _this4 = this;
+
       var uuid = nextId();
       var listeners = this.listeners || (this.listeners = new Map());
-      fn(this.impl);
-      listeners.set(uuid, fn);
-      return function () {
-        return listeners["delete"](uuid);
+      listeners.set(uuid, function () {
+        try {
+          target.up(fn(_this4));
+        } catch (ex) {
+          console.error(_this4.tag + _this4.uid + ' notify ', ex);
+        }
+      });
+      return {
+        hotValue: fn(this),
+        cancel: function cancel() {
+          return listeners["delete"](uuid);
+        }
       };
     }
   }, {
     key: "connect",
     value: function connect(key, applicator) {
-      var _this5 = this;
-
       var _key$split3 = key.split('.'),
           _key$split4 = _slicedToArray(_key$split3, 2),
-          _key$split4$ = _key$split4[0],
-          type = _key$split4$ === void 0 ? this.ref : _key$split4$,
-          target = _key$split4[1];
+          refId = _key$split4[0],
+          propId = _key$split4[1];
 
-      var ref = type === 'this' ? this.impl : this.app[type];
+      var ref = refId === 'this' ? this.impl : this.app[refId];
 
       if (!ref) {
-        console.error('connect: No such ref ' + type, key);
+        console.error('connect: No such ref ' + refId, key);
       }
 
-      return ref && ref.$.subscribe(function () {
-        try {
-          var value = ref.$.prop(target);
-
-          _this5.up(applicator ? value && value.then ? value.then(applicator) : applicator(value) : value);
-        } catch (ex) {
-          console.error('connect ' + type + ':' + target, ex);
-        }
+      return ref.$.subscribe(this, function ($) {
+        return applyValue($.prop(propId), applicator);
       });
     }
+    /**
+     *  Right Arrow.
+     */
+
   }, {
     key: "emit",
     value: function emit(key, data) {
@@ -1486,12 +1515,13 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 /*!*************************!*\
   !*** ./lib/fragment.js ***!
   \*************************/
-/*! exports provided: Fragment, FragmentFor, FragmentIf, FragmentTag */
+/*! exports provided: Fragment, FragmentSlot, FragmentFor, FragmentIf, FragmentTag */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Fragment", function() { return Fragment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentSlot", function() { return FragmentSlot; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentFor", function() { return FragmentFor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentIf", function() { return FragmentIf; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentTag", function() { return FragmentTag; });
@@ -1525,6 +1555,37 @@ function () {
 
   return Fragment;
 }();
+var FragmentSlot =
+/*#__PURE__*/
+function () {
+  function FragmentSlot() {
+    _classCallCheck(this, FragmentSlot);
+  }
+
+  _createClass(FragmentSlot, [{
+    key: "resolveTemplate",
+    value: function resolveTemplate($) {
+      var ocontent = $.owner.content;
+      if (!ocontent) return null;
+      var otag = $.owner.tag;
+      var acc = new Map();
+      ocontent.forEach(function (v) {
+        if ($.id) {
+          if (v.tag === otag + ':' + $.id && v.content) {
+            v.content.forEach(function (vv) {
+              return acc.set(vv.uid, vv);
+            });
+          }
+        } else if (v.tag.slice(0, otag.length + 1) !== otag + ':') {
+          acc.set(v.uid, v);
+        }
+      });
+      return acc;
+    }
+  }]);
+
+  return FragmentSlot;
+}();
 var FragmentFor =
 /*#__PURE__*/
 function () {
@@ -1537,11 +1598,11 @@ function () {
     value: function resolveTemplate($) {
       var acc = new Map();
       var data = $.impl.$data;
-      var _$$$for = $.$for,
-          itemId = _$$$for.itemId,
-          itemNode = _$$$for.itemNode,
-          emptyNode = _$$$for.emptyNode,
-          loadingNode = _$$$for.loadingNode;
+      var _$$$spec = $.$spec,
+          itemId = _$$$spec.itemId,
+          itemNode = _$$$spec.itemNode,
+          emptyNode = _$$$spec.emptyNode,
+          loadingNode = _$$$spec.loadingNode;
       var tag = itemNode.tag,
           updates = itemNode.updates,
           _itemNode$initials = itemNode.initials,
@@ -1604,9 +1665,8 @@ function () {
   _createClass(FragmentIf, [{
     key: "resolveTemplate",
     value: function resolveTemplate($) {
-      var $if = $.$if;
       var $data = $.impl.$data;
-      var node = $data ? $if.then : $if["else"];
+      var node = $data ? $.$spec.then : $.$spec["else"];
       return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, node);
     }
   }]);
@@ -1627,7 +1687,7 @@ function () {
       var tag = $.impl.$data;
 
       if (tag) {
-        Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, _objectSpread({}, $.$tag, {
+        Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, _objectSpread({}, $.$spec, {
           tag: tag,
           uid: tag + ':' + $.uid
         }), acc);
@@ -1687,7 +1747,7 @@ var fnName = function fnName(ctor) {
   return (/^function\s+([\w$]+)\s*\(/.exec(ctor.toString()) || [])[1] || nextId('$C');
 };
 
-var REGISTRY = new Map([['ui:fragment', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["Fragment"]], ['ui:for', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentFor"]], ['ui:if', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentIf"]], ['ui:tag', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentTag"]]]);
+var REGISTRY = new Map([['ui:fragment', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["Fragment"]], ['ui:for', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentFor"]], ['ui:if', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentIf"]], ['ui:tag', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentTag"]], ['ui:slot', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentSlot"]]]);
 
 var reg = function reg(ctr) {
   var ctor = typeof ctr === 'function' ? ctr : Object.assign(function () {}, ctr);
@@ -1775,9 +1835,8 @@ var render = function render(c) {
         inits = _ref.inits,
         initials = _ref.initials,
         ref = _ref.ref,
-        $if = _ref.$if,
-        $for = _ref.$for,
-        $tag = _ref.$tag;
+        $spec = _ref.$spec,
+        id = _ref.id;
     var cc = ch.get(uid);
 
     if (!cc) {
@@ -1791,9 +1850,8 @@ var render = function render(c) {
         props: props,
         tag: tag,
         ref: ref,
-        $if: $if,
-        $for: $for,
-        $tag: $tag,
+        $spec: $spec,
+        id: id,
         uid: uid,
         owner: owner,
         inits: inits,
@@ -1827,71 +1885,6 @@ var render = function render(c) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resolveTemplate", function() { return resolveTemplate; });
-var resolveSlot = function resolveSlot(owner, id, acc) {
-  var $ = owner;
-  $.content && $.content.forEach(function (v) {
-    if (id) {
-      if (v.tag === $.tag + ':' + id && v.content) {
-        v.content.forEach(function (vv) {
-          return acc.set(vv.uid, vv);
-        });
-      }
-    } else if (v.tag.slice(0, $.tag.length + 1) !== $.tag + ':') {
-      acc.set(v.uid, v);
-    }
-  });
-  return acc;
-};
-
-var resolveTemplateArray = function resolveTemplateArray(owner, tmpl) {
-  var acc = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Map();
-  return tmpl && tmpl.length ? tmpl.reduce(function (m, t) {
-    return resolveTemplate(owner, t, m);
-  }, acc) : null;
-};
-
-var resolveProps = function resolveProps(props, c) {
-  return props && props.length ? props.reduce(function (acc, fn) {
-    fn(c, acc);
-    return acc;
-  }, {}) : null;
-};
-
-function resolveRegular(acc, owner, _ref) {
-  var tag = _ref.tag,
-      updates = _ref.updates,
-      initials = _ref.initials,
-      inits = _ref.inits,
-      nodes = _ref.nodes,
-      uid = _ref.uid,
-      id = _ref.id,
-      ref = _ref.ref,
-      $if = _ref.$if,
-      $for = _ref.$for,
-      $tag = _ref.$tag;
-
-  if (tag === 'ui:slot') {
-    return resolveSlot(owner, id, acc);
-  }
-
-  var props = resolveProps(updates, owner);
-  var content = resolveTemplateArray(owner, nodes);
-  return acc.set(uid, {
-    tag: tag,
-    id: id,
-    uid: uid,
-    ref: ref,
-    owner: owner,
-    initials: initials,
-    inits: inits,
-    $if: $if,
-    $for: $for,
-    $tag: $tag,
-    props: props,
-    content: content
-  });
-}
-
 function resolveTemplate(owner, tmpl) {
   var acc = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Map();
 
@@ -1900,10 +1893,37 @@ function resolveTemplate(owner, tmpl) {
   }
 
   if (tmpl.reduce) {
-    return tmpl.length ? resolveTemplateArray(owner, tmpl, acc) : acc;
+    return tmpl.length ? tmpl.reduce(function (m, t) {
+      return resolveTemplate(owner, t, m);
+    }, acc) : acc;
   }
 
-  return resolveRegular(acc, owner, tmpl);
+  var tag = tmpl.tag,
+      updates = tmpl.updates,
+      initials = tmpl.initials,
+      inits = tmpl.inits,
+      nodes = tmpl.nodes,
+      uid = tmpl.uid,
+      id = tmpl.id,
+      ref = tmpl.ref,
+      $spec = tmpl.$spec;
+  return acc.set(uid, {
+    tag: tag,
+    id: id,
+    uid: uid,
+    ref: ref,
+    owner: owner,
+    initials: initials,
+    inits: inits,
+    $spec: $spec,
+    props: updates && updates.length ? updates.reduce(function (acc, fn) {
+      fn(owner, acc);
+      return acc;
+    }, {}) : null,
+    content: nodes && nodes.length ? nodes.reduce(function (m, t) {
+      return resolveTemplate(owner, t, m);
+    }, new Map()) : null
+  });
 }
 
 /***/ }),
