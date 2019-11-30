@@ -5,11 +5,54 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Arrmatura • TodoMVC</title>
-    <link rel="stylesheet" href="docs/css/base.css">
-    <link rel="stylesheet" href="docs/css/index.css">
-  </head>
 
-  <script type="text/x-template" id="TodoApp">
+    <link rel="stylesheet" type="text/css" href="docs/css/spectre-exp.min.css">
+    <link rel="stylesheet" type="text/css" href="docs/css/spectre.min.css">
+
+  </head>
+  <script type="text/x-template" id="App">
+      <ViewPort>
+      <ViewPort:aside>
+        <NavTree data=":sitemap"/>
+      </ViewPort:aside>
+      <PageRouter ui:props="<-nav.route"/>
+    </ViewPort>
+  </script>
+
+  <script type="text/x-template" id="Navbar">
+    <header class="navbar bg-success" style="min-height:48px">
+      <section class="navbar-section mx-2">
+        <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
+        <ui:slot />
+      </section>
+      <section class="navbar-center" ui:if={logo}>
+        <img src={logo} alt="" height="40" width="140" />
+      </section>
+      <section class="navbar-section mx-2">
+        <ui:slot id="right" />
+        <UserAvatar ui:props={user} ui:if={user} />
+      </section>
+    </header>
+  </script>
+
+  <script type="text/x-template" id="NavTree">
+    <ul class="nav">
+      <li class="nav-item {item.class}" ui:for="item of data">
+        <NavLink href={item.id}>
+          <span>{item.name}</span>
+          <span ui:if={item.label} class="label label-error">{item.label}</span>
+        </NavLink>
+        <NavTree ui:if={item.subs} data={item.subs} />
+      </li>
+    </ul>
+  </script>
+
+  <script type="text/x-template" id="MainPage">
+      <Navbar/>
+      <Button icon="123" title="345" large link/>
+  </script>
+
+  <script type="text/x-template" id="TodoPage">
   <div>
     <TodoStore ui:ref="todo" />
     <section class="todoapp">
@@ -28,9 +71,6 @@
   </div>
   </script>
 
-  <script type="text/x-template" id="TestApp">
-      <Button icon="123" title="345" large link/>
-  </script>
 
   <script type="text/x-template" id="Button">
         <button class="btn btn-{mode} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
@@ -108,7 +148,7 @@
     </li>
   </script>
 
-  <script type="module" src="lib/dom.js"></script>
+  <script src="index.js"></script>
 
   <script type="module">
     // filters metadata
@@ -131,6 +171,10 @@
       add: ({ items, nextId }, { value }) => !value ? null : { nextId: nextId + 1, items: [].concat({ id: nextId, name: value, completed: false }, items) }
     }
     const resources = {
+      sitemap: [
+        { id: 'main', name: 'Main' },
+        { id: 'todo', name: 'To-Do' },
+      ],
       title: 'todos',
       items_left: ' item(s) left',
       clear_completed: 'Clear completed',
@@ -140,6 +184,7 @@
       upper,
       capitalize,
       then,
+      ...window.commonPipes,
     };
 
     // service component
@@ -184,13 +229,16 @@
     }
 
     // load components from templates
-    const types = ([]).concat([...document.getElementsByTagName('script')])
-      .filter(e => e.id)
-      .map(e => ({ NAME: e.id, TEMPLATE: e.innerHTML }))
-      .concat(TodoStore)
+    const types = [
+      ...window.commonTypes,
+      TodoStore,
+      ...([...document.getElementsByTagName('script')]
+        .filter(e => e.id)
+        .map(e => ({ NAME: e.id, TEMPLATE: e.innerHTML })))
+    ]
 
     // launch with types and resources 
-    launch({ types, resources });
+    window.launch({ template: '<App/>', types, resources });
   </script>
 
 </html>

@@ -1,0 +1,39 @@
+<body>
+
+    <template id="Grid">
+        <div class="columns {class}">
+            <ui:slot />
+        </div>
+    </template>
+
+    <template id="Col">
+        <div class="col-{size|or:6} col-sm-12 {class}">
+            <ui:slot />
+        </div>
+    </template>
+
+    <template id="Panel">
+        <ui:fragment>
+            <h6 class="mt-2 pt-2 px-2 mx-2 text-gray" ui:if="caption">{caption}</h6>
+            <div class="panel mx-2 {class}" style={style}>
+                <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
+                <div class="panel-header" ui:if="slot(title)">
+                    <div class="panel-title">
+                        <ui:slot id="title" />
+                    </div>
+                </div>
+                <div class="panel-nav" ui:if="slot(nav)">
+                    <ui:slot id="nav" />
+                </div>
+                <div class="panel-body">
+                    <ui:slot />
+                </div>
+                <div class="panel-footer" ui:if="slot(footer)">
+                    <ui:slot id="footer" />
+                </div>
+            </div>
+        </ui:fragment>
+    </template>
+
+
+</body>

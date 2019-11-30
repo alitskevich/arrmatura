@@ -3,7 +3,7 @@
   "version": "3.0.1",
   "description": "framework",
   "scripts": {
-    "start": "http-server",
+    "start": "npx webpack-dev-server --hot",
     "build": "npx webpack-cli",
     "share-grodno": "cp docs/index.js* ~/grodno/vendor/armatura",
     "share-dma": "cp docs/index.js* ~/aimd-dma-client/vendor/armatura"
@@ -23,5 +23,9 @@
     "eslint": "^6.7.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "raw-loader": "^4.0.0",
+    "webpack-dev-server": "^3.9.0"
   }
 }

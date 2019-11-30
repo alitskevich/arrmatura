@@ -1,0 +1,122 @@
+<body id="app">
+    <template id="FieldItem">
+        <div class="columns form-group has-error:{error} {class}">
+            <div class=" col-4 col-sm-12">
+                <label class="form-label" for="input-example-1">{name}
+                    <sup ui:if={required}
+                         class="text-error">✱</sup></label>
+
+            </div>
+            <div class="col-8 col-sm-12">
+                <ui:slot />
+                <p class="form-input-hint" ui:if={error}>{error}</p>
+            </div>
+        </div>
+    </template>
+
+    <template id="TextField">
+        <FieldItem name={caption} error={error} required={required}>
+            <input class="form-input"
+                   type="text"
+                   disabled={disabled}
+                   placeholder={caption}
+                   value={value}
+                   change={onChange}>
+        </FieldItem>
+    </template>
+
+    <template id="DateField">
+        <FieldItem name={caption} error={error} required={required}>
+            <input class="form-input"
+                   disabled={disabled}
+                   type="date"
+                   placeholder={caption}
+                   value={value}
+                   change={onChange}>
+        </FieldItem>
+    </template>
+
+    <template id="DateTimeField">
+        <FieldItem name="{caption} {value}" error={error} required={required}>
+            <DateTimeInput disabled={disabled}
+                           placeholder={caption}
+                           value={value}
+                           change={onChange} />
+        </FieldItem>
+    </template>
+
+    <template id="NumberField">
+        <FieldItem name={caption} error={error} required={required}>
+            <input class="form-input"
+                   disabled={disabled}
+                   type="number"
+                   placeholder={caption}
+                   value={value}
+                   change={onChange}>
+        </FieldItem>
+    </template>
+
+    <template id="TextareaField">
+        <FieldItem name={caption} error={error} required={required}>
+            <textarea
+                      class="form-input"
+                      style="min-height: 15vw"
+                      disabled={disabled} placeholder={caption} rows="3" change={onChange} value={value}></textarea>
+        </FieldItem>
+    </template>
+
+    <template id="SwitchField">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <label class="form-switch">
+                    <input type="checkbox" toggle={onChange} data={data} checked={value|not|not}>
+                    <i class="form-icon"></i>
+                    <span>{caption}</span>
+                </label>
+            </div>
+        </div>
+    </template>
+
+    <template id="EnumField">
+        <FieldItem name={caption} class={class} error={error} required={required}>
+            <Select class="form-select"
+                    change={onChange}
+                    value={value|or:@defaultValue}
+                    data={data}
+                    options=":enums.{typeSpec}"
+                    disabled={disabled} />
+        </FieldItem>
+    </template>
+
+    <template id="RadioField">
+        <FieldItem name={caption} error={error} required={required}>
+            <RadioGroup change={onChange}
+                        value={value} data={data} options=":enums.{typeSpec}"
+                        disabled={disabled} />
+        </FieldItem>
+    </template>
+
+    <template id="ReferenceField">
+        <FieldItem name={caption} error={error} required={required}>
+            <Loader from="-> references.{typeSpec}Search"
+                    data-value={keyword.value|orDataPropValueByKey:keyword}
+                    trigger={keyword.value}
+                    into="->options" />
+            <Loader from="-> references.{typeSpec}Entry" data-id={value} trigger={value} into="->entry" />
+            <ReferenceInput change={onChange}
+                            value={value} entry={entry.data}
+                            onKeyword="->keyword" keyword={keyword.value|orDataPropValueByKey:keyword}
+                            onSelectMenuItem="->entry"
+                            options={options.data}
+                            disabled={disabled} />
+        </FieldItem>
+    </template>
+
+    <template id="RemoteEnumField">
+        <FieldItem name={caption} error={error} required={required}>
+            <Loader from="-> references.{typeSpec}Enum" data={data} into="->options" />
+            <Select class="form-select" change={onChange} value={value} data={options.data} disabled={disabled} />
+        </FieldItem>
+    </template>
+
+</body>

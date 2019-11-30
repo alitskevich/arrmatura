@@ -1,0 +1,64 @@
+<body>
+    <template id="Cell">
+        <span class="" style="padding-left: 0px;">{value}</span>
+    </template>
+    <template id="EnumCell">
+        <span class=""
+              style="padding-left: 0px;">:map.{typeSpec}.{value}</span>
+    </template>
+
+    <template id="DateCell">
+        <span class="" style="padding-left: 0px;">{value|date}</span>
+    </template>
+
+    <template id="Table">
+        <table style="position: relative;">
+            <thead class="table-thead">
+                <tr>
+                    <th class="col-index" style="position: sticky; top: -1;"></th>
+                    <th class="col-index" style="position: sticky; top: -1;" ui:for="item of columns">
+                        <span>{item.name}</span>
+                        <div class="table-column-sorter" ui:if="item.sortable">
+                            <span class="table-column-sorter-up off" title="↑" data-id="-{item.id}"
+                                  click={doSort}><i class="anticon anticon-caret-up"></i></span>
+                            <span class="table-column-sorter-down off" title="↓" data-id={item.id} click={doSort}><i
+                                   class="anticon anticon-caret-down"></i></span>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <TableRow ui:for="item of data" data={item} selected={item.selected} columns={columns} kind={kind} />
+        </table>
+    </template>
+
+    <template id="TableRow">
+        <tbody class="table-tbody">
+            <tr class="table-row table-row-level-0" style="position:sticky;">
+                <td class="col-index" data-id={data.id} click={doItem}>
+                    <div ui:if={expandable}
+                         role="button"
+                         class="table-row-expand-icon table-row-expanded"
+                         aria-label="Collapse row"
+                         data-selected="false" click="->">
+                        <ui:else>
+                            <div role="button"
+                                 class="table-row-expand-icon table-row-collapsed"
+                                 aria-label="Expand row"
+                                 data-selected="true" click="->"></div>
+                        </ui:else>
+                    </div>
+                </td>
+                <td class="col-index" ui:for="col of columns">
+                    <ui:tag tag="{col.type|str.capitalize}Cell" ui:props={col} value={col.id|propObjectValueByKey}
+                            data={data} />
+                </td>
+            </tr>
+            <tr ui:if={expanded} class="table-expanded-row table-expanded-row-level-1">
+                <td class=""></td>
+                <td class="" colspan="100">
+                    <ui:tag tag="{kind|str.capitalize}RowInsider" data={data} />
+                </td>
+            </tr>
+        </tbody>
+    </template>
+</body>

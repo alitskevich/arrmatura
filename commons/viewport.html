@@ -1,0 +1,71 @@
+<body>
+    <template id="ViewPort">
+        <ui:fragment>
+            <NavigationService ui:ref="nav" />
+            <ToastService ui:ref="toaster" />
+            <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
+            <ui:fragment ui:if="slot(aside)">
+                <Sidebar caption={caption}>
+                    <Sidebar:aside>
+                        <ui:slot id="aside" />
+                    </Sidebar:aside>
+                    <div style="display: flex; flex-direction: column; height: 100vh;">
+                        <Toast event="<- toaster.top" close="->toaster.close"
+                               style="position:absolute;top:0;right:0;" />
+                        <div class="bg-gray" style="flex: 1;">
+                            <ui:slot />
+                        </div>
+                    </div>
+                </Sidebar>
+                <ui:else>
+                    <div style="display: flex; flex-direction: column; height: 100vh;">
+                        <Toast event="<- toaster.top" close="->toaster.close"
+                               style="position:absolute;top:0;right:0;" />
+                        <div class="bg-gray" style="flex: 1;">
+                            <ui:slot />
+                        </div>
+                    </div>
+                </ui:else>
+            </ui:fragment>
+        </ui:fragment>
+    </template>
+
+    <template id="PageRouter">
+        <ui:tag tag="{target|str.capitalize|or:Main}Page" ui:props={params} params={params} />
+    </template>
+
+    <template id="Toast">
+        <div class="toast toast-{event.mode|or:@mode|or:primary}" srtyle={style} ui:if="event">
+            <button class="btn btn-clear float-right" click={event.close|or:@close}></button>
+            <p>{event.message}</p>
+            <Delay ui:if={event.closeAfter} action={event.close|or:@close} period={event.closeAfter} />
+        </div>
+    </template>
+
+    <template id="Sidebar">
+        <div class="off-canvas off-canvas-sidebar-show">
+            <a class="off-canvas-toggle btn btn-primary btn-action show-lg bg-red"
+               href="#sidebar">
+                <i class="icon icon-menu" />
+            </a>
+            <div id="sidebar" class="off-canvas-sidebar">
+                <div class="fixed">
+                    <div class="bg-secondary" style="height: 100vh; width:200px">
+                        <div class="text-center" ui:if={caption}>
+                            <a href="#/main">
+                                <h5 class="p-2">{caption}</h5>
+                            </a>
+                        </div>
+                        <div class="m-2" style="overflow-y: auto;">
+                            <ui:slot id="aside" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a class="off-canvas-overlay" href="#"></a>
+            <div class="off-canvas-content">
+                <ui:slot />
+            </div>
+        </div>
+    </template>
+</body>

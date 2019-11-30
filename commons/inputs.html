@@ -1,0 +1,73 @@
+<body>
+    <template id="Dropdown">
+        <div class="dropdown">
+            <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">
+                {data|selectedName}<i class="icon icon-caret"></i>
+            </a>
+            <!-- menu component -->
+            <ul class="menu" style="right:0;left:auto;">
+                <li ui:for="item of data|selectizedBy" class="menu-item active:{item.selected}"
+                    data-id={item.id}
+                    data-name={item.name}
+                    click={change}>
+                    <a>{item.name}</a>
+                </li>
+            </ul>
+        </div>
+    </template>
+
+    <template id="DateTimeInput">
+        <input class="form-input flatpickr-input"
+               init={:support.initFlatpickr}
+               disabled={disabled}
+               type="text"
+               placeholder={placeholder}
+               value={value|support.setFlatpickrValue}
+               change={change}>
+    </template>
+
+    <template id="SearchBar">
+        <span class="ant-input-search ant-input-affix-wrapper">
+            <input placeholder="Поиск..." class="ant-input" type="text"
+                   value={value} enter={action}
+                   style="min-height:40px;">
+            <span class="ant-input-suffix">
+                <i class="anticon anticon-search ant-input-search-icon" style="margin-top: 4px;"></i>
+            </span>
+        </span>
+    </template>
+
+    <template id="ReferenceInput">
+        <div class="form-autocomplete">
+            <div class="form-input has-icon-right" data-showMenu={showMenu|not} click="->">
+                <div>{entry.fullNameRu}</div>
+                <i class="form-icon icon icon-edit c-hand"></i>
+            </div>
+            <Modal ui:if={showMenu} open="true" title="Выбор опции {title}" data-showMenu="false" close="->">
+                <div class="menu" style="position:sticky;top:-20;z-index:101; border-bottom: none; box-shadow: unset">
+                    <div class="form-group has-icon-right">
+                        <input class="form-input" type="text"
+                               value={keyword} placeholder="search..." change={onKeyword}>
+                        <i class="form-icon icon icon-cross c-hand" data-value="" click={onKeyword}></i>
+                    </div>
+                    <div ui:if={options} class="menu-item">
+                        <div class="tile tile-centered mx-1">
+                            <b class="tile-content">Найдено: {options.length}</b>
+                        </div>
+                    </div>
+                </div>
+                <ul class="menu" style="position:unset; border-top: none; box-shadow: unset">
+                    <li class="menu-item" ui:for="item of options" data-showMenu="false" click="->">
+                        <div click={change} data-value={item.id}>
+                            <div class="tile tile-centered mx-1">
+                                <figure class="avatar avatar-xs bg-primary" data-initial={item.fullNameRu|initials}>
+                                </figure>
+                                <div class="tile-content">{item.fullNameRu}, {item.birthday|date}</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </Modal>
+        </div>
+    </template>
+</body>

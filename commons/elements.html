@@ -1,0 +1,107 @@
+<body>
+    <template id="LoadingIndicator">
+        <div class="loading {large|then:loading-lg}" />
+    </template>
+
+    <template id="Icon">
+        <i class="fas fa-{type}" data={data} click={click}></i>
+    </template>
+
+    <template id="Avatar">
+        <figure class="avatar">
+            <img ui:if={src} src={src} alt={alt} />
+        </figure>
+    </template>
+
+    <template id="Button">
+        <button class="btn btn-{mode} {primary|then:btn-primary} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
+                style={style}
+                data={data}
+                click={action|track}>
+            <Icon ui:if="icon" type={icon} />
+            <span ui:if="title">{title}</span>
+        </button>
+    </template>
+
+    <template id="BigRedButton">
+        <button class="btn tooltip tooltip-left fixed bg-success circle "
+                style="border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem;"
+                data={data} data-tooltip={tooltip|or:} click={action}>
+            <i class="icon icon-plus"></i>
+        </button>
+    </template>
+
+    <template id="NavLink">
+        <a data-value={href} click="-> nav.hash" class="c-hand {class}">
+            <ui:slot />
+        </a>
+    </template>
+
+    <template id="Popover">
+        <div class="popover popover-right">
+            <ui:slot />
+            <div class="popover-container">
+                <div class="card">
+                    <div class="card-header">
+                        <ui:slot id="body" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="Modal">
+        <div class="modal modal active:{open}">
+            <a class="modal-overlay" aria-label="Close" data={data} click={close}></a>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <a class="btn btn-clear float-right" aria-label=":close" data={data} click={close}></a>
+                    <div class="modal-title h5" ui:if={title}>{title}</div>
+                    <ui:slot id="header" />
+                </div>
+                <div class="modal-body" style="max-height: 70vh;">
+                    <div class="content">
+                        <ui:slot />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <ui:slot id="footer" />
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="EmptyData">
+        <div class="empty">
+            <div class="empty-icon">
+                <Icon type={icon|or:people} />
+            </div>
+            <p class="empty-title h5">{title}</p>
+            <p ui:if={subtitle} class="empty-subtitle">{subtitle}</p>
+            <div class="empty-action">
+                <ui:slot />
+            </div>
+        </div>
+    </template>
+
+    <template id="Select">
+        <select class="{class}" change={change} disabled={disabled} data={data}>
+            <option selected={value|not} value="" ui:if="emptyCaption|not">{emptyCaption}</option>
+            <option ui:for="option of options" selected={option.id|equals:@value} value={option.id}>
+                {option.name}
+            </option>
+        </select>
+    </template>
+
+    <template id="RadioGroup">
+        <div class="{class}">
+            <label class="form-radio" ui:for="option of options">
+                <input type="radio" name={id|or:rg}
+                       value={option.id}
+                       checked={option.id|equals:@value} change={change} data={data}
+                       disabled={disabled}>
+                <i class="form-icon"></i>{option.name}
+            </label>
+        </div>
+    </template>
+</body>
