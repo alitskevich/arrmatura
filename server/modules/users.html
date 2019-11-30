@@ -1,0 +1,14 @@
+<body>
+    <template id="UsersCollection">
+        <CrudService id="users">
+
+            <HashPasswordHook before="create,patch,update" />
+            <AuthHook before="find,get,patch,update,remove" />
+            <NewUserHook before="create" />
+            <ProtectPasswordHook after="all" />
+
+            <DbIndex field="email" unique />
+
+        </CrudService>
+    </template>
+</body>

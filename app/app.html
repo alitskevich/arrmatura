@@ -1,0 +1,144 @@
+<body>
+    <template id="App">
+        <ViewPort>
+            <ViewPort:aside>
+                <NavTree data=":sitemap" />
+            </ViewPort:aside>
+            <PageRouter ui:props="<-nav.route" />
+        </ViewPort>
+    </template>
+
+    <template id="Navbar">
+        <header class="navbar bg-success" style="min-height:48px">
+            <section class="navbar-section mx-2">
+                <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
+                <ui:slot />
+            </section>
+            <section class="navbar-center" ui:if={logo}>
+                <img src={logo} alt="" height="40" width="140" />
+            </section>
+            <section class="navbar-section mx-2">
+                <ui:slot id="right" />
+                <UserAvatar ui:props={user} ui:if={user} />
+            </section>
+        </header>
+    </template>
+
+    <template id="NavTree">
+        <ul class="nav">
+            <li class="nav-item {item.class}" ui:for="item of data">
+                <NavLink href={item.id}>
+                    <span>{item.name}</span>
+                    <span ui:if={item.label} class="label label-error">{item.label}</span>
+                </NavLink>
+                <NavTree ui:if={item.subs} data={item.subs} />
+            </li>
+        </ul>
+    </template>
+
+    <template id="MainPage">
+        <Navbar />
+        <Button icon="123" title="345" large link />
+    </template>
+
+    <template id="TodoPage">
+        <div>
+            <TodoStore ui:ref="todo" />
+            <section class="todoapp">
+                <Caption title=":title" />
+                <ui:fragment ui:if="<- todo.notEmpty">
+                    <Main />
+                    <Filter current="<- todo.filterId">
+                        <span class="todo-count"><strong>
+                                <- todo.itemsLeft</strong> <span>:items_left</span></span>
+                        <Filter:right>
+                            <button class="clear-completed" ui:if="<- todo.hasCompleted"
+                                    click="-> todo.purge">:clear_completed</button>
+                        </Filter:right>
+                    </Filter>
+                </ui:fragment>
+            </section>
+            <Footer hasItems="<-todo.shownItemsCount" />
+        </div>
+    </template>
+
+
+    <template id="Button">
+        <button class="btn btn-{mode} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
+                style={style}
+                data={data}
+                click={action}>
+            <Icon ui:if="icon" type={icon} />
+            <span ui:if="title">{title}</span>
+        </button>
+    </template>
+
+    <template id="Icon">
+        <i class="fas fa-{type}" data={data} click={click}>{type}</i>
+    </template>
+
+
+    <template id="Footer">
+        <ui:tag tag={hasItems|then:Hint:Attribution} />
+    </template>
+
+    <template id="Caption">
+        <header class="header">
+            <h1>{title|upper}</h1>
+            <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> todo.add" />
+        </header>
+    </template>
+
+    <template id="Main">
+        <section class="main">
+            <input id="toggle-all" class="toggle-all" type="checkbox" toggle="-> todo.toggle" />
+            <label for="toggle-all">Mark all as complete</label>
+            <TodoList data="<- todo.shownItems" />
+        </section>
+    </template>
+
+    <template id="TodoList">
+        <ul class="todo-list">
+            <TodoItem ui:props={item} ui:for="item of data" />
+        </ul>
+    </template>
+
+    <template id="Filter">
+        <footer class="footer">
+            <ui:slot />
+            <ul class="filters">
+                <li ui:for="filter of :filters">
+                    <a class="selected:{current}=={filter.id}" id={filter.id}
+                       href="#{filter.id}">{filter.id|capitalize}</a>
+                </li>
+            </ul>
+            <ui:slot id="right" />
+        </footer>
+    </template>
+
+    <template id="Attribution">
+        <footer class="info">
+            <p>Created by <a href="https://github.com/alitskevich/dzi-todomvc">alitskevich</a></p>
+            <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+        </footer>
+    </template>
+
+    <template id="Hint">
+        <footer class="info">
+            <p>:hint</p>
+        </footer>
+    </template>
+
+    <template id="TodoItem">
+        <li class="{completed|then:completed} {editing|then:editing}">
+            <div class="view">
+                <input class="toggle" type="checkbox" checked={completed} data-id={id} click="-> todo.inverse" />
+                <label data-editing="true" dblclick="->">{name}</label>
+                <button ui:if="completed" class="destroy" data-id={id} click="-> todo.rm"></button>
+            </div>
+            <input type="text" class="edit" value={name} data-editing="false" data-id={id} enter="-> todo.save"
+                   blur="->" />
+        </li>
+    </template>
+
+</body>

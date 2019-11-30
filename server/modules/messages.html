@@ -1,0 +1,9 @@
+<body>
+    <template id="MessagesCollection">
+        <CrudService id="message">
+            <AuthHook before="all" />
+            <PrepareMessageHook before="create" />
+            <PopulateUserHook after="all" />
+        </CrudService>
+    </template>
+</body>

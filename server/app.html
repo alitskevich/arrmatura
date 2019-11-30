@@ -1,0 +1,21 @@
+<ui:fragment>
+  <Express ui:ref="web">
+    <BasicMiddleware />
+
+    <WebpackService />
+
+    <StaticMiddleware path="public" base="/" />
+    <RestMiddleware />
+    <SocketMiddleware />
+
+    <AuthService2 />
+
+    <PubSubService ui:ref="pubsub" settings=":pubsub" />
+
+    <UsersCollection />
+    <MessagesCollection />
+
+    <NotFoundMiddleware />
+    <ErrorMiddleware />
+  </Express>
+</ui:fragment>

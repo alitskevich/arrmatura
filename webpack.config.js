@@ -6,11 +6,14 @@ module.exports = {
     index: [
       './index.js'
     ],
+    app: [
+      './app/index.js'
+    ],
   },
   output: {
     // eslint-disable-next-line no-undef
     path: path.resolve(__dirname, 'docs'),
-    filename: 'index.js',
+    filename: '[name].js',
     libraryTarget: 'umd2',
     globalObject: 'this',
   },
