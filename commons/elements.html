@@ -17,7 +17,7 @@
         <button class="btn btn-{mode} {primary|then:btn-primary} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
                 style={style}
                 data={data}
-                click={action|track}>
+                click={action|track:@trackId:@title}>
             <Icon ui:if="icon" type={icon} />
             <span ui:if="title">{title}</span>
         </button>

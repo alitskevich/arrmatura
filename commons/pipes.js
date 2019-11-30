@@ -2,6 +2,7 @@
 export default {
   // system
   log: (x, pre) => { console.log(pre || 'pipe', x); return x },
+  track: (fn, x, y) => (...args) => { console.log('track', x || y); return (fn || Function.ID)(...args) },
   // eslint-disable-next-line no-debugger
   debug: () => { debugger; },
 

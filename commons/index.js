@@ -21,7 +21,7 @@ export * from "./Service"
 export const loadTemplates = (...args) => {
     const R = [];
     args.forEach(s => s.replace(/<template\sid="(.+)">([\s\S]*?)<\/template>/gm,
-        (_, id, templ) => R.push({ NAME: id, TEMPLATE: `<ui:fragment>${templ}</ui:fragment>` })));
+        (_, id, templ) => R.push({ NAME: id, TEMPLATE: `<ui:fragment>${templ.trim()}</ui:fragment>` })));
     return R;
 }
 

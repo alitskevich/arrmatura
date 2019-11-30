@@ -1,6 +1,6 @@
 <body>
     <template id="App">
-        <ViewPort>
+        <ViewPort caption="Arrmatura">
             <ViewPort:aside>
                 <NavTree data=":sitemap" />
             </ViewPort:aside>
@@ -9,7 +9,7 @@
     </template>
 
     <template id="Navbar">
-        <header class="navbar bg-success" style="min-height:48px">
+        <header class="navbar bg-primary" style="min-height:48px">
             <section class="navbar-section mx-2">
                 <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
                 <ui:slot />
@@ -37,20 +37,35 @@
     </template>
 
     <template id="MainPage">
-        <Navbar />
-        <Button icon="123" title="345" large link />
+        <Navbar caption="Gallery" />
+        <Panel caption="Icons">
+            <!-- <LoadingIndicator /> -->
+            Using Font Awesome
+            <Icon type="cog" />
+        </Panel>
+        <Panel caption="Buttons">
+            <Button title="Default" trackId="action1" />
+            <Button icon="cog" title="Large primary with icon" primary large />
+            <Button icon="123" title="Link" link />
+        </Panel>
+        <Panel caption="Panel" hint="with hint">
+            here...
+        </Panel>
     </template>
 
     <template id="TodoPage">
+        <Navbar caption={name|or:todo|upper} />
         <div>
             <TodoStore ui:ref="todo" />
             <section class="todoapp">
-                <Caption title=":title" />
                 <ui:fragment ui:if="<- todo.notEmpty">
                     <Main />
                     <Filter current="<- todo.filterId">
-                        <span class="todo-count"><strong>
-                                <- todo.itemsLeft</strong> <span>:items_left</span></span>
+                        <span class="todo-count">
+                            <strong>
+                                <- todo.itemsLeft</strong>
+                                   <span>:items_left</span>
+                        </span>
                         <Filter:right>
                             <button class="clear-completed" ui:if="<- todo.hasCompleted"
                                     click="-> todo.purge">:clear_completed</button>
@@ -61,22 +76,6 @@
             <Footer hasItems="<-todo.shownItemsCount" />
         </div>
     </template>
-
-
-    <template id="Button">
-        <button class="btn btn-{mode} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
-                style={style}
-                data={data}
-                click={action}>
-            <Icon ui:if="icon" type={icon} />
-            <span ui:if="title">{title}</span>
-        </button>
-    </template>
-
-    <template id="Icon">
-        <i class="fas fa-{type}" data={data} click={click}>{type}</i>
-    </template>
-
 
     <template id="Footer">
         <ui:tag tag={hasItems|then:Hint:Attribution} />
