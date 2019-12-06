@@ -11,7 +11,24 @@
             <ui:slot />
         </div>
     </template>
-
+    <template id="Tile">
+        <div class="tile {centered|then:tile-centered} m-2 {class}">
+            <div class="tile-icon" ui:if={image}>
+                <Avatar src={image} />
+            </div>
+            <div class="tile-icon" ui:if={icon}>
+                <Icon type={icon} />
+            </div>
+            <div class="tile-content">
+                <div class="tile-title text-bold" ui:if="title">{title}</div>
+                <div class="tile-subtitle" ui:if="subtitle">{subtitle}</div>
+                <ui:slot />
+            </div>
+            <div class="tile-action btn-group" ui:if="slot(actions)">
+                <ui:slot id="actions" />
+            </div>
+        </div>
+    </template>
     <template id="Panel">
         <ui:fragment>
             <h6 class="mt-2 pt-2 px-2 mx-2 text-gray" ui:if="caption">{caption}</h6>

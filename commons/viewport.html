@@ -46,7 +46,7 @@
         <div class="off-canvas off-canvas-sidebar-show">
             <a class="off-canvas-toggle btn btn-primary btn-action show-lg bg-red"
                href="#sidebar">
-                <i class="icon icon-menu" />
+                <Icon type="bars" />
             </a>
             <div id="sidebar" class="off-canvas-sidebar">
                 <div class="fixed">
@@ -67,5 +67,35 @@
                 <ui:slot />
             </div>
         </div>
+    </template>
+
+    <template id="Navbar">
+        <header class="navbar bg-success" style="min-height:48px">
+            <section class="navbar-section mx-2">
+                <NavLink href={back} ui:if={back}>
+                    <Button link class="text-primary" icon="arrow-left" title=":action.back" />
+                </NavLink>
+                <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
+                <ui:slot id="left" />
+            </section>
+            <section class="navbar-center" ui:if={logo}>
+                <img src={logo} />
+            </section>
+            <section class="navbar-section mx-2">
+                <ui:slot />
+            </section>
+        </header>
+    </template>
+
+    <template id="NavTree">
+        <ul class="nav">
+            <li class="nav-item {item.class}" ui:for="item of data">
+                <NavLink href={item.id}>
+                    <span>{item.name}</span>
+                    <span ui:if={item.label} class="label label-error">{item.label}</span>
+                </NavLink>
+                <NavTree ui:if={item.subs} data={item.subs} />
+            </li>
+        </ul>
     </template>
 </body>

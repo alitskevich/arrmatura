@@ -47,8 +47,11 @@ export class Form {
         <FormField ui:for="field of fields" field={field} form={form}/>
     </div>`;
   }
-  get form() {
+  getForm() {
     return this;
+  }
+  getFields() {
+    return this.fields || Object.keys(this.data).map(id => ({ id, name: id }));
   }
 }
 

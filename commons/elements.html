@@ -1,33 +1,36 @@
 <body>
-    <template id="LoadingIndicator">
-        <div class="loading {large|then:loading-lg}" />
-    </template>
+
 
     <template id="Icon">
-        <i class="fas fa-{type}" data={data} click={click}></i>
+        <i class="fas fa-{type} {class}" data={data} click={click}></i>
+    </template>
+
+    <template id="Img">
+        <img src={src|equals:*|then:@default:@src} alt={alt} class="img {class}" style={style} />
     </template>
 
     <template id="Avatar">
-        <figure class="avatar">
-            <img ui:if={src} src={src} alt={alt} />
+        <figure class="avatar {large|then:avatar-lg}">
+            <Img src={src} alt={alt}
+                 default="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
         </figure>
     </template>
 
     <template id="Button">
         <button class="btn btn-{mode} {primary|then:btn-primary} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
-                style={style}
+                style="white-space:nowrap;{style}"
                 data={data}
                 click={action|track:@trackId:@title}>
-            <Icon ui:if="icon" type={icon} />
+            <Icon ui:if="icon" type={icon} class="mx-1" />
             <span ui:if="title">{title}</span>
         </button>
     </template>
 
     <template id="BigRedButton">
-        <button class="btn tooltip tooltip-left fixed bg-success circle "
-                style="border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem;"
-                data={data} data-tooltip={tooltip|or:} click={action}>
-            <i class="icon icon-plus"></i>
+        <button class="btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}"
+                style="border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;"
+                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>
+            <Icon type={icon|or:plus} />
         </button>
     </template>
 
@@ -86,7 +89,7 @@
 
     <template id="Select">
         <select class="{class}" change={change} disabled={disabled} data={data}>
-            <option selected={value|not} value="" ui:if="emptyCaption|not">{emptyCaption}</option>
+            <option selected={value|not} value="" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>
             <option ui:for="option of options" selected={option.id|equals:@value} value={option.id}>
                 {option.name}
             </option>

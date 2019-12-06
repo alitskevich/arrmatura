@@ -72,6 +72,9 @@ Date.format = (x, format = 'dd.mm.yyyy') => {
         return '';
     }
     const date = Date.narrow(x);
+    if (!date) {
+        return '';
+    }
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();

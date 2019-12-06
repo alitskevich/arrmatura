@@ -39,7 +39,7 @@ export class ErrorHandlingService extends Service {
 export class ToastService extends Service {
   onSend({ data }) {
     return {
-      top: { ...data, close: () => this.onClose(), closeAfter: 5 }
+      top: { ...data, close: () => this.emit('this.close'), closeAfter: 5 }
     }
   }
   onClose() {
