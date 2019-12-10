@@ -1,7 +1,6 @@
 <body>
     <template id="ViewPort">
         <ui:fragment>
-            <NavigationService ui:ref="nav" />
             <ToastService ui:ref="toaster" />
             <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
             <ui:fragment ui:if="slot(aside)">
@@ -79,7 +78,7 @@
                 <ui:slot id="left" />
             </section>
             <section class="navbar-center" ui:if={logo}>
-                <img src={logo} />
+                <img src={logo} style="max-height:44px;" />
             </section>
             <section class="navbar-section mx-2">
                 <ui:slot />
