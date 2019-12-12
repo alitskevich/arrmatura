@@ -23,7 +23,7 @@
                 <EmptyData title={emptyCaption|or:Empty} ui:if="data.length|not">
                     <ui:else>
                         <div ui:for="item of data">
-                            <ui:tag tag={itemType} ui:props={item} item={item} extra={extra} action={action} />
+                            <ui:tag tag={itemType} ui:props={item} item={item} context={context} action={action} />
                         </div>
                     </ui:else>
                 </EmptyData>
@@ -31,13 +31,17 @@
         </LoadingIndicator>
     </template>
 
-    <template id="LoadableData">
+    <template id="LoadableEntity">
         <LoadingIndicator class="empty" ui:if="data|not">
             <ui:else>
                 <h5 class="error text-error" ui:if="data.error">
                     <span>{data.error.message|or:@data.error}</span>
                     <ui:else>
-                        <ui:tag tag={itemType} data={data} extra={extra} action={action} />
+                        <EmptyData title={emptyCaption|or:Empty} ui:if="data.id|not">
+                            <ui:else>
+                                <ui:tag tag={type} data={data} context={context} action={action} />
+                            </ui:else>
+                        </EmptyData>
                     </ui:else>
                 </h5>
             </ui:else>

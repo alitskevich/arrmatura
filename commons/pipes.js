@@ -9,6 +9,7 @@ export default {
   // logical
   equals: (x, p) => x == p,
   greater: (x, p) => x > p,
+  includes: (x, p) => x.includes && x.includes(p),
   then: (x, p = '', n = '') => x ? p : n,
   not: x => !x,
   or: (x, alt) => x || alt,

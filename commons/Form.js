@@ -35,6 +35,7 @@ export class FormField {
       error: (form.error && form.error.fields && form.error.fields[id]) || null,
       get disabled() { return field.disabled && field.disabled(this.value, this.data) },
       value: value === undefined ? null : value,
+      caption: field.caption || field.name,
       data,
     };
   }
@@ -51,7 +52,7 @@ export class Form {
     return this;
   }
   getFields() {
-    return this.fields || Object.keys(this.data).map(id => ({ id, name: id }));
+    return this.fields || Object.keys(this.data).map(id => ({ id, caption: id }));
   }
 }
 

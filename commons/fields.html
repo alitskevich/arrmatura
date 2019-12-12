@@ -2,10 +2,11 @@
     <template id="FieldItem">
         <div class="columns form-group has-error:{error} {class}">
             <div class=" col-4 col-sm-12">
-                <label class="form-label" for="input-example-1">{name}
+                <label class="form-label" for="input-example-1">
+                    {caption}
                     <sup ui:if={required}
-                         class="text-error">✱</sup></label>
-
+                         class="text-error">✱</sup>
+                </label>
             </div>
             <div class="col-8 col-sm-12">
                 <ui:slot />
@@ -15,7 +16,7 @@
     </template>
 
     <template id="TextField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <input class="form-input"
                    type="text"
                    disabled={disabled}
@@ -26,7 +27,7 @@
     </template>
 
     <template id="DateField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <input class="form-input"
                    disabled={disabled}
                    type="date"
@@ -37,7 +38,7 @@
     </template>
 
     <template id="DateTimeField">
-        <FieldItem name="{caption} {value}" error={error} required={required}>
+        <FieldItem caption="{caption}" error={error} required={required}>
             <DateTimeInput disabled={disabled}
                            placeholder={caption}
                            value={value}
@@ -46,7 +47,7 @@
     </template>
 
     <template id="NumberField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <input class="form-input"
                    disabled={disabled}
                    type="number"
@@ -57,7 +58,7 @@
     </template>
 
     <template id="TextareaField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <textarea
                       class="form-input"
                       style="min-height: 15vw"
@@ -78,7 +79,7 @@
     </template>
 
     <template id="EnumField">
-        <FieldItem name={caption} class={class} error={error} required={required}>
+        <FieldItem caption={caption} class={class} error={error} required={required}>
             <Select class="form-select"
                     change={onChange}
                     value={value|or:@defaultValue}
@@ -89,8 +90,20 @@
         </FieldItem>
     </template>
 
+    <template id="SelectField">
+        <FieldItem caption={caption} class={class} error={error} required={required}>
+            <Select class="form-select"
+                    change={onChange}
+                    value={value|or:@defaultValue}
+                    data={data}
+                    options={options}
+                    emptyCaption={emptyCaption}
+                    disabled={disabled} />
+        </FieldItem>
+    </template>
+
     <template id="RadioField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <RadioGroup change={onChange}
                         value={value} data={data} options=":enums.{typeSpec}"
                         disabled={disabled} />
@@ -98,7 +111,7 @@
     </template>
 
     <template id="ReferenceField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <Loader from="-> references.{typeSpec}Search"
                     data-value={keyword.value|orDataPropValueByKey:keyword}
                     trigger={keyword.value}
@@ -114,7 +127,7 @@
     </template>
 
     <template id="RemoteEnumField">
-        <FieldItem name={caption} error={error} required={required}>
+        <FieldItem caption={caption} error={error} required={required}>
             <Loader from="-> references.{typeSpec}Enum" data={data} into="->options" />
             <Select class="form-select" change={onChange} value={value} data={options.data} disabled={disabled} />
         </FieldItem>

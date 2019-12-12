@@ -108,7 +108,7 @@ Array.groupBy = function (list, field = 'id') {
     const result = {};
     const fieldFn = typeof field === 'string' ? e => e[field] : field;
     const iter = (v, entry) => {
-        const slot = result[v] || (result[v] = { key: v, count: 0, subs: [] });
+        const slot = result[v] || (result[v] = { id: v, count: 0, subs: [] });
         slot.count++;
         slot.subs.push(entry);
     };
