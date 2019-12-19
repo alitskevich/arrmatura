@@ -20,7 +20,7 @@
             <input class="form-input"
                    type="text"
                    disabled={disabled}
-                   placeholder={caption}
+                   placeholder={placeholder|or:@caption}
                    value={value}
                    change={onChange}>
         </FieldItem>
@@ -70,9 +70,9 @@
         <div class="form-group">
             <div class="col-sm-12">
                 <label class="form-switch">
+                    <span>{caption}</span>
                     <input type="checkbox" toggle={onChange} data={data} checked={value|not|not}>
                     <i class="form-icon"></i>
-                    <span>{caption}</span>
                 </label>
             </div>
         </div>

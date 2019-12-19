@@ -2,7 +2,7 @@
 
 
     <template id="Icon">
-        <i class="fas fa-{type} {class}" data={data} click={click}></i>
+        <i class="fa{bundle|or:s} fa-{type} {class}" data={data} click={click}></i>
     </template>
 
     <template id="Img">
@@ -17,11 +17,12 @@
     </template>
 
     <template id="Button">
-        <button class="btn btn-{mode} {primary|then:btn-primary} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
+        <button class="btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
                 style="white-space:nowrap;{style}"
                 data={data}
                 click={action|track:@trackId:@title}>
-            <Icon ui:if="icon" type={icon} class="mx-1" />
+            <i ui:if="{busy}" class="loading mx-2"></i>
+            <Icon ui:if="icon" bundle={iconBundle} type={icon} class="mx-2" />
             <span ui:if="title">{title}</span>
         </button>
     </template>

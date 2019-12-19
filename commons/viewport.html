@@ -11,7 +11,7 @@
                     <div style="display: flex; flex-direction: column; height: 100vh;">
                         <Toast event="<- toaster.top" close="->toaster.close"
                                style="position:absolute;top:0;right:0;" />
-                        <div class="bg-gray" style="flex: 1;">
+                        <div class="" style="flex: 1;">
                             <ui:slot />
                         </div>
                     </div>
@@ -20,7 +20,7 @@
                     <div style="display: flex; flex-direction: column; height: 100vh;">
                         <Toast event="<- toaster.top" close="->toaster.close"
                                style="position:absolute;top:0;right:0;" />
-                        <div class="bg-gray" style="flex: 1;">
+                        <div class="" style="flex: 1;">
                             <ui:slot />
                         </div>
                     </div>
@@ -69,19 +69,25 @@
     </template>
 
     <template id="Navbar">
-        <header class="navbar bg-success" style="min-height:48px">
-            <section class="navbar-section mx-2">
-                <NavLink href={back} ui:if={back}>
-                    <Button link class="text-primary" icon="arrow-left" title=":action.back" />
-                </NavLink>
-                <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
-                <ui:slot id="left" />
+        <header class="navbar {class}" style="min-height:48px">
+            <section class="navbar-section">
+                <div class="mx-2">
+                    <NavLink href={back} ui:if={back}>
+                        <Button link class="text-primary" icon="arrow-left" title=":action.back" />
+                    </NavLink>
+                    <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
+                    <ui:slot id="left" />
+                </div>
             </section>
             <section class="navbar-center" ui:if={logo}>
                 <img src={logo} style="max-height:44px;" />
             </section>
-            <section class="navbar-section mx-2">
-                <ui:slot />
+            <section class="navbar-section">
+                <div class="mx-2">
+
+                    <ui:slot />
+                </div>
+
             </section>
         </header>
     </template>
