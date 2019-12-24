@@ -41,5 +41,6 @@ export class NavigationService extends Service {
   }
 
   onHash({ value }) { return this.update(value); }
+  onParams(params) { return this.update({ params: { ...params, data: null } }); }
 }
 

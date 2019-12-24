@@ -1,11 +1,13 @@
 const pad = (x, s = String(x)) => s.length === 1 ? '0' + s : s;
 
+const dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+
 export const dateLocales = {
     ru: {
         monthNames: ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         monthNamesShort: ['', 'Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-        dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
         dayNamesShort: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
+        dayNames
     }
 };
 
@@ -83,6 +85,7 @@ Date.format = (x, format = 'dd.mm.yyyy') => {
         .replace('hh', pad(date.getHours()))
         .replace('ii', pad(date.getMinutes()))
         .replace('dd', pad(day))
+        .replace('dow', '' + dayNames[date.getDay()])
         .replace('d', '' + day)
         .replace('mmmm', monthName(month, ''))
         .replace('mmm', monthName(month, 'Short'))

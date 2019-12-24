@@ -8,22 +8,16 @@
                     <Sidebar:aside>
                         <ui:slot id="aside" />
                     </Sidebar:aside>
-                    <div style="display: flex; flex-direction: column; height: 100vh;">
-                        <Toast event="<- toaster.top" close="->toaster.close"
-                               style="position:absolute;top:0;right:0;" />
-                        <div class="" style="flex: 1;">
-                            <ui:slot />
-                        </div>
-                    </div>
+                    <main>
+                        <Toast event="<- toaster.top" />
+                        <ui:slot />
+                    </main>
                 </Sidebar>
                 <ui:else>
-                    <div style="display: flex; flex-direction: column; height: 100vh;">
-                        <Toast event="<- toaster.top" close="->toaster.close"
-                               style="position:absolute;top:0;right:0;" />
-                        <div class="" style="flex: 1;">
-                            <ui:slot />
-                        </div>
-                    </div>
+                    <main>
+                        <Toast event="<- toaster.top" />
+                        <ui:slot />
+                    </main>
                 </ui:else>
             </ui:fragment>
         </ui:fragment>
@@ -34,10 +28,12 @@
     </template>
 
     <template id="Toast">
-        <div class="toast toast-{event.mode|or:@mode|or:primary}" srtyle={style} ui:if="event">
-            <button class="btn btn-clear float-right" click={event.close|or:@close}></button>
+        <div class="toast toast-{event.mode|or:@mode|or:primary}"
+             style="position:absolute;top:1rem;right:1rem;left:1rem;{style}"
+             ui:if="event">
+            <button class="btn btn-clear float-right" click={event.close}></button>
             <p>{event.message}</p>
-            <Delay ui:if={event.closeAfter} action={event.close|or:@close} period={event.closeAfter} />
+            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />
         </div>
     </template>
 
