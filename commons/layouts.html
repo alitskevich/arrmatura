@@ -11,6 +11,18 @@
             <ui:slot />
         </div>
     </template>
+    <template id="Centroid">
+        <div class="{class}" style="display: flex;align-items: center;justify-content: center;{style}">
+            <ui:slot />
+        </div>
+    </template>
+
+    <template id="FlexBox">
+        <div class="{class}" style="display: flex;align-items: stretch;justify-content:space-around;{style}">
+            <ui:slot />
+        </div>
+    </template>
+
     <template id="Tile">
         <div class="tile {centered|then:tile-centered} m-2 {class}">
             <div class="tile-icon" ui:if={image}>

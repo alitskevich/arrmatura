@@ -632,7 +632,7 @@ function (_Service) {
 /*!**************************!*\
   !*** ./commons/dates.js ***!
   \**************************/
-/*! exports provided: dateLocales, daysInMonth, monthName, dateFractions, getTimeZoneDiffMinutes, formatTimezone, adjustTimeZone, getIsoFormattedDate */
+/*! exports provided: dateLocales, daysInMonth, monthName, dateFractions, formatTimezone */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -641,10 +641,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "daysInMonth", function() { return daysInMonth; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "monthName", function() { return monthName; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dateFractions", function() { return dateFractions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTimeZoneDiffMinutes", function() { return getTimeZoneDiffMinutes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatTimezone", function() { return formatTimezone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "adjustTimeZone", function() { return adjustTimeZone; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getIsoFormattedDate", function() { return getIsoFormattedDate; });
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var pad = function pad(x) {
@@ -679,29 +676,24 @@ Date.parseISO8601String = function (x) {
     throw new Error("parseISO8601String: not a string: ".concat(x));
   }
 
-  if (x.length < 11) {
+  if (x.length === 10) {
     x += 'T12:00';
   }
 
-  var timebits = /^([0-9]{4})-([0-9]{2})-([0-9]{2})[ T]([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?Z?(?:([+-])([0-9]{2})([0-9]{2}))?/;
-  var m = timebits.exec("".concat(x));
+  var timebits = /^([0-9]{4})-([0-9]{2})-([0-9]{2})[ T]([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(Z?)(([+-])([0-9]{2})([0-9]{2}))?/;
+  var m = timebits.exec(x);
 
   if (!m) {
     return null;
-  } // utcdate is milliseconds since the epoch
+  }
 
+  var tz = m[8] ? !m[9] ? 0 : (m[10] === '+' ? -1 : +1) * (parseInt(m[11]) * 60 + parseInt(m[12])) : new Date().getTimezoneOffset(); // utcdate is milliseconds since the epoch
 
   var utcdate = Date.UTC(parseInt(m[1]), parseInt(m[2]) - 1, // months are zero-offset (!)
   parseInt(m[3]), parseInt(m[4]), parseInt(m[5]), // hh:mm
   m[6] && parseInt(m[6]) || 0, // optional seconds
-  m[7] && parseFloat(m[7]) || 0); // optional timezone offset
-
-  if (m[9] && m[10]) {
-    var offsetMinutes = parseInt(m[9]) * 60 + parseInt(m[10]);
-    return new Date(utcdate + (m[8] === '+' ? -60000 : +60000) * offsetMinutes);
-  }
-
-  return new Date(utcdate);
+  m[7] && parseFloat(m[7]) || 0);
+  return new Date(utcdate + tz * 60000);
 };
 /**
  * Universal all-weather converter to Date.
@@ -759,17 +751,17 @@ Date.format = function (x) {
   var day = date.getDate();
   var month = date.getMonth() + 1;
   var year = date.getFullYear();
-  return format.replace(/[_]/g, '\n').replace('hh', pad(date.getHours())).replace('ii', pad(date.getMinutes())).replace('dd', pad(day)).replace('dow', '' + dayNames[date.getDay()]).replace('d', '' + day).replace('mmmm', monthName(month, '')).replace('mmm', monthName(month, 'Short')).replace('mm', pad(month)).replace('yyyy', "".concat(year));
+  return format.replace(/[_]/g, '\n').replace('hh', pad(date.getHours())).replace('ii', pad(date.getMinutes())).replace('t', pad(date.getHours()) + ':' + pad(date.getMinutes())).replace('dd', pad(day)).replace('dow', '' + dayNames[date.getDay()]).replace('d', '' + day).replace('mmmm', monthName(month, '')).replace('mmm', monthName(month, 'Short')).replace('mm', pad(month)).replace('yyyy', "".concat(year));
 };
 
-Date.formatTime = function (x, tz, withTimezone) {
+Date.formatTime = function (x) {
   if (!x) {
     return '';
   }
 
-  var date = adjustTimeZone(Date.narrow(x), tz);
+  var date = Date.narrow(x);
   var minutes = date.getMinutes();
-  return "".concat(date.getHours(), ":").concat(pad(minutes), " ").concat(withTimezone ? formatTimezone(tz) : '').trim();
+  return "".concat(date.getHours(), ":").concat(pad(minutes));
 };
 
 Date.firstOfWeek = function (d) {
@@ -777,27 +769,9 @@ Date.firstOfWeek = function (d) {
   return new Date(x.getFullYear(), x.getMonth(), x.getDate() - x.getDay());
 };
 
-var getTimeZoneDiffMinutes = function getTimeZoneDiffMinutes(tz) {
-  return tz ? Number(tz) + new Date().getTimezoneOffset() : null;
-};
 var formatTimezone = function formatTimezone(tzOffset) {
   var toNumber = Number(tzOffset);
-  return toNumber ? "(GMT ".concat(toNumber >= 0 ? "+".concat(pad(toNumber / 60), ":").concat(pad(toNumber % 60)) : "-".concat(pad(-toNumber / 60), ":").concat(pad(-toNumber % 60)), ")") : null;
-};
-var adjustTimeZone = function adjustTimeZone(d, tz) {
-  var diff = tz + d.getTimezoneOffset();
-
-  if (diff) {
-    return new Date(d.getTime() + diff * 60 * 1000);
-  }
-
-  return d;
-}; // yyyy-mm-dd day with zero, toISOString works wrong in some cases
-
-var getIsoFormattedDate = function getIsoFormattedDate(adjastedDate) {
-  var day = adjastedDate.getDate() > 9 ? adjastedDate.getDate() : "0".concat(adjastedDate.getDate());
-  var month = adjastedDate.getMonth() + 1 > 9 ? adjastedDate.getMonth() + 1 : "0".concat(adjastedDate.getMonth() + 1);
-  return "".concat(adjastedDate.getFullYear(), "-").concat(month, "-").concat(day);
+  return toNumber ? toNumber >= 0 ? "+".concat(pad(toNumber / 60), ":").concat(pad(toNumber % 60)) : "-".concat(pad(-toNumber / 60), ":").concat(pad(-toNumber % 60)) : '';
 };
 
 /***/ }),
@@ -811,7 +785,7 @@ var getIsoFormattedDate = function getIsoFormattedDate(adjastedDate) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src} alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal active:{open}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"EmptyData\">\n        <div class=\"empty\">\n            <div class=\"empty-icon\">\n                <Icon type={icon|or:people} />\n            </div>\n            <p class=\"empty-title h5\">{title}</p>\n            <p ui:if={subtitle} class=\"empty-subtitle\">{subtitle}</p>\n            <div class=\"empty-action\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Select\">\n        <select class=\"{class}\" change={change} disabled={disabled} data={data}>\n            <option selected={value|not} value=\"\" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>\n            <option ui:for=\"option of options\" selected={option.id|equals:@value} value={option.id}>\n                {option.name}\n            </option>\n        </select>\n    </template>\n\n    <template id=\"RadioGroup\">\n        <div class=\"{class}\">\n            <label class=\"form-radio\" ui:for=\"option of options\">\n                <input type=\"radio\" name={id|or:rg}\n                       value={option.id}\n                       checked={option.id|equals:@value} change={change} data={data}\n                       disabled={disabled}>\n                <i class=\"form-icon\"></i>{option.name}\n            </label>\n        </div>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src} alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal active:{open}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
 
 /***/ }),
 
@@ -824,7 +798,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body id=\"app\">\n    <template id=\"FieldItem\">\n        <div class=\"columns form-group has-error:{error} {class}\">\n            <div class=\" col-4 col-sm-12\">\n                <label class=\"form-label\" for=\"input-example-1\">\n                    {caption}\n                    <sup ui:if={required}\n                         class=\"text-error\">✱</sup>\n                </label>\n            </div>\n            <div class=\"col-8 col-sm-12\">\n                <ui:slot />\n                <p class=\"form-input-hint\" ui:if={error}>{error}</p>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"TextField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   type=\"text\"\n                   disabled={disabled}\n                   placeholder={placeholder|or:@caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"date\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateTimeField\">\n        <FieldItem caption=\"{caption}\" error={error} required={required}>\n            <DateTimeInput disabled={disabled}\n                           placeholder={caption}\n                           value={value}\n                           change={onChange} />\n        </FieldItem>\n    </template>\n\n    <template id=\"NumberField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"number\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"TextareaField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <textarea\n                      class=\"form-input\"\n                      style=\"min-height: 15vw\"\n                      disabled={disabled} placeholder={caption} rows=\"3\" change={onChange} value={value}></textarea>\n        </FieldItem>\n    </template>\n\n    <template id=\"SwitchField\">\n        <div class=\"form-group\">\n            <div class=\"col-sm-12\">\n                <label class=\"form-switch\">\n                    <span>{caption}</span>\n                    <input type=\"checkbox\" toggle={onChange} data={data} checked={value|not|not}>\n                    <i class=\"form-icon\"></i>\n                </label>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"EnumField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options=\":enums.{typeSpec}\"\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"SelectField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options={options}\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RadioField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <RadioGroup change={onChange}\n                        value={value} data={data} options=\":enums.{typeSpec}\"\n                        disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"ReferenceField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Search\"\n                    data-value={keyword.value|orDataPropValueByKey:keyword}\n                    trigger={keyword.value}\n                    into=\"->options\" />\n            <Loader from=\"-> references.{typeSpec}Entry\" data-id={value} trigger={value} into=\"->entry\" />\n            <ReferenceInput change={onChange}\n                            value={value} entry={entry.data}\n                            onKeyword=\"->keyword\" keyword={keyword.value|orDataPropValueByKey:keyword}\n                            onSelectMenuItem=\"->entry\"\n                            options={options.data}\n                            disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RemoteEnumField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Enum\" data={data} into=\"->options\" />\n            <Select class=\"form-select\" change={onChange} value={value} data={options.data} disabled={disabled} />\n        </FieldItem>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body id=\"app\">\n    <template id=\"FieldItem\">\n        <div class=\"columns form-group has-error:{error} {class}\">\n            <div class=\" col-4 col-sm-12\">\n                <label class=\"form-label\" for=\"input-example-1\">\n                    {caption}\n                    <sup ui:if={required}\n                         class=\"text-error\">✱</sup>\n                </label>\n            </div>\n            <div class=\"col-8 col-sm-12\">\n                <ui:slot />\n                <p class=\"form-input-hint\" ui:if={error}>{error}</p>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"TextField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   type=\"text\"\n                   disabled={disabled}\n                   placeholder={placeholder|or:@caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"date\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateTimeField\">\n        <FieldItem caption=\"{caption}\" error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"datetime-local\"\n                   placeholder={caption}\n                   value={value|date:yyyy-mm-ddTt}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"NumberField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"number\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"TextareaField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <textarea\n                      class=\"form-input\"\n                      style=\"min-height: 15vw\"\n                      disabled={disabled} placeholder={caption} rows=\"3\" change={onChange} value={value}></textarea>\n        </FieldItem>\n    </template>\n\n    <template id=\"SwitchField\">\n        <div class=\"form-group\">\n            <div class=\"col-sm-12\">\n                <label class=\"form-switch\">\n                    <span>{caption}</span>\n                    <input type=\"checkbox\" toggle={onChange} data={data} checked={value|not|not}>\n                    <i class=\"form-icon\"></i>\n                </label>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"EnumField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options=\":enums.{typeSpec}\"\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"SelectField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options={options}\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RadioField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <RadioGroup change={onChange}\n                        value={value} data={data} options=\":enums.{typeSpec}\"\n                        disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"ReferenceField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Search\"\n                    data-value={keyword.value|orDataPropValueByKey:keyword}\n                    trigger={keyword.value}\n                    into=\"->options\" />\n            <Loader from=\"-> references.{typeSpec}Entry\" data-id={value} trigger={value} into=\"->entry\" />\n            <ReferenceInput change={onChange}\n                            value={value} entry={entry.data}\n                            onKeyword=\"->keyword\" keyword={keyword.value|orDataPropValueByKey:keyword}\n                            onSelectMenuItem=\"->entry\"\n                            options={options.data}\n                            disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RemoteEnumField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Enum\" data={data} into=\"->options\" />\n            <Select class=\"form-select\" change={onChange} value={value} data={options.data} disabled={disabled} />\n        </FieldItem>\n    </template>\n\n</body>");
 
 /***/ }),
 
@@ -921,7 +895,7 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"Dropdown\">\n        <div class=\"dropdown\">\n            <a href=\"#\" class=\"btn btn-link dropdown-toggle\" tabindex=\"0\">\n                {data|selectedName}<i class=\"icon icon-caret\"></i>\n            </a>\n            <!-- menu component -->\n            <ul class=\"menu\" style=\"right:0;left:auto;\">\n                <li ui:for=\"item of data|selectizedBy\" class=\"menu-item active:{item.selected}\"\n                    data-id={item.id}\n                    data-name={item.name}\n                    click={change}>\n                    <a>{item.name}</a>\n                </li>\n            </ul>\n        </div>\n    </template>\n\n    <template id=\"DateTimeInput\">\n        <input class=\"form-input flatpickr-input\"\n               init={:support.initFlatpickr}\n               disabled={disabled}\n               type=\"text\"\n               placeholder={placeholder}\n               value={value|support.setFlatpickrValue}\n               change={change}>\n    </template>\n\n    <template id=\"SearchBar\">\n        <span class=\"ant-input-search ant-input-affix-wrapper\">\n            <input placeholder=\"Поиск...\" class=\"ant-input\" type=\"text\"\n                   value={value} enter={action}\n                   style=\"min-height:40px;\">\n            <span class=\"ant-input-suffix\">\n                <i class=\"anticon anticon-search ant-input-search-icon\" style=\"margin-top: 4px;\"></i>\n            </span>\n        </span>\n    </template>\n\n    <template id=\"ReferenceInput\">\n        <div class=\"form-autocomplete\">\n            <div class=\"form-input has-icon-right\" data-showMenu={showMenu|not} click=\"->\">\n                <div>{entry.fullNameRu}</div>\n                <i class=\"form-icon icon icon-edit c-hand\"></i>\n            </div>\n            <Modal ui:if={showMenu} open=\"true\" title=\"Выбор опции {title}\" data-showMenu=\"false\" close=\"->\">\n                <div class=\"menu\" style=\"position:sticky;top:-20;z-index:101; border-bottom: none; box-shadow: unset\">\n                    <div class=\"form-group has-icon-right\">\n                        <input class=\"form-input\" type=\"text\"\n                               value={keyword} placeholder=\"search...\" change={onKeyword}>\n                        <i class=\"form-icon icon icon-cross c-hand\" data-value=\"\" click={onKeyword}></i>\n                    </div>\n                    <div ui:if={options} class=\"menu-item\">\n                        <div class=\"tile tile-centered mx-1\">\n                            <b class=\"tile-content\">Найдено: {options.length}</b>\n                        </div>\n                    </div>\n                </div>\n                <ul class=\"menu\" style=\"position:unset; border-top: none; box-shadow: unset\">\n                    <li class=\"menu-item\" ui:for=\"item of options\" data-showMenu=\"false\" click=\"->\">\n                        <div click={change} data-value={item.id}>\n                            <div class=\"tile tile-centered mx-1\">\n                                <figure class=\"avatar avatar-xs bg-primary\" data-initial={item.fullNameRu|initials}>\n                                </figure>\n                                <div class=\"tile-content\">{item.fullNameRu}, {item.birthday|date}</div>\n                            </div>\n                        </div>\n                    </li>\n                </ul>\n            </Modal>\n        </div>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"Select\">\n        <select class=\"{class}\" change={change} disabled={disabled} data={data}>\n            <option selected={value|not} value=\"\" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>\n            <option ui:for=\"option of options\" selected={option.id|equals:@value} value={option.id}>\n                {option.name}\n            </option>\n        </select>\n    </template>\n\n    <template id=\"RadioGroup\">\n        <div class=\"{class}\">\n            <label class=\"form-radio\" ui:for=\"option of options\">\n                <input type=\"radio\" name={id|or:rg}\n                       value={option.id}\n                       checked={option.id|equals:@value} change={change} data={data}\n                       disabled={disabled}>\n                <i class=\"form-icon\"></i>{option.name}\n            </label>\n        </div>\n    </template>\n\n    <template id=\"Dropdown\">\n        <div class=\"dropdown\">\n            <a href=\"#\" class=\"btn btn-link dropdown-toggle\" tabindex=\"0\">\n                {data|selectedName}<i class=\"icon icon-caret\"></i>\n            </a>\n            <!-- menu component -->\n            <ul class=\"menu\" style=\"right:0;left:auto;\">\n                <li ui:for=\"item of data|selectizedBy\" class=\"menu-item active:{item.selected}\"\n                    data-id={item.id}\n                    data-name={item.name}\n                    click={change}>\n                    <a>{item.name}</a>\n                </li>\n            </ul>\n        </div>\n    </template>\n\n    <template id=\"DateTimeInput\">\n        <input class=\"form-input flatpickr-input\"\n               init={:support.initFlatpickr}\n               disabled={disabled}\n               type=\"text\"\n               placeholder={placeholder}\n               value={value|support.setFlatpickrValue}\n               change={change}>\n    </template>\n\n    <template id=\"SearchBar\">\n        <span class=\"ant-input-search ant-input-affix-wrapper\">\n            <input placeholder=\"Поиск...\" class=\"ant-input\" type=\"text\"\n                   value={value} enter={action}\n                   style=\"min-height:40px;\">\n            <span class=\"ant-input-suffix\">\n                <i class=\"anticon anticon-search ant-input-search-icon\" style=\"margin-top: 4px;\"></i>\n            </span>\n        </span>\n    </template>\n\n    <template id=\"ReferenceInput\">\n        <div class=\"form-autocomplete\">\n            <div class=\"form-input has-icon-right\" data-showMenu={showMenu|not} click=\"->\">\n                <div>{entry.fullNameRu}</div>\n                <i class=\"form-icon icon icon-edit c-hand\"></i>\n            </div>\n            <Modal ui:if={showMenu} open=\"true\" title=\"Выбор опции {title}\" data-showMenu=\"false\" close=\"->\">\n                <div class=\"menu\" style=\"position:sticky;top:-20;z-index:101; border-bottom: none; box-shadow: unset\">\n                    <div class=\"form-group has-icon-right\">\n                        <input class=\"form-input\" type=\"text\"\n                               value={keyword} placeholder=\"search...\" change={onKeyword}>\n                        <i class=\"form-icon icon icon-cross c-hand\" data-value=\"\" click={onKeyword}></i>\n                    </div>\n                    <div ui:if={options} class=\"menu-item\">\n                        <div class=\"tile tile-centered mx-1\">\n                            <b class=\"tile-content\">Найдено: {options.length}</b>\n                        </div>\n                    </div>\n                </div>\n                <ul class=\"menu\" style=\"position:unset; border-top: none; box-shadow: unset\">\n                    <li class=\"menu-item\" ui:for=\"item of options\" data-showMenu=\"false\" click=\"->\">\n                        <div click={change} data-value={item.id}>\n                            <div class=\"tile tile-centered mx-1\">\n                                <figure class=\"avatar avatar-xs bg-primary\" data-initial={item.fullNameRu|initials}>\n                                </figure>\n                                <div class=\"tile-content\">{item.fullNameRu}, {item.birthday|date}</div>\n                            </div>\n                        </div>\n                    </li>\n                </ul>\n            </Modal>\n        </div>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -934,7 +908,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n    <template id=\"Grid\">\n        <div class=\"columns {class}\">\n            <ui:slot />\n        </div>\n    </template>\n\n    <template id=\"Col\">\n        <div class=\"col-{size|or:6} col-sm-12 {class}\">\n            <ui:slot />\n        </div>\n    </template>\n    <template id=\"Tile\">\n        <div class=\"tile {centered|then:tile-centered} m-2 {class}\">\n            <div class=\"tile-icon\" ui:if={image}>\n                <Avatar src={image} />\n            </div>\n            <div class=\"tile-icon\" ui:if={icon}>\n                <Icon type={icon} />\n            </div>\n            <div class=\"tile-content\">\n                <div class=\"tile-title text-bold\" ui:if=\"title\">{title}</div>\n                <div class=\"tile-subtitle\" ui:if=\"subtitle\">{subtitle}</div>\n                <ui:slot />\n            </div>\n            <div class=\"tile-action btn-group\" ui:if=\"slot(actions)\">\n                <ui:slot id=\"actions\" />\n            </div>\n        </div>\n    </template>\n    <template id=\"Panel\">\n        <ui:fragment>\n            <h6 class=\"mt-2 pt-2 px-2 mx-2 text-gray\" ui:if=\"caption\">{caption}</h6>\n            <div class=\"panel mx-2 {class}\" style={style}>\n                <small class=\"p-2 bg-secondary\" ui:if={hint}>{hint}</small>\n                <div class=\"panel-header\" ui:if=\"slot(title)\">\n                    <div class=\"panel-title\">\n                        <ui:slot id=\"title\" />\n                    </div>\n                </div>\n                <div class=\"panel-nav\" ui:if=\"slot(nav)\">\n                    <ui:slot id=\"nav\" />\n                </div>\n                <div class=\"panel-body\">\n                    <ui:slot />\n                </div>\n                <div class=\"panel-footer\" ui:if=\"slot(footer)\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </ui:fragment>\n    </template>\n\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n    <template id=\"Grid\">\n        <div class=\"columns {class}\">\n            <ui:slot />\n        </div>\n    </template>\n\n    <template id=\"Col\">\n        <div class=\"col-{size|or:6} col-sm-12 {class}\">\n            <ui:slot />\n        </div>\n    </template>\n    <template id=\"Centroid\">\n        <div class=\"{class}\" style=\"display: flex;align-items: center;justify-content: center;{style}\">\n            <ui:slot />\n        </div>\n    </template>\n\n    <template id=\"FlexBox\">\n        <div class=\"{class}\" style=\"display: flex;align-items: stretch;justify-content:space-around;{style}\">\n            <ui:slot />\n        </div>\n    </template>\n\n    <template id=\"Tile\">\n        <div class=\"tile {centered|then:tile-centered} m-2 {class}\">\n            <div class=\"tile-icon\" ui:if={image}>\n                <Avatar src={image} />\n            </div>\n            <div class=\"tile-icon\" ui:if={icon}>\n                <Icon type={icon} />\n            </div>\n            <div class=\"tile-content\">\n                <div class=\"tile-title text-bold\" ui:if=\"title\">{title}</div>\n                <div class=\"tile-subtitle\" ui:if=\"subtitle\">{subtitle}</div>\n                <ui:slot />\n            </div>\n            <div class=\"tile-action btn-group\" ui:if=\"slot(actions)\">\n                <ui:slot id=\"actions\" />\n            </div>\n        </div>\n    </template>\n    <template id=\"Panel\">\n        <ui:fragment>\n            <h6 class=\"mt-2 pt-2 px-2 mx-2 text-gray\" ui:if=\"caption\">{caption}</h6>\n            <div class=\"panel mx-2 {class}\" style={style}>\n                <small class=\"p-2 bg-secondary\" ui:if={hint}>{hint}</small>\n                <div class=\"panel-header\" ui:if=\"slot(title)\">\n                    <div class=\"panel-title\">\n                        <ui:slot id=\"title\" />\n                    </div>\n                </div>\n                <div class=\"panel-nav\" ui:if=\"slot(nav)\">\n                    <ui:slot id=\"nav\" />\n                </div>\n                <div class=\"panel-body\">\n                    <ui:slot />\n                </div>\n                <div class=\"panel-footer\" ui:if=\"slot(footer)\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </ui:fragment>\n    </template>\n\n\n</body>");
 
 /***/ }),
 
@@ -1214,7 +1188,7 @@ function (_Service2) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"LoadingIndicator\">\n        <div class=\"loading {large|then:loading-lg} {class}\" />\n    </template>\n\n    <template id=\"EmptyData\">\n        <div class=\"empty {class}\">\n            <div class=\"empty-icon\">\n                <Icon type={icon|or:people} />\n            </div>\n            <p class=\"empty-title h5\">{title}</p>\n            <p ui:if={subtitle} class=\"empty-subtitle\">{subtitle}</p>\n            <div class=\"empty-action\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"LoadableItems\">\n        <LoadingIndicator class=\"empty\" ui:if=\"data|not\">\n            <ui:else>\n                <h5 class=\"error text-error\" ui:if=\"data.error\">{data.error.message|or:@data.error}</h5>\n                <EmptyData title={emptyCaption|or:Empty} ui:if=\"data.length|not\">\n                    <ui:else>\n                        <div ui:for=\"item of data\">\n                            <ui:tag tag={itemType} ui:props={item} item={item} context={context} action={action} />\n                        </div>\n                    </ui:else>\n                </EmptyData>\n            </ui:else>\n        </LoadingIndicator>\n    </template>\n\n    <template id=\"LoadableEntity\">\n        <LoadingIndicator class=\"empty\" ui:if=\"data|not\">\n            <ui:else>\n                <h5 class=\"error text-error\" ui:if=\"data.error\">\n                    <span>{data.error.message|or:@data.error}</span>\n                    <ui:else>\n                        <EmptyData title={emptyCaption|or:Empty} ui:if=\"data.id|not\">\n                            <ui:else>\n                                <ui:tag tag={type} data={data} context={context} action={action} />\n                            </ui:else>\n                        </EmptyData>\n                    </ui:else>\n                </h5>\n            </ui:else>\n        </LoadingIndicator>\n    </template>\n\n    <template id=\"Cell\">\n        <span class=\"\" style=\"padding-left: 0px;\">{value}</span>\n    </template>\n    <template id=\"EnumCell\">\n        <span class=\"\"\n              style=\"padding-left: 0px;\">:map.{typeSpec}.{value}</span>\n    </template>\n\n    <template id=\"DateCell\">\n        <span class=\"\" style=\"padding-left: 0px;\">{value|date}</span>\n    </template>\n\n    <template id=\"Table\">\n        <table style=\"position: relative;\">\n            <thead class=\"table-thead\">\n                <tr>\n                    <th class=\"col-index\" style=\"position: sticky; top: -1;\"></th>\n                    <th class=\"col-index\" style=\"position: sticky; top: -1;\" ui:for=\"item of columns\">\n                        <span>{item.name}</span>\n                        <div class=\"table-column-sorter\" ui:if=\"item.sortable\">\n                            <span class=\"table-column-sorter-up off\" title=\"↑\" data-id=\"-{item.id}\"\n                                  click={doSort}><i class=\"anticon anticon-caret-up\"></i></span>\n                            <span class=\"table-column-sorter-down off\" title=\"↓\" data-id={item.id} click={doSort}><i\n                                   class=\"anticon anticon-caret-down\"></i></span>\n                        </div>\n                    </th>\n                </tr>\n            </thead>\n            <TableRow ui:for=\"item of data\" data={item} selected={item.selected} columns={columns} kind={kind} />\n        </table>\n    </template>\n\n    <template id=\"TableRow\">\n        <tbody class=\"table-tbody\">\n            <tr class=\"table-row table-row-level-0\" style=\"position:sticky;\">\n                <td class=\"col-index\" data-id={data.id} click={doItem}>\n                    <div ui:if={expandable}\n                         role=\"button\"\n                         class=\"table-row-expand-icon table-row-expanded\"\n                         aria-label=\"Collapse row\"\n                         data-selected=\"false\" click=\"->\">\n                        <ui:else>\n                            <div role=\"button\"\n                                 class=\"table-row-expand-icon table-row-collapsed\"\n                                 aria-label=\"Expand row\"\n                                 data-selected=\"true\" click=\"->\"></div>\n                        </ui:else>\n                    </div>\n                </td>\n                <td class=\"col-index\" ui:for=\"col of columns\">\n                    <ui:tag tag=\"{col.type|str.capitalize}Cell\" ui:props={col} value={col.id|propObjectValueByKey}\n                            data={data} />\n                </td>\n            </tr>\n            <tr ui:if={expanded} class=\"table-expanded-row table-expanded-row-level-1\">\n                <td class=\"\"></td>\n                <td class=\"\" colspan=\"100\">\n                    <ui:tag tag=\"{kind|str.capitalize}RowInsider\" data={data} />\n                </td>\n            </tr>\n        </tbody>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"LoadingIndicator\">\n        <div class=\"loading {large|then:loading-lg} {class}\" />\n    </template>\n\n    <template id=\"EmptyData\">\n        <div class=\"empty {class}\">\n            <div class=\"empty-icon\">\n                <Icon type={icon|or:people} />\n            </div>\n            <p class=\"empty-title h5\">{title}</p>\n            <p ui:if={subtitle} class=\"empty-subtitle\">{subtitle}</p>\n            <div class=\"empty-action\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"LoadableItems\">\n        <LoadingIndicator class=\"empty\" ui:if=\"data|not\">\n            <ui:else>\n                <h5 class=\"error text-error\" ui:if=\"data.error\">{data.error.message|or:@data.error}</h5>\n                <EmptyData title={emptyCaption|or:Empty} ui:if=\"data.length|not\">\n                    <ui:else>\n                        <div style={style} ui:for=\"item of data\">\n                            <ui:tag tag={itemType} ui:props={item} item={item} context={context} action={action} />\n                        </div>\n                    </ui:else>\n                </EmptyData>\n            </ui:else>\n        </LoadingIndicator>\n    </template>\n\n    <template id=\"LoadableEntity\">\n        <LoadingIndicator class=\"empty\" ui:if=\"data|not\">\n            <ui:else>\n                <h5 class=\"error text-error\" ui:if=\"data.error\">\n                    <span>{data.error.message|or:@data.error}</span>\n                    <ui:else>\n                        <EmptyData title={emptyCaption|or:Empty} ui:if=\"data.id|not\">\n                            <ui:else>\n                                <ui:tag tag={type} data={data} context={context} action={action} />\n                            </ui:else>\n                        </EmptyData>\n                    </ui:else>\n                </h5>\n            </ui:else>\n        </LoadingIndicator>\n    </template>\n\n    <template id=\"Cell\">\n        <span class=\"\" style=\"padding-left: 0px;\">{value}</span>\n    </template>\n    <template id=\"EnumCell\">\n        <span class=\"\"\n              style=\"padding-left: 0px;\">:map.{typeSpec}.{value}</span>\n    </template>\n\n    <template id=\"DateCell\">\n        <span class=\"\" style=\"padding-left: 0px;\">{value|date}</span>\n    </template>\n\n    <template id=\"Table\">\n        <table style=\"position: relative;\">\n            <thead class=\"table-thead\">\n                <tr>\n                    <th class=\"col-index\" style=\"position: sticky; top: -1;\"></th>\n                    <th class=\"col-index\" style=\"position: sticky; top: -1;\" ui:for=\"item of columns\">\n                        <span>{item.name}</span>\n                        <div class=\"table-column-sorter\" ui:if=\"item.sortable\">\n                            <span class=\"table-column-sorter-up off\" title=\"↑\" data-id=\"-{item.id}\"\n                                  click={doSort}><i class=\"anticon anticon-caret-up\"></i></span>\n                            <span class=\"table-column-sorter-down off\" title=\"↓\" data-id={item.id} click={doSort}><i\n                                   class=\"anticon anticon-caret-down\"></i></span>\n                        </div>\n                    </th>\n                </tr>\n            </thead>\n            <TableRow ui:for=\"item of data\" data={item} selected={item.selected} columns={columns} kind={kind} />\n        </table>\n    </template>\n\n    <template id=\"TableRow\">\n        <tbody class=\"table-tbody\">\n            <tr class=\"table-row table-row-level-0\" style=\"position:sticky;\">\n                <td class=\"col-index\" data-id={data.id} click={doItem}>\n                    <div ui:if={expandable}\n                         role=\"button\"\n                         class=\"table-row-expand-icon table-row-expanded\"\n                         aria-label=\"Collapse row\"\n                         data-selected=\"false\" click=\"->\">\n                        <ui:else>\n                            <div role=\"button\"\n                                 class=\"table-row-expand-icon table-row-collapsed\"\n                                 aria-label=\"Expand row\"\n                                 data-selected=\"true\" click=\"->\"></div>\n                        </ui:else>\n                    </div>\n                </td>\n                <td class=\"col-index\" ui:for=\"col of columns\">\n                    <ui:tag tag=\"{col.type|str.capitalize}Cell\" ui:props={col} value={col.id|propObjectValueByKey}\n                            data={data} />\n                </td>\n            </tr>\n            <tr ui:if={expanded} class=\"table-expanded-row table-expanded-row-level-1\">\n                <td class=\"\"></td>\n                <td class=\"\" colspan=\"100\">\n                    <ui:tag tag=\"{kind|str.capitalize}RowInsider\" data={data} />\n                </td>\n            </tr>\n        </tbody>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -1793,7 +1767,7 @@ Function.hash = function (s) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main class=\"main\">\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main class=\"main\">\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <div class=\"fixed\">\n                    <div class=\"bg-secondary\" style=\"height: 100vh; width:200px\">\n                        <div class=\"text-center\" ui:if={caption}>\n                            <a href=\"#/main\">\n                                <h5 class=\"p-2\">{caption}</h5>\n                            </a>\n                        </div>\n                        <div class=\"m-2\" style=\"overflow-y: auto;\">\n                            <ui:slot id=\"aside\" />\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:200px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -1874,35 +1848,14 @@ var VALUES = {
 var RE_SINGLE_PLACEHOLDER = /^\{([^}]+)\}$/;
 var RE_PLACEHOLDER = /\{([^}]+)\}/g;
 
-function res(key) {
-  var _key$split = key.split('.'),
+function pipe(value, key) {
+  var _key$split = key.split(':'),
       _key$split2 = _toArray(_key$split),
       id = _key$split2[0],
-      deep = _key$split2.slice(1);
-
-  var target = id === 'app' ? this.app : this.app.resources[id];
-
-  if (!target || deep.length === 0) {
-    return target;
-  }
-
-  if (deep.length === 1) {
-    return target[deep[0]];
-  }
-
-  return deep.reduce(function (r, k) {
-    return r ? r[k] : null;
-  }, target);
-}
-
-function pipe(value, key) {
-  var _key$split3 = key.split(':'),
-      _key$split4 = _toArray(_key$split3),
-      id = _key$split4[0],
-      args = _key$split4.slice(1);
+      args = _key$split2.slice(1);
 
   try {
-    var fn = res.call(this, id);
+    var fn = this.res(id);
     var $ = this;
     return fn.apply($.impl, [value].concat(_toConsumableArray(args.map(function (a) {
       return a[0] === '@' ? $.prop(a.slice(1)) : a;
@@ -1955,7 +1908,7 @@ function placeholder(expr) {
 
   var initGettr = key[0] === ':' ? function (fn) {
     return function (c) {
-      return res.call(c, fn(c));
+      return c.res(fn(c));
     };
   }(stringInterpolation(key.slice(1).trim())) : function (c) {
     return c.prop(key);
@@ -2804,6 +2757,28 @@ function () {
 
       (_console = console).log.apply(_console, [this.tag + this.uid].concat(args));
     }
+  }, {
+    key: "res",
+    value: function res(key) {
+      var _key$split7 = key.split('.'),
+          _key$split8 = _toArray(_key$split7),
+          id = _key$split8[0],
+          deep = _key$split8.slice(1);
+
+      var target = id === 'app' ? this.app : this.app.resources[id];
+
+      if (!target || deep.length === 0) {
+        return target;
+      }
+
+      if (deep.length === 1) {
+        return target[deep[0]];
+      }
+
+      return deep.reduce(function (r, k) {
+        return r ? r[k] : null;
+      }, target);
+    }
   }]);
 
   return Component;
@@ -2830,6 +2805,14 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -2841,14 +2824,6 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
@@ -2871,25 +2846,6 @@ var DOM_SETTERS = {
     return e.disabled = v ? true : null;
   },
   "class": function _class(e, v) {
-    if (v.includes(':')) {
-      v = ('' + v).split(' ').map(function (s) {
-        var _s$split = s.split(':'),
-            _s$split2 = _slicedToArray(_s$split, 2),
-            cl = _s$split2[0],
-            expr = _s$split2[1];
-
-        if (expr === undefined) return cl;
-
-        var _expr$split = expr.split('=='),
-            _expr$split2 = _slicedToArray(_expr$split, 2),
-            fl = _expr$split2[0],
-            eq = _expr$split2[1];
-
-        var disabled = eq ? fl !== eq : ['', '0', 'false', null].indexOf(fl) > -1;
-        return disabled ? '' : cl;
-      }).join(' ');
-    }
-
     e.className = v;
   },
   selected: function selected(e, v) {
@@ -2970,22 +2926,72 @@ var DOM_SETTERS = {
       return false;
     });
   },
-  error: function error(e, v) {
+  touchstart: function touchstart(e, v) {
     var _this7 = this;
 
+    var h = !v ? null : function (ev) {
+      _this7.$attributes.touchstart(_objectSpread({}, e.$dataset, {
+        x: ev.pageX || ev.changedTouches[0].screenX,
+        y: ev.pageY || ev.changedTouches[0].screenY
+      }), ev);
+
+      return false;
+    };
+    this.setAttribute('touchstart:touchstart', h);
+    this.setAttribute('touchstart:mousedown', h);
+  },
+  touch: function touch(e, v) {
+    var _this8 = this;
+
+    var data = _objectSpread({}, e.$dataset);
+
+    var hs = !v ? null : function (ev) {
+      data.started = true;
+      data.x = ev.pageX || ev.changedTouches[0].screenX;
+      data.y = ev.pageY || ev.changedTouches[0].screenY;
+      return false;
+    };
+    this.setAttribute('touch:touchstart', hs);
+    this.setAttribute('touch:mousedown', hs);
+    var h = !v ? function () {
+      return null;
+    } : function (_final) {
+      return function (ev) {
+        if (data.started) {
+          data.started = !_final;
+          data.xx = ev.pageX || ev.changedTouches[0].screenX;
+          data.yy = ev.pageY || ev.changedTouches[0].screenY;
+          data.dx = data.xx - data.x;
+          data.dy = data.yy - data.y;
+          data["final"] = _final;
+
+          _this8.$attributes.touch(data, ev);
+        }
+
+        return false;
+      };
+    };
+    this.setAttribute('touch:touchend', h(true));
+    this.setAttribute('touch:mouseup', h(true));
+    this.setAttribute('touch:touchmove', h(false));
+    this.setAttribute('touch:mousemove', h(false));
+  },
+  error: function error(e, v) {
+    var _this9 = this;
+
     this.setAttribute('error:error', !v ? null : function (ev) {
-      var fn = _this7.getAttribute('error');
+      var fn = _this9.getAttribute('error');
 
       fn && fn(_objectSpread({}, e.$dataset), ev);
       return false;
     });
   },
   keypress: function keypress(e, v) {
-    var _this8 = this;
+    var _this10 = this;
 
     this.setAttribute('keypress:keyup', !v ? null : function (ev) {
       if (ev.keyCode !== 13 && ev.keyCode !== 27) {
-        var fn = _this8.$attributes.keypress;
+        var fn = _this10.$attributes.keypress;
         fn && fn(_objectSpread({
           value: e.value
         }, e.$dataset), ev);
@@ -2998,11 +3004,11 @@ var DOM_SETTERS = {
     });
   },
   enter: function enter(e, v) {
-    var _this9 = this;
+    var _this11 = this;
 
     this.setAttribute('enter:keyup', !v ? null : function (ev) {
       if (ev.keyCode === 13) {
-        _this9.$attributes.enter(_objectSpread({
+        _this11.$attributes.enter(_objectSpread({
           value: e.value
         }, e.$dataset), ev);
       }
@@ -3015,10 +3021,10 @@ var DOM_SETTERS = {
     });
   },
   change: function change(e, v) {
-    var _this10 = this;
+    var _this12 = this;
 
     this.setAttribute('change:change', !v ? null : function (ev) {
-      _this10.$attributes.change(_objectSpread({
+      _this12.$attributes.change(_objectSpread({
         value: e.value
       }, e.$dataset), ev);
 
@@ -3026,10 +3032,10 @@ var DOM_SETTERS = {
     });
   },
   toggle: function toggle(e, v) {
-    var _this11 = this;
+    var _this13 = this;
 
     this.setAttribute('toggle:change', !v ? null : function (ev) {
-      _this11.$attributes.toggle(_objectSpread({
+      _this13.$attributes.toggle(_objectSpread({
         value: e.checked
       }, e.$dataset), ev);
 
@@ -3148,12 +3154,12 @@ function () {
   }, {
     key: "setAttribute",
     value: function setAttribute(key, value) {
-      var _this12 = this;
+      var _this14 = this;
 
       if (value != null) {
         if (typeof value === 'function') {
           var fnValue = function fnValue() {
-            if (!_this12.isDone) {
+            if (!_this14.isDone) {
               value.apply(void 0, arguments);
             }
           };

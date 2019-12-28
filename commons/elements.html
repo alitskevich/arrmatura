@@ -75,37 +75,12 @@
         </div>
     </template>
 
-    <template id="EmptyData">
-        <div class="empty">
-            <div class="empty-icon">
-                <Icon type={icon|or:people} />
-            </div>
-            <p class="empty-title h5">{title}</p>
-            <p ui:if={subtitle} class="empty-subtitle">{subtitle}</p>
-            <div class="empty-action">
-                <ui:slot />
-            </div>
-        </div>
+    <template id="Tabs">
+        <ul class="tab tab-block">
+            <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of data">
+                <a data-id={item.id} click={action}>{item.name}</a>
+            </li>
+        </ul>
     </template>
 
-    <template id="Select">
-        <select class="{class}" change={change} disabled={disabled} data={data}>
-            <option selected={value|not} value="" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>
-            <option ui:for="option of options" selected={option.id|equals:@value} value={option.id}>
-                {option.name}
-            </option>
-        </select>
-    </template>
-
-    <template id="RadioGroup">
-        <div class="{class}">
-            <label class="form-radio" ui:for="option of options">
-                <input type="radio" name={id|or:rg}
-                       value={option.id}
-                       checked={option.id|equals:@value} change={change} data={data}
-                       disabled={disabled}>
-                <i class="form-icon"></i>{option.name}
-            </label>
-        </div>
-    </template>
 </body>

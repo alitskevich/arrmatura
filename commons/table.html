@@ -22,7 +22,7 @@
                 <h5 class="error text-error" ui:if="data.error">{data.error.message|or:@data.error}</h5>
                 <EmptyData title={emptyCaption|or:Empty} ui:if="data.length|not">
                     <ui:else>
-                        <div ui:for="item of data">
+                        <div style={style} ui:for="item of data">
                             <ui:tag tag={itemType} ui:props={item} item={item} context={context} action={action} />
                         </div>
                     </ui:else>

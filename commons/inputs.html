@@ -1,4 +1,25 @@
 <body>
+    <template id="Select">
+        <select class="{class}" change={change} disabled={disabled} data={data}>
+            <option selected={value|not} value="" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>
+            <option ui:for="option of options" selected={option.id|equals:@value} value={option.id}>
+                {option.name}
+            </option>
+        </select>
+    </template>
+
+    <template id="RadioGroup">
+        <div class="{class}">
+            <label class="form-radio" ui:for="option of options">
+                <input type="radio" name={id|or:rg}
+                       value={option.id}
+                       checked={option.id|equals:@value} change={change} data={data}
+                       disabled={disabled}>
+                <i class="form-icon"></i>{option.name}
+            </label>
+        </div>
+    </template>
+
     <template id="Dropdown">
         <div class="dropdown">
             <a href="#" class="btn btn-link dropdown-toggle" tabindex="0">

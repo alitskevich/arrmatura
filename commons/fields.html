@@ -39,10 +39,12 @@
 
     <template id="DateTimeField">
         <FieldItem caption="{caption}" error={error} required={required}>
-            <DateTimeInput disabled={disabled}
-                           placeholder={caption}
-                           value={value}
-                           change={onChange} />
+            <input class="form-input"
+                   disabled={disabled}
+                   type="datetime-local"
+                   placeholder={caption}
+                   value={value|date:yyyy-mm-ddTt}
+                   change={onChange}>
         </FieldItem>
     </template>
 
