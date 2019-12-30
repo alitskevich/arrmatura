@@ -55,7 +55,7 @@
     </template>
 
     <template id="Modal">
-        <div class="modal modal active:{open}">
+        <div class="modal modal {open|then:active}">
             <a class="modal-overlay" aria-label="Close" data={data} click={close}></a>
             <div class="modal-container">
                 <div class="modal-header">

@@ -63,6 +63,25 @@
             </div>
         </ui:fragment>
     </template>
-
+    <template id="Card">
+        <div class="card" style={style}>
+            <div class="card-image" ui:if={image}>
+                <img src={image} class="img-responsive" />
+            </div>
+            <div class="card-header">
+                <a ui:if={title} href={link}>
+                    <h5 class="card-title">{title}</h5>
+                </a>
+                <div ui:if={subtitle} class="card-subtitle text-gray">{subtitle}</div>
+                <ui:slot id="header" />
+            </div>
+            <div class="card-body">
+                <ui:slot />
+            </div>
+            <div class="card-footer">
+                <ui:slot id="footer" />
+            </div>
+        </div>
+    </template>
 
 </body>
