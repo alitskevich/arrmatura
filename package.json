@@ -14,7 +14,7 @@
   },
   "author": "alitskevich",
   "license": "MIT",
-  "main": "docs/index.js",
+  "main": "index.js",
   "devDependencies": {
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",

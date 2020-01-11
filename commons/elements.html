@@ -1,8 +1,7 @@
 <body>
 
-
     <template id="Icon">
-        <i class="fa{bundle|or:s} fa-{type} {class}" data={data} click={click}></i>
+        <i class="fa{bundle|or:s} fa-{type} {class}" style={style} data={data} click={click}></i>
     </template>
 
     <template id="Img">
@@ -11,14 +10,15 @@
 
     <template id="Avatar">
         <figure class="avatar {large|then:avatar-lg}">
-            <Img src={src} alt={alt}
+            <Img src={src}
+                 alt={alt}
                  default="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
         </figure>
     </template>
 
     <template id="Button">
         <button class="btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
-                style="white-space:nowrap;{style}"
+                style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}"
                 data={data}
                 click={action|track:@trackId:@title}>
             <i ui:if="{busy}" class="loading mx-2"></i>

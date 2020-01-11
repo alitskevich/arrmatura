@@ -22,7 +22,6 @@ export default {
   arr: Array,
   date: Object.assign((s, format) => Date.format(s, format), Date, {
     orNow: x => x || (new Date()),
-    firstOfWeek: Date.firstOfWeek,
     time: Date.formatTime,
   }),
 };

@@ -1,6 +1,6 @@
 <body id="app">
     <template id="FieldItem">
-        <div class="columns form-group has-error:{error} {class}">
+        <div class="columns form-group {error|then:has-error} {class}">
             <div class=" col-4 col-sm-12">
                 <label class="form-label" for="input-example-1">
                     {caption}

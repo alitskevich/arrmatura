@@ -1,5 +1,4 @@
-import { launch } from '../lib';
-import { loadTemplates } from '../commons';
+import { launch, loadTemplates } from '../index.js';
 import templates from './app.html';
 import resources from './res';
 import { TodoStore } from './TodoStore';

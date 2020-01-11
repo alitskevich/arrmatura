@@ -2,7 +2,7 @@ export class Service {
     constructor(props, $) {
         Object.assign(this, props, {
             ref: $.ref,
-            lookupService: (ref) => $.app[ref],
+            lookupService: (ref) => $.app ? $.app[ref] : null,
             up: (...args) => $.up(...args),
             emit: (...args) => $.emit(...args),
         });

@@ -1,13 +1,14 @@
 const pad = (x, s = String(x)) => s.length === 1 ? '0' + s : s;
 
 const dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+const dayNamesShort = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
 export const dateLocales = {
     ru: {
         monthNames: ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         monthNamesShort: ['', 'Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-        dayNamesShort: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
-        dayNames
+        dayNames,
+        dayNamesShort,
     }
 };
 
@@ -55,7 +56,7 @@ Date.parseISO8601String = function (x) {
 Date.narrow = (x) => {
     const type = typeof x;
     if (x == null) { return null; }
-    if (type === 'number') { return new Date(x); }
+    if (type === 'number' || +x == x) { return new Date(+x); }
     if (type === 'object') {
         // Date already
         if (x.getTime) { return x; }
@@ -66,39 +67,35 @@ Date.narrow = (x) => {
     }
     return Date.parseISO8601String(x);
 };
+const FORMATTERS = {
+    hh: (date) => (pad(date.getHours())),
+    ii: (date) => (pad(date.getMinutes())),
+    hi: (date) => (pad(date.getHours()) + ':' + pad(date.getMinutes())),
+    dd: (date) => (pad(date.getDate())),
+    w: (date) => ('' + dayNames[date.getDay()]),
+    ww: (date) => ('' + dayNamesShort[date.getDay()]),
+    d: (date) => ('' + date.getDate()),
+    mmmm: (date) => (monthName(date.getMonth() + 1, '')),
+    mmm: (date) => (monthName(date.getMonth() + 1, 'Short')),
+    mm: (date) => (pad(date.getMonth() + 1)),
+    yyyy: (date) => (`${date.getFullYear()}`),
+    ll: (date) => (`${date.getTime()}`),
+};
 
-// return date in format dd.mm.yyyy
+// return date repesentation in given format dd.mm.yyyy
 Date.format = (x, format = 'dd.mm.yyyy') => {
     if (!x) {
         return '';
     }
     const date = Date.narrow(x);
-    if (!date) {
-        return '';
-    }
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return format
+    return !date ? '' : format
         .replace(/[_]/g, '\n')
-        .replace('hh', pad(date.getHours()))
-        .replace('ii', pad(date.getMinutes()))
-        .replace('t', pad(date.getHours()) + ':' + pad(date.getMinutes()))
-        .replace('dd', pad(day))
-        .replace('dow', '' + dayNames[date.getDay()])
-        .replace('d', '' + day)
-        .replace('mmmm', monthName(month, ''))
-        .replace('mmm', monthName(month, 'Short'))
-        .replace('mm', pad(month))
-        .replace('yyyy', `${year}`);
+        .replace(/[hidwmyl]+/g, (key) => {
+            const fn = FORMATTERS[key];
+            return fn ? fn(date) : key;
+        });
 };
 
-Date.formatTime = (x) => {
-    if (!x) { return ''; }
-    const date = Date.narrow(x);
-    const minutes = date.getMinutes();
-    return `${date.getHours()}:${pad(minutes)}`;
-};
 Date.firstOfWeek = (d, x = Date.narrow(d)) => (new Date(x.getFullYear(), x.getMonth(), x.getDate() - x.getDay()));
 
 export const formatTimezone = (tzOffset) => {

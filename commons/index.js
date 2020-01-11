@@ -1,7 +1,3 @@
-import './utils.js';
-import './url.js';
-import './dates.js';
-
 import * as supportTypes from './support.js';
 import $pipes from './pipes.js';
 

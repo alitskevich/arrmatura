@@ -324,11 +324,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib */ "./lib/index.js");
-/* harmony import */ var _commons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../commons */ "./commons/index.js");
-/* harmony import */ var _app_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app.html */ "./app/app.html");
-/* harmony import */ var _res__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./res */ "./app/res.js");
-/* harmony import */ var _TodoStore__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./TodoStore */ "./app/TodoStore.js");
+/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../index.js */ "./index.js");
+/* harmony import */ var _app_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.html */ "./app/app.html");
+/* harmony import */ var _res__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./res */ "./app/res.js");
+/* harmony import */ var _TodoStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TodoStore */ "./app/TodoStore.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -340,15 +339,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
 
-
  // load components from templates
 
-var types = [].concat(_toConsumableArray(window.commonTypes), [_TodoStore__WEBPACK_IMPORTED_MODULE_4__["TodoStore"]], _toConsumableArray(Object(_commons__WEBPACK_IMPORTED_MODULE_1__["loadTemplates"])(_app_html__WEBPACK_IMPORTED_MODULE_2__["default"]))); // launch with types and resources 
+var types = [].concat(_toConsumableArray(window.commonTypes), [_TodoStore__WEBPACK_IMPORTED_MODULE_3__["TodoStore"]], _toConsumableArray(Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["loadTemplates"])(_app_html__WEBPACK_IMPORTED_MODULE_1__["default"]))); // launch with types and resources 
 
-Object(_lib__WEBPACK_IMPORTED_MODULE_0__["launch"])({
+Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["launch"])({
   template: '<App/>',
   types: types,
-  resources: _res__WEBPACK_IMPORTED_MODULE_3__["default"]
+  resources: _res__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 
 /***/ }),
@@ -679,7 +677,7 @@ function () {
     Object.assign(this, props, {
       ref: $.ref,
       lookupService: function lookupService(ref) {
-        return $.app[ref];
+        return $.app ? $.app[ref] : null;
       },
       up: function up() {
         return $.up.apply($, arguments);
@@ -936,154 +934,6 @@ function (_Service) {
 
 /***/ }),
 
-/***/ "./commons/dates.js":
-/*!**************************!*\
-  !*** ./commons/dates.js ***!
-  \**************************/
-/*! exports provided: dateLocales, daysInMonth, monthName, dateFractions, formatTimezone */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dateLocales", function() { return dateLocales; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "daysInMonth", function() { return daysInMonth; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "monthName", function() { return monthName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dateFractions", function() { return dateFractions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatTimezone", function() { return formatTimezone; });
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-var pad = function pad(x) {
-  var s = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : String(x);
-  return s.length === 1 ? '0' + s : s;
-};
-
-var dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-var dateLocales = {
-  ru: {
-    monthNames: ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-    monthNamesShort: ['', 'Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-    dayNamesShort: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
-    dayNames: dayNames
-  }
-};
-var daysInMonth = Date.daysInMonth = function (month, year) {
-  return new Date(year, month + 1, 0).getDate();
-};
-var monthName = Date.monthName = function (m) {
-  var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  return (dateLocales.ru["monthNames".concat(mode)] || dateLocales.ru.monthNames)[m];
-};
-var dateFractions = Date.fractions = function () {
-  var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Date();
-  return [x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds(), x.getMilliseconds()];
-};
-/* eslint-disable complexity, no-param-reassign */
-
-Date.parseISO8601String = function (x) {
-  if (typeof x !== 'string') {
-    throw new Error("parseISO8601String: not a string: ".concat(x));
-  }
-
-  if (x.length === 10) {
-    x += 'T12:00';
-  }
-
-  var timebits = /^([0-9]{4})-([0-9]{2})-([0-9]{2})[ T]([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(Z?)(([+-])([0-9]{2})([0-9]{2}))?/;
-  var m = timebits.exec(x);
-
-  if (!m) {
-    return null;
-  }
-
-  var tz = m[8] ? !m[9] ? 0 : (m[10] === '+' ? -1 : +1) * (parseInt(m[11]) * 60 + parseInt(m[12])) : new Date().getTimezoneOffset(); // utcdate is milliseconds since the epoch
-
-  var utcdate = Date.UTC(parseInt(m[1]), parseInt(m[2]) - 1, // months are zero-offset (!)
-  parseInt(m[3]), parseInt(m[4]), parseInt(m[5]), // hh:mm
-  m[6] && parseInt(m[6]) || 0, // optional seconds
-  m[7] && parseFloat(m[7]) || 0);
-  return new Date(utcdate + tz * 60000);
-};
-/**
- * Universal all-weather converter to Date.
- *
- * @param {*} x any value to be converted to date
- * @returns Date instance or null
- */
-
-
-Date.narrow = function (x) {
-  var type = _typeof(x);
-
-  if (x == null) {
-    return null;
-  }
-
-  if (type === 'number') {
-    return new Date(x);
-  }
-
-  if (type === 'object') {
-    // Date already
-    if (x.getTime) {
-      return x;
-    } // having a date re-presentation method
-
-
-    if (x.toDate) {
-      return x.toDate();
-    } // firestore timestamp for web
-
-
-    if (x.seconds && x.nanoseconds != null) {
-      return new Date(x.seconds * 1000 + x.nanoseconds);
-    }
-  }
-
-  return Date.parseISO8601String(x);
-}; // return date in format dd.mm.yyyy
-
-
-Date.format = function (x) {
-  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'dd.mm.yyyy';
-
-  if (!x) {
-    return '';
-  }
-
-  var date = Date.narrow(x);
-
-  if (!date) {
-    return '';
-  }
-
-  var day = date.getDate();
-  var month = date.getMonth() + 1;
-  var year = date.getFullYear();
-  return format.replace(/[_]/g, '\n').replace('hh', pad(date.getHours())).replace('ii', pad(date.getMinutes())).replace('t', pad(date.getHours()) + ':' + pad(date.getMinutes())).replace('dd', pad(day)).replace('dow', '' + dayNames[date.getDay()]).replace('d', '' + day).replace('mmmm', monthName(month, '')).replace('mmm', monthName(month, 'Short')).replace('mm', pad(month)).replace('yyyy', "".concat(year));
-};
-
-Date.formatTime = function (x) {
-  if (!x) {
-    return '';
-  }
-
-  var date = Date.narrow(x);
-  var minutes = date.getMinutes();
-  return "".concat(date.getHours(), ":").concat(pad(minutes));
-};
-
-Date.firstOfWeek = function (d) {
-  var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Date.narrow(d);
-  return new Date(x.getFullYear(), x.getMonth(), x.getDate() - x.getDay());
-};
-
-var formatTimezone = function formatTimezone(tzOffset) {
-  var toNumber = Number(tzOffset);
-  return toNumber ? toNumber >= 0 ? "+".concat(pad(toNumber / 60), ":").concat(pad(toNumber % 60)) : "-".concat(pad(-toNumber / 60), ":").concat(pad(-toNumber % 60)) : '';
-};
-
-/***/ }),
-
 /***/ "./commons/elements.html":
 /*!*******************************!*\
   !*** ./commons/elements.html ***!
@@ -1093,7 +943,7 @@ var formatTimezone = function formatTimezone(tzOffset) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src} alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src}\n                 alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
 
 /***/ }),
 
@@ -1106,7 +956,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body id=\"app\">\n    <template id=\"FieldItem\">\n        <div class=\"columns form-group has-error:{error} {class}\">\n            <div class=\" col-4 col-sm-12\">\n                <label class=\"form-label\" for=\"input-example-1\">\n                    {caption}\n                    <sup ui:if={required}\n                         class=\"text-error\">✱</sup>\n                </label>\n            </div>\n            <div class=\"col-8 col-sm-12\">\n                <ui:slot />\n                <p class=\"form-input-hint\" ui:if={error}>{error}</p>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"TextField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   type=\"text\"\n                   disabled={disabled}\n                   placeholder={placeholder|or:@caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"date\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateTimeField\">\n        <FieldItem caption=\"{caption}\" error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"datetime-local\"\n                   placeholder={caption}\n                   value={value|date:yyyy-mm-ddTt}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"NumberField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"number\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"TextareaField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <textarea\n                      class=\"form-input\"\n                      style=\"min-height: 15vw\"\n                      disabled={disabled} placeholder={caption} rows=\"3\" change={onChange} value={value}></textarea>\n        </FieldItem>\n    </template>\n\n    <template id=\"SwitchField\">\n        <div class=\"form-group\">\n            <div class=\"col-sm-12\">\n                <label class=\"form-switch\">\n                    <span>{caption}</span>\n                    <input type=\"checkbox\" toggle={onChange} data={data} checked={value|not|not}>\n                    <i class=\"form-icon\"></i>\n                </label>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"EnumField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options=\":enums.{typeSpec}\"\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"SelectField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options={options}\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RadioField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <RadioGroup change={onChange}\n                        value={value} data={data} options=\":enums.{typeSpec}\"\n                        disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"ReferenceField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Search\"\n                    data-value={keyword.value|orDataPropValueByKey:keyword}\n                    trigger={keyword.value}\n                    into=\"->options\" />\n            <Loader from=\"-> references.{typeSpec}Entry\" data-id={value} trigger={value} into=\"->entry\" />\n            <ReferenceInput change={onChange}\n                            value={value} entry={entry.data}\n                            onKeyword=\"->keyword\" keyword={keyword.value|orDataPropValueByKey:keyword}\n                            onSelectMenuItem=\"->entry\"\n                            options={options.data}\n                            disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RemoteEnumField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Enum\" data={data} into=\"->options\" />\n            <Select class=\"form-select\" change={onChange} value={value} data={options.data} disabled={disabled} />\n        </FieldItem>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body id=\"app\">\n    <template id=\"FieldItem\">\n        <div class=\"columns form-group {error|then:has-error} {class}\">\n            <div class=\" col-4 col-sm-12\">\n                <label class=\"form-label\" for=\"input-example-1\">\n                    {caption}\n                    <sup ui:if={required}\n                         class=\"text-error\">✱</sup>\n                </label>\n            </div>\n            <div class=\"col-8 col-sm-12\">\n                <ui:slot />\n                <p class=\"form-input-hint\" ui:if={error}>{error}</p>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"TextField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   type=\"text\"\n                   disabled={disabled}\n                   placeholder={placeholder|or:@caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"date\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"DateTimeField\">\n        <FieldItem caption=\"{caption}\" error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"datetime-local\"\n                   placeholder={caption}\n                   value={value|date:yyyy-mm-ddTt}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"NumberField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <input class=\"form-input\"\n                   disabled={disabled}\n                   type=\"number\"\n                   placeholder={caption}\n                   value={value}\n                   change={onChange}>\n        </FieldItem>\n    </template>\n\n    <template id=\"TextareaField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <textarea\n                      class=\"form-input\"\n                      style=\"min-height: 15vw\"\n                      disabled={disabled} placeholder={caption} rows=\"3\" change={onChange} value={value}></textarea>\n        </FieldItem>\n    </template>\n\n    <template id=\"SwitchField\">\n        <div class=\"form-group\">\n            <div class=\"col-sm-12\">\n                <label class=\"form-switch\">\n                    <span>{caption}</span>\n                    <input type=\"checkbox\" toggle={onChange} data={data} checked={value|not|not}>\n                    <i class=\"form-icon\"></i>\n                </label>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"EnumField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options=\":enums.{typeSpec}\"\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"SelectField\">\n        <FieldItem caption={caption} class={class} error={error} required={required}>\n            <Select class=\"form-select\"\n                    change={onChange}\n                    value={value|or:@defaultValue}\n                    data={data}\n                    options={options}\n                    emptyCaption={emptyCaption}\n                    disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RadioField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <RadioGroup change={onChange}\n                        value={value} data={data} options=\":enums.{typeSpec}\"\n                        disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"ReferenceField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Search\"\n                    data-value={keyword.value|orDataPropValueByKey:keyword}\n                    trigger={keyword.value}\n                    into=\"->options\" />\n            <Loader from=\"-> references.{typeSpec}Entry\" data-id={value} trigger={value} into=\"->entry\" />\n            <ReferenceInput change={onChange}\n                            value={value} entry={entry.data}\n                            onKeyword=\"->keyword\" keyword={keyword.value|orDataPropValueByKey:keyword}\n                            onSelectMenuItem=\"->entry\"\n                            options={options.data}\n                            disabled={disabled} />\n        </FieldItem>\n    </template>\n\n    <template id=\"RemoteEnumField\">\n        <FieldItem caption={caption} error={error} required={required}>\n            <Loader from=\"-> references.{typeSpec}Enum\" data={data} into=\"->options\" />\n            <Select class=\"form-select\" change={onChange} value={value} data={options.data} disabled={disabled} />\n        </FieldItem>\n    </template>\n\n</body>");
 
 /***/ }),
 
@@ -1122,24 +972,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadTemplates", function() { return loadTemplates; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "commonPipes", function() { return commonPipes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "commonTypes", function() { return commonTypes; });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils.js */ "./commons/utils.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_utils_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _url_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./url.js */ "./commons/url.js");
-/* harmony import */ var _url_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_url_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _dates_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dates.js */ "./commons/dates.js");
-/* harmony import */ var _support_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./support.js */ "./commons/support.js");
-/* harmony import */ var _pipes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pipes.js */ "./commons/pipes.js");
-/* harmony import */ var _elements_html__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./elements.html */ "./commons/elements.html");
-/* harmony import */ var _table_html__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./table.html */ "./commons/table.html");
-/* harmony import */ var _inputs_html__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./inputs.html */ "./commons/inputs.html");
-/* harmony import */ var _fields_html__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./fields.html */ "./commons/fields.html");
-/* harmony import */ var _layouts_html__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./layouts.html */ "./commons/layouts.html");
-/* harmony import */ var _viewport_html__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./viewport.html */ "./commons/viewport.html");
-/* harmony import */ var _NavigationService__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./NavigationService */ "./commons/NavigationService.js");
-/* harmony import */ var _ServiceWorker__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./ServiceWorker */ "./commons/ServiceWorker.js");
-/* harmony import */ var _Form__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Form */ "./commons/Form.js");
-/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _Service__WEBPACK_IMPORTED_MODULE_14__["Service"]; });
+/* harmony import */ var _support_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./support.js */ "./commons/support.js");
+/* harmony import */ var _pipes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pipes.js */ "./commons/pipes.js");
+/* harmony import */ var _elements_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./elements.html */ "./commons/elements.html");
+/* harmony import */ var _table_html__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./table.html */ "./commons/table.html");
+/* harmony import */ var _inputs_html__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./inputs.html */ "./commons/inputs.html");
+/* harmony import */ var _fields_html__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./fields.html */ "./commons/fields.html");
+/* harmony import */ var _layouts_html__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./layouts.html */ "./commons/layouts.html");
+/* harmony import */ var _viewport_html__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./viewport.html */ "./commons/viewport.html");
+/* harmony import */ var _NavigationService__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./NavigationService */ "./commons/NavigationService.js");
+/* harmony import */ var _ServiceWorker__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ServiceWorker */ "./commons/ServiceWorker.js");
+/* harmony import */ var _Form__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Form */ "./commons/Form.js");
+/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _Service__WEBPACK_IMPORTED_MODULE_11__["Service"]; });
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1150,9 +995,6 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-
-
 
 
 
@@ -1183,8 +1025,8 @@ var loadTemplates = function loadTemplates() {
   });
   return R;
 };
-var commonPipes = _pipes_js__WEBPACK_IMPORTED_MODULE_4__["default"];
-var commonTypes = [_ServiceWorker__WEBPACK_IMPORTED_MODULE_12__["ServiceWorker"], _NavigationService__WEBPACK_IMPORTED_MODULE_11__["NavigationService"]].concat(_toConsumableArray(Object.values(_support_js__WEBPACK_IMPORTED_MODULE_3__)), _toConsumableArray(Object.values(_Form__WEBPACK_IMPORTED_MODULE_13__)), _toConsumableArray(loadTemplates(_elements_html__WEBPACK_IMPORTED_MODULE_5__["default"], _table_html__WEBPACK_IMPORTED_MODULE_6__["default"], _fields_html__WEBPACK_IMPORTED_MODULE_8__["default"], _viewport_html__WEBPACK_IMPORTED_MODULE_10__["default"], _layouts_html__WEBPACK_IMPORTED_MODULE_9__["default"], _inputs_html__WEBPACK_IMPORTED_MODULE_7__["default"])));
+var commonPipes = _pipes_js__WEBPACK_IMPORTED_MODULE_1__["default"];
+var commonTypes = [_ServiceWorker__WEBPACK_IMPORTED_MODULE_9__["ServiceWorker"], _NavigationService__WEBPACK_IMPORTED_MODULE_8__["NavigationService"]].concat(_toConsumableArray(Object.values(_support_js__WEBPACK_IMPORTED_MODULE_0__)), _toConsumableArray(Object.values(_Form__WEBPACK_IMPORTED_MODULE_10__)), _toConsumableArray(loadTemplates(_elements_html__WEBPACK_IMPORTED_MODULE_2__["default"], _table_html__WEBPACK_IMPORTED_MODULE_3__["default"], _fields_html__WEBPACK_IMPORTED_MODULE_5__["default"], _viewport_html__WEBPACK_IMPORTED_MODULE_7__["default"], _layouts_html__WEBPACK_IMPORTED_MODULE_6__["default"], _inputs_html__WEBPACK_IMPORTED_MODULE_4__["default"])));
 
 if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
   window.commonTypes = commonTypes;
@@ -1284,7 +1126,6 @@ __webpack_require__.r(__webpack_exports__);
     orNow: function orNow(x) {
       return x || new Date();
     },
-    firstOfWeek: Date.firstOfWeek,
     time: Date.formatTime
   })
 });
@@ -1500,572 +1341,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./commons/url.js":
-/*!************************!*\
-  !*** ./commons/url.js ***!
-  \************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-/**
- * Parses string into URL object.
- *
- * @param {string} s string in format: `type:target/path?params#data`
- * @param {object} r optional target object
- * @returns URL object like `{type, target, path, params, data }`
- */
-Object.urlParse = function (s) {
-  var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  if (!s) {
-    return _objectSpread({
-      path: [],
-      params: {},
-      target: ''
-    }, r);
-  }
-
-  if (_typeof(s) === 'object') {
-    return _objectSpread({
-      path: [],
-      params: {},
-      target: ''
-    }, r, {}, s);
-  }
-
-  var p; // extract type:
-
-  p = s.indexOf(':');
-
-  if (p > -1) {
-    r.type = s.slice(0, p);
-    s = s.slice(p + 1);
-  } // extract data:
-
-
-  p = s.indexOf('#');
-
-  if (p > -1) {
-    r.data = decodeValue(s.slice(p + 1));
-    s = s.slice(0, p);
-  } // extract query params:
-
-
-  p = s.indexOf('?');
-  r.params = r.params || {};
-
-  if (p > -1) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = s.slice(p + 1).split('&')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var param = _step.value;
-
-        var _param$split = param.split('='),
-            _param$split2 = _slicedToArray(_param$split, 2),
-            key = _param$split2[0],
-            value = _param$split2[1];
-
-        if (value) {
-          r.params[key] = decodeValue(value);
-        }
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-
-    s = s.slice(0, p);
-  } // target and path:
-
-
-  var path = r.path = s.split('/').map(decodeURIComponent);
-
-  while (path.length && !r.target) {
-    r.target = path.shift();
-  }
-
-  return r;
-};
-/**
-*  Represents an URL object as a string
-*
-* @param {object} r URL object like `{type, target, path, params, data }`
-* @returns string in format `type:target/path?params#data`
-*/
-
-
-Object.urlStringify = function (r) {
-  var result = '';
-
-  if (!r) {
-    return result;
-  }
-
-  if (typeof r === 'string') {
-    return r;
-  }
-
-  if (r.target) {
-    if (r.type) {
-      result += "".concat(r.type, "://");
-    }
-
-    result += r.target;
-  }
-
-  if (r.path) {
-    result += "/".concat(Array.isArray(r.path) ? r.path.map(encodeURIComponent).join('/') : r.path);
-  }
-
-  var params = r.params;
-
-  if (params) {
-    var keys = Object.keys(params).filter(function (key) {
-      return params[key] != null;
-    });
-
-    if (keys.length) {
-      result += "?".concat(keys.map(function (key) {
-        return "".concat(key, "=").concat(encodeValue(params[key]));
-      }).join('&'));
-    }
-  }
-
-  if (r.data) {
-    result += "#".concat(encodeValue(r.data));
-  }
-
-  return result;
-};
-
-var VALUE_MAP = {
-  "true": true,
-  "false": false,
-  undefined: undefined
-};
-
-function decodeValue(val) {
-  var value = decodeURIComponent(val);
-
-  if ('{['.indexOf(value[0]) > -1) {
-    return JSON.parse(value);
-  }
-
-  var num = +value;
-
-  if (value.length <= 17 && !isNaN(num)) {
-    return num;
-  }
-
-  return VALUE_MAP[value] || value;
-}
-
-function encodeValue(value) {
-  return encodeURIComponent(_typeof(value) === 'object' ? JSON.stringify(value) : "".concat(value));
-}
-
-/***/ }),
-
-/***/ "./commons/utils.js":
-/*!**************************!*\
-  !*** ./commons/utils.js ***!
-  \**************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-/** ***********************
- * Objects.
- */
-
-/**
- * Checks if argument is empty .
- */
-Object.EMPTY = Object.freeze({});
-
-Object.isEmpty = function (x) {
-  if (!x) {
-    return true;
-  }
-
-  if (x instanceof Object) {
-    // (zero-length array)
-    if (Array.isArray(x)) {
-      return x.length === 0;
-    } // (zero-size map)
-
-
-    if (x instanceof Map) {
-      return x.size === 0;
-    } // (has no props)
-
-
-    return Object.keys(x).length === 0;
-  }
-
-  return false;
-};
-/**
- * Digs value in a given object structure by a given path.
- *
- * @param {*} o source object
- * @param {*} steps path
- * @param {*} def default value
- */
-
-
-Object.dig = function (o, steps) {
-  return steps.split('.').reduce(function (r, e) {
-    return r ? r[e] : void 0;
-  }, o);
-};
-/**
- * Formats given string template with params.
- *
- * Template should contain placeholders like `{someKey}`,
- * which will be replaced with value by key from params.
- *
- * @param {string} template string template
- * @param {object} params hash with parameters
- */
-
-
-String.format = function (template, params) {
-  return "".concat(template || '').replace(/\{([\S]+)\}/i, function (_, key) {
-    return (params && params[key]) != null ? params[key] : '';
-  });
-};
-
-function capitalize(x) {
-  if (!x) {
-    return x;
-  }
-
-  var s = "".concat(x);
-  return s[0].toUpperCase() + s.slice(1);
-}
-
-function camelize(s) {
-  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '_';
-  return s && s.length && s.split(sep).map(function (t, i) {
-    return i ? capitalize(t) : t;
-  }).join('') || "";
-}
-
-String.tail = function (x) {
-  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.';
-
-  if (!x) {
-    return '';
-  }
-
-  var pos = x.lastIndexOf(sep);
-  return pos === -1 ? x : x.slice(pos + sep.length);
-};
-
-String.lastTail = function (key) {
-  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.';
-  return ('' + key).split(sep).slice(-1)[0];
-};
-
-String.head = function (x) {
-  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.';
-
-  if (!x) {
-    return '';
-  }
-
-  var pos = x.indexOf(sep);
-  return pos === -1 ? x : x.slice(0, pos);
-};
-
-String.pad = function (x) {
-  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
-  var fill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '0';
-  var s = String(x);
-
-  while (s.length < size) {
-    s = "".concat(fill).concat(s);
-  }
-
-  return s;
-};
-
-String.capitalize = capitalize;
-String.camelize = camelize;
-
-String.mirror = function (x) {
-  return (x || '').split('').reduce(function (r, c) {
-    return c + r;
-  }, '');
-};
-
-String.snakeCase = function (x) {
-  return (x || '').replace(/([a-z])([A-Z])/g, '$1_$2');
-};
-
-String.proper = function (s) {
-  return capitalize(camelize(s));
-};
-
-String.upper = function (s) {
-  return ('' + s).toUpperCase();
-};
-/** ***********************
- * Arrays.
- */
-
-
-Array.EMPTY = Object.freeze([]);
-
-Array.slice = function (x) {
-  var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-  var e = arguments.length > 2 ? arguments[2] : undefined;
-  return x ? x.slice(b, e) : [];
-};
-/**
- * Builds histogram on given field for given list.
- *
- * @param {*} list source
- * @param {*} field to be used as group key
- */
-
-
-Array.groupBy = function (list) {
-  var field = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
-  var result = {};
-  var fieldFn = typeof field === 'string' ? function (e) {
-    return e[field];
-  } : field;
-
-  var iter = function iter(v, entry) {
-    var slot = result[v] || (result[v] = {
-      id: v,
-      count: 0,
-      subs: []
-    });
-    slot.count++;
-    slot.subs.push(entry);
-  };
-
-  (list || []).forEach(function (e) {
-    var value = fieldFn(e);
-
-    if (Array.isArray(value)) {
-      value.forEach(function (v) {
-        return iter(v, e);
-      });
-    } else {
-      iter(value, e);
-    }
-  });
-  return result;
-};
-/**
- * Sorts array by element property.
- *
- * @param {*} arr source
- * @param {*} property element property to sort by
- * @param {*} order
- */
-
-
-Array.sortBy = function sortBy(arr) {
-  var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'name';
-  var order = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-  var fn = property;
-
-  if (typeof property === 'string') {
-    if (property[0] === '-') {
-      /* eslint-disable */
-      order = -1;
-      property = property.substr(1);
-    }
-
-    fn = function fn(e) {
-      return e[property];
-    };
-  }
-
-  function compare(a, b) {
-    var aa = fn(a);
-    var bb = fn(b);
-    /* eslint-disable */
-
-    return aa < bb ? -order : aa > bb ? order : 0;
-  }
-
-  return (arr || []).slice(0).sort(compare);
-};
-/**
- * Transforms array into hash object.
- * 
- * @param {*} list source array
- * @param {*} idKey id key
- * @param {*} valKey value key
- */
-
-
-Array.toHash = function (list) {
-  var idKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
-  var valKey = arguments.length > 2 ? arguments[2] : undefined;
-  var r = {};
-
-  if (list) {
-    var isKeyFn = typeof idKey === 'string' ? function (e) {
-      return e[idKey];
-    } : idKey;
-    list.forEach(function (e) {
-      r[isKeyFn(e)] = valKey ? e[valKey] : e;
-    });
-  }
-
-  return r;
-};
-/** ***********************
- * Crypto.
- */
-
-/**
- * Functions
- */
-
-
-Function.ID = function (x) {
-  return x;
-};
-
-Function.next = function (COUNTER) {
-  return function () {
-    var p = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-    return p + COUNTER++;
-  };
-}(1);
-
-Function["throw"] = function (error) {
-  var ErrorType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Error;
-  throw typeof error === 'string' ? new ErrorType(error) : error;
-};
-
-Function.assert = function (b, error, errorType) {
-  return b || Function["throw"](error, errorType);
-};
-
-Function.compose = function () {
-  for (var _len = arguments.length, ff = new Array(_len), _key = 0; _key < _len; _key++) {
-    ff[_key] = arguments[_key];
-  }
-
-  return function (x0) {
-    return ff.reduceRight(function (x, f) {
-      return f(x);
-    }, x0);
-  };
-};
-
-Function.swap = function (f) {
-  return function (a, b) {
-    return f(b, a);
-  };
-};
-
-Function.curry = function () {
-  var _curry = function _curry(fn, args0, lengthLimit) {
-    var fx = function fx(args) {
-      return args.length >= lengthLimit ? fn.apply(void 0, _toConsumableArray(args)) : _curry(fn, args, lengthLimit - args.length);
-    };
-
-    return function () {
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
-
-      return fx([].concat(_toConsumableArray(args0), args));
-    };
-  };
-
-  return function (f) {
-    for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-      args[_key3 - 1] = arguments[_key3];
-    }
-
-    return _curry(f, args, f.length);
-  };
-}();
-/* Simple GUID generator. */
-
-
-Function.guid = function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  }
-
-  return "".concat(s4() + s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4()).concat(s4()).concat(s4());
-};
-/* eslint-disable */
-
-/* Simple hash function. */
-
-
-Function.hash = function (s) {
-  var a = 1,
-      c = 0,
-      h,
-      o;
-
-  if (s) {
-    a = 0;
-    /* jshint plusplus:false bitwise:false */
-
-    for (h = s.length - 1; h >= 0; h--) {
-      o = s.charCodeAt(h);
-      a = (a << 6 & 268435455) + o + (o << 14);
-      c = a & 266338304;
-      a = c !== 0 ? a ^ c >> 21 : a;
-    }
-  }
-
-  return String(a);
-};
-
-/***/ }),
-
 /***/ "./commons/viewport.html":
 /*!*******************************!*\
   !*** ./commons/viewport.html ***!
@@ -2076,6 +1351,34 @@ Function.hash = function (s) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:200px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
+
+/***/ }),
+
+/***/ "./index.js":
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/*! exports provided: loadTemplates, commonPipes, commonTypes, launch, Service */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ultis__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ultis */ "./ultis/index.js");
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib */ "./lib/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "launch", function() { return _lib__WEBPACK_IMPORTED_MODULE_1__["launch"]; });
+
+/* harmony import */ var _commons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./commons */ "./commons/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "loadTemplates", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["loadTemplates"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "commonPipes", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["commonPipes"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "commonTypes", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["commonTypes"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["Service"]; });
+
+
+
+
 
 /***/ }),
 
@@ -2995,7 +2298,7 @@ function () {
         }
 
         var result = method.call(ref, event, ref, ref.$);
-        this.log(type + ':' + methodName(target, 'on'), result, event, ref);
+        this.log(type + ':' + methodName(target, 'on'), result, data, ref);
 
         if (result) {
           ref.$.up(result);
@@ -3228,7 +2531,7 @@ var DOM_SETTERS = {
     var data = _objectSpread({}, e.$dataset);
 
     var hs = !v ? null : function (ev) {
-      data.started = true;
+      data.active = true;
       data.x = ev.pageX || ev.changedTouches[0].screenX;
       data.y = ev.pageY || ev.changedTouches[0].screenY;
       return false;
@@ -3237,15 +2540,14 @@ var DOM_SETTERS = {
     this.setAttribute('touch:mousedown', hs);
     var h = !v ? function () {
       return null;
-    } : function (_final) {
+    } : function (stop) {
       return function (ev) {
-        if (data.started) {
-          data.started = !_final;
+        if (data.active) {
+          data.active = !stop;
           data.xx = ev.pageX || ev.changedTouches[0].screenX;
           data.yy = ev.pageY || ev.changedTouches[0].screenY;
           data.dx = data.xx - data.x;
           data.dy = data.yy - data.y;
-          data["final"] = _final;
 
           _this8.$attributes.touch(data, ev);
         }
@@ -3338,30 +2640,24 @@ var DOM_VALUE_COMPARATORS = {
 var Element =
 /*#__PURE__*/
 function () {
-  function Element() {
-    var attrs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var $ = arguments.length > 1 ? arguments[1] : undefined;
-
+  function Element(attrs, $) {
     _classCallCheck(this, Element);
 
     this.elt = $.elt = $.tag === '#text' ? document.createTextNode('') : document.createElement($.tag);
-    this.$attributes = {};
-    this.$ = this.elt.$ = $;
     this.applyAttributes(attrs);
   }
 
   _createClass(Element, [{
     key: "done",
     value: function done() {
-      var e = this.elt;
-      var lstnrs = this.$listeners;
-
-      if (lstnrs) {
-        Object.keys(lstnrs).forEach(function (k) {
-          return e.removeEventListener(k, lstnrs[k]);
-        });
-        this.$listeners = null;
-      }
+      var e = this.elt; // const lstnrs = this.listeners;
+      // if (lstnrs) {
+      //   Object.keys(lstnrs).forEach((fn, key) => {
+      //     const [akey, ekey = akey] = key.split(':');
+      //     e.removeEventListener(ekey, fn);
+      //   });
+      //   this.listeners = null;
+      // }
 
       var p = e.parentElement;
 
@@ -3410,14 +2706,15 @@ function () {
     }
   }, {
     key: "applyAttributes",
-    value: function applyAttributes(theirs) {
+    value: function applyAttributes() {
+      var theirs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var mines = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.$attributes || {};
       var e = this.elt;
-      var mines = this.$attributes;
 
       for (var key in theirs) {
         if (Object.prototype.hasOwnProperty.call(theirs, key) && !(DOM_VALUE_COMPARATORS[key] || DOM_VALUE_COMPARATORS._)(e, theirs[key], mines[key])) {
           var value = theirs[key];
-          var setter = DOM_SETTERS[key]; // console.log('setAttribute' + this.$.tag, key, value)
+          var setter = DOM_SETTERS[key];
 
           if (setter) {
             setter.call(this, e, value);
@@ -3923,6 +3220,13 @@ function resolveTemplate(owner, tmpl) {
       id = tmpl.id,
       ref = tmpl.ref,
       $spec = tmpl.$spec;
+  var props = updates && updates.length ? updates.reduce(function (r, fn) {
+    fn(owner, r);
+    return r;
+  }, {}) : null;
+  var content = nodes && nodes.length ? nodes.reduce(function (m, t) {
+    return resolveTemplate(owner, t, m);
+  }, new Map()) : null;
   return acc.set(uid, {
     tag: tag,
     id: id,
@@ -3932,13 +3236,8 @@ function resolveTemplate(owner, tmpl) {
     initials: initials,
     inits: inits,
     $spec: $spec,
-    props: updates && updates.length ? updates.reduce(function (acc, fn) {
-      fn(owner, acc);
-      return acc;
-    }, {}) : null,
-    content: nodes && nodes.length ? nodes.reduce(function (m, t) {
-      return resolveTemplate(owner, t, m);
-    }, new Map()) : null
+    props: props,
+    content: content
   });
 }
 
@@ -4146,6 +3445,797 @@ var parseXML = function parseXML(_s, key) {
 
   return ctx[0].getChild(0);
 };
+
+/***/ }),
+
+/***/ "./ultis/arr.js":
+/*!**********************!*\
+  !*** ./ultis/arr.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/** ***********************
+ * Arrays.
+ */
+Array.EMPTY = Object.freeze([]);
+
+Array.slice = function (x) {
+  var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var e = arguments.length > 2 ? arguments[2] : undefined;
+  return x ? x.slice(b, e) : [];
+};
+/**
+ * Builds histogram on given field for given list.
+ *
+ * @param {*} list source
+ * @param {*} field to be used as group key
+ */
+
+
+Array.groupBy = function (list) {
+  var field = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
+  var result = {};
+  var fieldFn = typeof field === 'string' ? function (e) {
+    return e[field];
+  } : field;
+
+  var iter = function iter(v, entry) {
+    var slot = result[v] || (result[v] = {
+      id: v,
+      count: 0,
+      subs: []
+    });
+    slot.count++;
+    slot.subs.push(entry);
+  };
+
+  (list || []).forEach(function (e) {
+    var value = fieldFn(e);
+
+    if (Array.isArray(value)) {
+      value.forEach(function (v) {
+        return iter(v, e);
+      });
+    } else {
+      iter(value, e);
+    }
+  });
+  return result;
+};
+/**
+ * Sorts array by element property.
+ *
+ * @param {*} arr source
+ * @param {*} property element property to sort by
+ * @param {*} order
+ */
+
+
+Array.sortBy = function sortBy(arr) {
+  var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'name';
+  var order = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+  var fn = property;
+
+  if (typeof property === 'string') {
+    if (property[0] === '-') {
+      /* eslint-disable */
+      order = -1;
+      property = property.substr(1);
+    }
+
+    fn = function fn(e) {
+      return e[property];
+    };
+  }
+
+  function compare(a, b) {
+    var aa = fn(a);
+    var bb = fn(b);
+    /* eslint-disable */
+
+    return aa < bb ? -order : aa > bb ? order : 0;
+  }
+
+  return (arr || []).slice(0).sort(compare);
+};
+/**
+ * Transforms array into hash object.
+ * 
+ * @param {*} list source array
+ * @param {*} idKey id key
+ * @param {*} valKey value key
+ */
+
+
+Array.toHash = function (list) {
+  var idKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
+  var valKey = arguments.length > 2 ? arguments[2] : undefined;
+  var r = {};
+
+  if (list) {
+    var isKeyFn = typeof idKey === 'string' ? function (e) {
+      return e[idKey];
+    } : idKey;
+    list.forEach(function (e) {
+      r[isKeyFn(e)] = valKey ? e[valKey] : e;
+    });
+  }
+
+  return r;
+};
+
+/***/ }),
+
+/***/ "./ultis/date.js":
+/*!***********************!*\
+  !*** ./ultis/date.js ***!
+  \***********************/
+/*! exports provided: dateLocales, daysInMonth, monthName, dateFractions, formatTimezone */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dateLocales", function() { return dateLocales; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "daysInMonth", function() { return daysInMonth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "monthName", function() { return monthName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dateFractions", function() { return dateFractions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatTimezone", function() { return formatTimezone; });
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var pad = function pad(x) {
+  var s = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : String(x);
+  return s.length === 1 ? '0' + s : s;
+};
+
+var dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+var dayNamesShort = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+var dateLocales = {
+  ru: {
+    monthNames: ['', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    monthNamesShort: ['', 'Янв', 'Фев', 'Март', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+    dayNames: dayNames,
+    dayNamesShort: dayNamesShort
+  }
+};
+var daysInMonth = Date.daysInMonth = function (month, year) {
+  return new Date(year, month + 1, 0).getDate();
+};
+var monthName = Date.monthName = function (m) {
+  var mode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  return (dateLocales.ru["monthNames".concat(mode)] || dateLocales.ru.monthNames)[m];
+};
+var dateFractions = Date.fractions = function () {
+  var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Date();
+  return [x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds(), x.getMilliseconds()];
+};
+/* eslint-disable complexity, no-param-reassign */
+
+Date.parseISO8601String = function (x) {
+  if (typeof x !== 'string') {
+    throw new Error("parseISO8601String: not a string: ".concat(x));
+  }
+
+  if (x.length === 10) {
+    x += 'T12:00';
+  }
+
+  var timebits = /^([0-9]{4})-([0-9]{2})-([0-9]{2})[ T]([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(Z?)(([+-])([0-9]{2})([0-9]{2}))?/;
+  var m = timebits.exec(x);
+
+  if (!m) {
+    return null;
+  }
+
+  var tz = m[8] ? !m[9] ? 0 : (m[10] === '+' ? -1 : +1) * (parseInt(m[11]) * 60 + parseInt(m[12])) : new Date().getTimezoneOffset(); // utcdate is milliseconds since the epoch
+
+  var utcdate = Date.UTC(parseInt(m[1]), parseInt(m[2]) - 1, // months are zero-offset (!)
+  parseInt(m[3]), parseInt(m[4]), parseInt(m[5]), // hh:mm
+  m[6] && parseInt(m[6]) || 0, // optional seconds
+  m[7] && parseFloat(m[7]) || 0);
+  return new Date(utcdate + tz * 60000);
+};
+/**
+ * Universal all-weather converter to Date.
+ *
+ * @param {*} x any value to be converted to date
+ * @returns Date instance or null
+ */
+
+
+Date.narrow = function (x) {
+  var type = _typeof(x);
+
+  if (x == null) {
+    return null;
+  }
+
+  if (type === 'number' || +x == x) {
+    return new Date(+x);
+  }
+
+  if (type === 'object') {
+    // Date already
+    if (x.getTime) {
+      return x;
+    } // having a date re-presentation method
+
+
+    if (x.toDate) {
+      return x.toDate();
+    } // firestore timestamp for web
+
+
+    if (x.seconds && x.nanoseconds != null) {
+      return new Date(x.seconds * 1000 + x.nanoseconds);
+    }
+  }
+
+  return Date.parseISO8601String(x);
+};
+
+var FORMATTERS = {
+  hh: function hh(date) {
+    return pad(date.getHours());
+  },
+  ii: function ii(date) {
+    return pad(date.getMinutes());
+  },
+  hi: function hi(date) {
+    return pad(date.getHours()) + ':' + pad(date.getMinutes());
+  },
+  dd: function dd(date) {
+    return pad(date.getDate());
+  },
+  w: function w(date) {
+    return '' + dayNames[date.getDay()];
+  },
+  ww: function ww(date) {
+    return '' + dayNamesShort[date.getDay()];
+  },
+  d: function d(date) {
+    return '' + date.getDate();
+  },
+  mmmm: function mmmm(date) {
+    return monthName(date.getMonth() + 1, '');
+  },
+  mmm: function mmm(date) {
+    return monthName(date.getMonth() + 1, 'Short');
+  },
+  mm: function mm(date) {
+    return pad(date.getMonth() + 1);
+  },
+  yyyy: function yyyy(date) {
+    return "".concat(date.getFullYear());
+  },
+  ll: function ll(date) {
+    return "".concat(date.getTime());
+  }
+}; // return date repesentation in given format dd.mm.yyyy
+
+Date.format = function (x) {
+  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'dd.mm.yyyy';
+
+  if (!x) {
+    return '';
+  }
+
+  var date = Date.narrow(x);
+  return !date ? '' : format.replace(/[_]/g, '\n').replace(/[hidwmyl]+/g, function (key) {
+    var fn = FORMATTERS[key];
+    return fn ? fn(date) : key;
+  });
+};
+
+Date.firstOfWeek = function (d) {
+  var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Date.narrow(d);
+  return new Date(x.getFullYear(), x.getMonth(), x.getDate() - x.getDay());
+};
+
+var formatTimezone = function formatTimezone(tzOffset) {
+  var toNumber = Number(tzOffset);
+  return toNumber ? toNumber >= 0 ? "+".concat(pad(toNumber / 60), ":").concat(pad(toNumber % 60)) : "-".concat(pad(-toNumber / 60), ":").concat(pad(-toNumber % 60)) : '';
+};
+
+/***/ }),
+
+/***/ "./ultis/fn.js":
+/*!*********************!*\
+  !*** ./ultis/fn.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+/**
+ * Functions
+ */
+Function.ID = function (x) {
+  return x;
+};
+
+Function.next = function (COUNTER) {
+  return function () {
+    var p = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    return p + COUNTER++;
+  };
+}(1);
+
+Function["throw"] = function (error) {
+  var ErrorType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Error;
+  throw typeof error === 'string' ? new ErrorType(error) : error;
+};
+
+Function.assert = function (b, error, errorType) {
+  return b || Function["throw"](error, errorType);
+};
+
+Function.compose = function () {
+  for (var _len = arguments.length, ff = new Array(_len), _key = 0; _key < _len; _key++) {
+    ff[_key] = arguments[_key];
+  }
+
+  return function (x0) {
+    return ff.reduceRight(function (x, f) {
+      return f(x);
+    }, x0);
+  };
+};
+
+Function.swap = function (f) {
+  return function (a, b) {
+    return f(b, a);
+  };
+};
+
+Function.curry = function () {
+  var _curry = function _curry(fn, args0, lengthLimit) {
+    var fx = function fx(args) {
+      return args.length >= lengthLimit ? fn.apply(void 0, _toConsumableArray(args)) : _curry(fn, args, lengthLimit - args.length);
+    };
+
+    return function () {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      return fx([].concat(_toConsumableArray(args0), args));
+    };
+  };
+
+  return function (f) {
+    for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+
+    return _curry(f, args, f.length);
+  };
+}();
+/* Simple GUID generator. */
+
+
+Function.guid = function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+
+  return "".concat(s4() + s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4(), "-").concat(s4()).concat(s4()).concat(s4());
+};
+/* eslint-disable */
+
+/* Simple hash function. */
+
+
+Function.hash = function (s) {
+  var a = 1,
+      c = 0,
+      h,
+      o;
+
+  if (s) {
+    a = 0;
+    /* jshint plusplus:false bitwise:false */
+
+    for (h = s.length - 1; h >= 0; h--) {
+      o = s.charCodeAt(h);
+      a = (a << 6 & 268435455) + o + (o << 14);
+      c = a & 266338304;
+      a = c !== 0 ? a ^ c >> 21 : a;
+    }
+  }
+
+  return String(a);
+};
+
+/***/ }),
+
+/***/ "./ultis/index.js":
+/*!************************!*\
+  !*** ./ultis/index.js ***!
+  \************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./obj.js */ "./ultis/obj.js");
+/* harmony import */ var _obj_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_obj_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _str_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./str.js */ "./ultis/str.js");
+/* harmony import */ var _str_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_str_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _arr_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./arr.js */ "./ultis/arr.js");
+/* harmony import */ var _arr_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_arr_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _fn_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./fn.js */ "./ultis/fn.js");
+/* harmony import */ var _fn_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_fn_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _url_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./url.js */ "./ultis/url.js");
+/* harmony import */ var _url_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_url_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _date_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./date.js */ "./ultis/date.js");
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ "./ultis/obj.js":
+/*!**********************!*\
+  !*** ./ultis/obj.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/** ***********************
+ * Objects.
+ */
+
+/**
+ * Checks if argument is empty .
+ */
+Object.EMPTY = Object.freeze({});
+
+Object.isEmpty = function (x) {
+  if (!x) {
+    return true;
+  }
+
+  if (x instanceof Object) {
+    // (zero-length array)
+    if (Array.isArray(x)) {
+      return x.length === 0;
+    } // (zero-size map)
+
+
+    if (x instanceof Map) {
+      return x.size === 0;
+    } // (has no props)
+
+
+    return Object.keys(x).length === 0;
+  }
+
+  return false;
+};
+/**
+ * Digs value in a given object structure by a given path.
+ *
+ * @param {*} o source object
+ * @param {*} steps path
+ * @param {*} def default value
+ */
+
+
+Object.dig = function (o, steps) {
+  return steps.split('.').reduce(function (r, e) {
+    return r ? r[e] : void 0;
+  }, o);
+};
+
+/***/ }),
+
+/***/ "./ultis/str.js":
+/*!**********************!*\
+  !*** ./ultis/str.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Formats given string template with params.
+ *
+ * Template should contain placeholders like `{someKey}`,
+ * which will be replaced with value by key from params.
+ *
+ * @param {string} template string template
+ * @param {object} params hash with parameters
+ */
+String.format = function (template, params) {
+  return "".concat(template || '').replace(/\{([\S]+)\}/i, function (_, key) {
+    return (params && params[key]) != null ? params[key] : '';
+  });
+};
+
+String.wrap = function (x, template) {
+  return !x ? '' : "".concat(template || '*').replace('*', x);
+};
+
+function capitalize(x) {
+  if (!x) {
+    return x;
+  }
+
+  var s = "".concat(x);
+  return s[0].toUpperCase() + s.slice(1);
+}
+
+function camelize(s) {
+  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '_';
+  return s && s.length && s.split(sep).map(function (t, i) {
+    return i ? capitalize(t) : t;
+  }).join('') || "";
+}
+
+String.tail = function (x) {
+  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.';
+
+  if (!x) {
+    return '';
+  }
+
+  var pos = x.lastIndexOf(sep);
+  return pos === -1 ? x : x.slice(pos + sep.length);
+};
+
+String.lastTail = function (key) {
+  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.';
+  return ('' + key).split(sep).slice(-1)[0];
+};
+
+String.head = function (x) {
+  var sep = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '.';
+
+  if (!x) {
+    return '';
+  }
+
+  var pos = x.indexOf(sep);
+  return pos === -1 ? x : x.slice(0, pos);
+};
+
+String.pad = function (x) {
+  var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
+  var fill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '0';
+  var s = String(x);
+
+  while (s.length < size) {
+    s = "".concat(fill).concat(s);
+  }
+
+  return s;
+};
+
+String.capitalize = capitalize;
+String.camelize = camelize;
+
+String.mirror = function (x) {
+  return (x || '').split('').reduce(function (r, c) {
+    return c + r;
+  }, '');
+};
+
+String.snakeCase = function (x) {
+  return (x || '').replace(/([a-z])([A-Z])/g, '$1_$2');
+};
+
+String.proper = function (s) {
+  return capitalize(camelize(s));
+};
+
+String.upper = function (s) {
+  return ('' + s).toUpperCase();
+};
+
+/***/ }),
+
+/***/ "./ultis/url.js":
+/*!**********************!*\
+  !*** ./ultis/url.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/**
+ * Parses string into URL object.
+ *
+ * @param {string} s string in format: `type:target/path?params#data`
+ * @param {object} r optional target object
+ * @returns URL object like `{type, target, path, params, data }`
+ */
+Object.urlParse = function (s) {
+  var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (!s) {
+    return _objectSpread({
+      path: [],
+      params: {},
+      target: ''
+    }, r);
+  }
+
+  if (_typeof(s) === 'object') {
+    return _objectSpread({
+      path: [],
+      params: {},
+      target: ''
+    }, r, {}, s);
+  }
+
+  var p; // extract type:
+
+  p = s.indexOf(':');
+
+  if (p > -1) {
+    r.type = s.slice(0, p);
+    s = s.slice(p + 1);
+  } // extract data:
+
+
+  p = s.indexOf('#');
+
+  if (p > -1) {
+    r.data = decodeValue(s.slice(p + 1));
+    s = s.slice(0, p);
+  } // extract query params:
+
+
+  p = s.indexOf('?');
+  r.params = r.params || {};
+
+  if (p > -1) {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = s.slice(p + 1).split('&')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var param = _step.value;
+
+        var _param$split = param.split('='),
+            _param$split2 = _slicedToArray(_param$split, 2),
+            key = _param$split2[0],
+            value = _param$split2[1];
+
+        if (value) {
+          r.params[key] = decodeValue(value);
+        }
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+          _iterator["return"]();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    s = s.slice(0, p);
+  } // target and path:
+
+
+  var path = r.path = s.split('/').map(decodeURIComponent);
+
+  while (path.length && !r.target) {
+    r.target = path.shift();
+  }
+
+  return r;
+};
+/**
+*  Represents an URL object as a string
+*
+* @param {object} r URL object like `{type, target, path, params, data }`
+* @returns string in format `type:target/path?params#data`
+*/
+
+
+Object.urlStringify = function (r) {
+  var result = '';
+
+  if (!r) {
+    return result;
+  }
+
+  if (typeof r === 'string') {
+    return r;
+  }
+
+  if (r.target) {
+    if (r.type) {
+      result += "".concat(r.type, "://");
+    }
+
+    result += r.target;
+  }
+
+  if (r.path) {
+    result += "/".concat(Array.isArray(r.path) ? r.path.map(encodeURIComponent).join('/') : r.path);
+  }
+
+  var params = r.params;
+
+  if (params) {
+    var keys = Object.keys(params).filter(function (key) {
+      return params[key] != null;
+    });
+
+    if (keys.length) {
+      result += "?".concat(keys.map(function (key) {
+        return "".concat(key, "=").concat(encodeValue(params[key]));
+      }).join('&'));
+    }
+  }
+
+  if (r.data) {
+    result += "#".concat(encodeValue(r.data));
+  }
+
+  return result;
+};
+
+var VALUE_MAP = {
+  "true": true,
+  "false": false,
+  undefined: undefined
+};
+
+function decodeValue(val) {
+  var value = decodeURIComponent(val);
+
+  if ('{['.indexOf(value[0]) > -1) {
+    return JSON.parse(value);
+  }
+
+  var num = +value;
+
+  if (value.length <= 17 && !isNaN(num)) {
+    return num;
+  }
+
+  return VALUE_MAP[value] || value;
+}
+
+function encodeValue(value) {
+  return encodeURIComponent(_typeof(value) === 'object' ? JSON.stringify(value) : "".concat(value));
+}
 
 /***/ }),
 
