@@ -23,28 +23,18 @@
 
 ## Control flow 
 
-
 ### Conditionals
 
-#### Basic syntax
- - <... x:if="expression">
-	- <x:else>
-	- slot()
-
-Attribute `ui:if` enables an element(and its inner context) if value of a specific component property is truthy.
+ With `ui:if` attribute, an element(and its inner context) presents only if value of expression is truthy.
 
   ```html
-  <tag ui:if="prop">
+  <tag ... ui:if={expression}>
   ```
 
-> No brackets here.
->
-> No expressions, except can use excl to invert condition `ui:if="!prop"`
-
-#### Extended syntax
+##### `then-else` syntax
 
   ```html
-  <ui:fragment ui:if="enabled">
+  <ui:fragment ui:if={enabled}>
     <ui:then><innerContent1/></ui:then>
     <ui:else><innerContentN/></ui:else>
   </ui:fragment>
@@ -52,169 +42,149 @@ Attribute `ui:if` enables an element(and its inner context) if value of a specif
 
 ### Iterations
 
- `ui:each` attribute created multiple copies of an element iterating over items of from specified component property.
+ `ui:for` attribute multiples component instsnces iterating over given items array.
 
   ```html
   <ul>
-    <li ui:each="item of items">
+    <li ui:for="item of itemsExpression">
       <span>{{itemIndex}}. {{item.name}}</span>
     </li>
   </ul>
   ```
 
-> Current list item is set into `this.item` and accessible programmatically.
->
-> iterative elements are matched and re-used based on `item.id`
->
-> `itemIndex` contains current index
->
-> Beside properties, it's able to iterate instantly over specific resource `<ul ui:each="item of :resId">`
+> - Current list item is set into `this.item` and accessible programmatically.
+> - iterative elements are MUST BE distinguished by `item.id`
+>  - `itemIndex` contains current 0-based index
 
-### properties (_and inner text_)
+##### There are also two special containers: 
 
-`prop="value"` sets any primitive `value` into `prop` property of an element just like plain HTML.
-
->'true', 'false' are narrowed to boolean.
-
-`prop=":resId"` sets resources from `app.resources[resId]` into `prop`.
-
-`prop="{{from}}"` sets value of `from` component property into `prop`.
->values of `function` type are implicitly bound to component instance.
-
-
-
- - <... x:for="item of dataExpression">	
-	- <x:empty>
-	- <x:loading>
+ - `<x:empty>` for empty list.
+ - `<x:loading>` for non-existing list.
 
 ### Fragment
 
-Fragment element `<ui:fragment>` is a transparent container and works just like a parens.
+`<ui:fragment>` is a transparent container and works just like a parens for multiple compoments.
 
   ```html
   <ui:fragment ui:if="enabled">
     <innerContent1/>...<innerContentN/>
   </ui:fragment>
   ```
+      
+## Properties binding expressions
 
->Useful to apply `ui:if`, `ui:each` to multiple elements as a whole.
->
->Also can be used as a root element.
+__syntax__ `prop="value"` sets a constant `value` into `prop` property.
+
+>  - 'true', 'false' are narrowed to boolean, 
+>  - numbers narrowed to number type.
+
+__syntax__ `prop=":resId"` sets value of resource from `app.resources[resId]` into `prop`.
+
+__syntax__ `prop={owner.Prop.Path}` sets bvalue of owner property
+
+> values of `function` type are bound to the owner instance.
+
+__syntax__ `prop="prefix{prop1}suffix{prop2}"` interpolates string with values of owner `prop1` and `prop2` properties into `prop`
+
+__syntax__ `ui:props={ownerDataProp}` spreads keys/values of the object from `ownerDataProp` into properties of an element.
+
+__syntax__ `prop={expr|pipeFn1:arg1:arg2|pipeFn2:@prop2}` applies chain of pipes defined in `app.pipes`. Optional arguments can be passed separated by colon. Use `@` prefix to refer to owner props.
 
 ## Reference
 
-Use `x:ref="id"` attribute to make global-scope reference to a component.	
-	
-## Slots
+There is able to globally refer any component through `ui:ref` attribute.
 
-Component content may be parametrized from outside.
-Slot is a placeholder to be replaced with Component content parameter.
-
-__syntax__	
 ```html
-    <Comp>
-        <SomeContent/>
-        <SomeContent2/>
-    </Comp>
+    <UserService ui:ref="user"/>
+    ...
+    <UserAvatar data="<- user.profile" onSave="->user.update"/>
 ```
 
+## Left arrows
+
+Left arrow makes hot subscription to specifed property of refered component:
+
 ```html
-<div class="component template">
-    <!-- <SomeContent/><SomeContent2/> will be placed here 
-    instead of <x:slot/> -->
-    <x:slot> 
-</div>
+    <List data="<-ref.prop|pipes"/>
 ```
 
-#### Partial slots
-
+## Right arrows
+ 
 ```html
-    <Comp>
-        <Comp:key1><SomeContent1/></Comp:key1>
-        <Comp:key2><SomeContent2/></Comp:key2>
-        <SomeContent/>
-    </Comp>
+    <Button ... 
+      action="-> ref.key1|dataPipes" 
+      data-key="val" 
+      data={expr} />
 ```
+Right arrow creates a function that invokes `app[ref].onKey1(data)` action handler with an `dataset`-object. 
 
-```html
-<div class="component template">
-    <!-- <SomeContent1/> will be placed here 
-    instead of <x:slot/> -->
-    <x:slot  key="key1">
-    <div class="component template">
-        <!-- <SomeContent2/> will be placed here 
-        instead of <x:slot/> -->
-        <x:slot key="key2"> 
-    </div> 
-    <!-- <SomeContent/> will be placed here 
-    instead of <x:slot/> -->
-    <x:slot> 
-</div>
-	<x:slot>
-```       
+> Pipes could be applied on `dataset`-object before it passed. 
 
-	
+> Invocation result-object then updates the `ref`-component.
+
+>  use `this` keyword to refer owner component: 
+`click="-> this.action"`
+
+### Right arrows as owner updaters
+
+Often all what we need is just to update owner state
+- `->` updates owner properties with `dataset` object spreaded.
+- `-> prop` updates given property of owner with `dataset` object.
+
 ## Dynamic tags
 
-Dynamic tag allows to calculate tag on the fly.
-  `<ui:SomeType>` - specifies an element of type based on a value of a `SomeType` property
-   
-__syntax__ `<x:tag tag="interpolationExpression" ...>`
-        
-## Property binding
+There is able to calculate tag at runtime.
 
-Property propagation
+```html
+  <ui:tag tag="{type}Field" ...>
+```
 
-__syntax__ `prop={ownerPropPath}`
+## Slots
 
-String Interpolation
+Slots are placeholders for extra content.
 
-`prop="prefix{{from}}suffix"` interpolates string with value of `from` property to be set into `prop`
+```html
+    <Comp>
+        <ExtraContent/>
+    </Comp>
+```
 
-__syntax__ `prop="{ownerProp}text{ownerProp2}"`
+```html
+<template id="Comp">
+<div class="container"  ui:if="slot(key2)">
+    <!-- Extra content will be placed here 
+    instead of <x:slot/> -->
+    <x:slot> 
+</div>
+</template>
+```
 
-Spread properties from object
-- `ui:props="expr"` spreads the `expr` expression object values into properties of an element.
+> special `slot(key)` conditional could be used to check if non-empty extra content passed.
 
-__syntax__ `x:props={object}`
+#### Multi-part extra content.
 
-Assign global resources
+Extra content could be multiple-part and thus, orbitrary distributed inside component template.
 
-__syntax__ `prop={:resPathExpression}`
+```html
+    <Comp>
+        <Comp:key1><Extra1/></Comp:key1>
+        <Comp:key2><Extra2/></Comp:key2>
+        <DefaultContent/>
+    </Comp>
+```
 
-Using of pipes
-
-`"prop={{from|pipe|pipe2...}}"` applies chain of pipes defined in `app.pipes`.
-
-__syntax__ `prop={expr|pipeFn1:arg1:arg2|pipeFn2:@prop2}`
-
-## Left arrows: subscribe
-
-Left arrow allows hot subscription to specifed property of refered component
-`data="<- url"` subscribes to data from outside (`app.fetch(url, cb)`).
-
-__syntax__ `targetProp="<-ref.prop|pipes"`
-
-## Right arrows: events emitters
-
-Right arrow create a function that emits event emit to specified 
-event handler passing data payload.
-
-
-`click="-> url"` produces function that emits a `data-*` payload to an `app.emit(url, payload)`.
-
-
-@see `Comp.onSomeAction(data, This)` for details about how it will be handled.
-
-__syntax__ 
-    
-    < ... actionProp="-> ref.action|dataPipes" data-key={} data={..} >
-
-- `-> this.action` use keyword `this` to refer to owner component
-
-## Right arrows: owner updaters
+```html
+<div class="component template">
+    <!-- <Extra1/> will be placed here-->
+    <x:slot key="key1">
+    <div class="comp" ui:if="slot(key2)">
+        <!-- <Extra2/> will be placed here -->
+        <x:slot key="key2"> 
+    </div> 
+    <!-- <DefaultContent/> will be placed here -->
+    <x:slot> 
+</div>
+```       
 
 
-- `->` updates owner component with data
-- `-> prop` updates givem prop of owner component with data
-
+ 
