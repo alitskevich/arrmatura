@@ -1,13 +1,16 @@
 	
 ## Custom components 
 
-It is allowed to develop and register custom component classes, to be used to create and manage light-weight component instanses.
+It is allowed to develop `component classes`, to be register and then used by `runtime` to create and manage appropriate component instanses with custom behavior.
+
+> Each component has reference to its own context `this.$` and can invoke its methods like `this.$.up()`, `this.$.emit()`, `this.$.defer()`.
+
 
 ```javascript
 class Comp1 {
 
     // returns a template of a component
-    TEMPLATE() {
+    get TEMPLATE() {
         return '<...>'
     }
 
@@ -23,6 +26,7 @@ class Comp1 {
         // use defer() here if needed
         $.defer(()=> this.close())
 
+        // will update component state with returned result
         // can be promise as well
         return {
             prop1:'',
@@ -31,12 +35,12 @@ class Comp1 {
 
     //    getters/setters	
 
-    // optional getter used to resolve specific template property placeholder.
+    // optional getter used in the template.
     // (Otherwise read from `this.src`)
     getSrc(){
         return this.url.toString()
     }
-    // optional setter invoked from `assign()`
+    // optional setter invoked when `up()`
     // (Otherwise writes into `this.src`)
     setSrc(value){
         this.url = URL.parse(value)
@@ -46,57 +50,40 @@ class Comp1 {
     getAsyncProp() {
         return this.fechData() 
     }	
-
     
-    // action events handler
+    // action handler invoked when '-> ref.someAction' called
     onSomeAction(data, This) {
-        
         if (asynch) {
             return promise.then(()=>delta)
         }
         // state update delta object
         return {
+            // instant value for 'prop'
             prop: data.value,
+            // async evaluation for 'prop'. 'Promise' postfix is optional.
             propPromise: This.fetchProp(),
+            // async spread
             '...': Promise.resolve({
-                prop: 'val2'
+                prop1: 'val1'
+                prop2: 'val2'
             })
         }
     }
 
     render($, renderFn) {
         // custom rendering. very rare need to override
+        // renderFn($)
     }
-```
-
-Such instances are wrapped with each own context from internal components hierarhy built according templates and current data. Component code has reference to its context `this.$` and may invoke some of its useful methods, such as `up()`, `emit()`, `defer()`.
-
-```javascript
 
     // logic
     someMethodDemonstratingContextUsages() {
         // reference to this instance context.
         const $ = this.$;
         // update its props state programmatically:
-        //  - instant
-        $.up(delta);
-        //  - async delta
-        $.up(promise.then(()=>delta));
-        //  - async properties:
-        $.up({
-            prop: 'instantValue',
-            propPromise: This.fetchProp(),
-        });
-        // - spread props
-        $.up({
-            '...': Promise.resolve({
-                prop: 'val2'
-            })
-        });
+        $.up({ prop: 'value' });
 
         // emit event programmatically
         $.emit('other.action', data);
-
     }
 }
 ```

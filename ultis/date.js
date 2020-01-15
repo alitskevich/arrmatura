@@ -67,7 +67,7 @@ Date.narrow = (x) => {
     }
     return Date.parseISO8601String(x);
 };
-const FORMATTERS = {
+const DATE_FORMATTERS = {
     hh: (date) => (pad(date.getHours())),
     ii: (date) => (pad(date.getMinutes())),
     hi: (date) => (pad(date.getHours()) + ':' + pad(date.getMinutes())),
@@ -91,7 +91,7 @@ Date.format = (x, format = 'dd.mm.yyyy') => {
     return !date ? '' : format
         .replace(/[_]/g, '\n')
         .replace(/[hidwmyl]+/g, (key) => {
-            const fn = FORMATTERS[key];
+            const fn = DATE_FORMATTERS[key];
             return fn ? fn(date) : key;
         });
 };

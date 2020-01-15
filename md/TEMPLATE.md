@@ -1,67 +1,68 @@
-# Templates
 
-## Insight Sample
+> __template__ is a text in formal grammar allows to define component composition, data flow and interaction.
+
+# Insight Sample
 
 ```html
 
 <template id="NavTreeItem">
-<a href="#{id}">
-    <span>{name|limitSize:50}</span>
-    <span ui:if={label} class="label label-error">{label}</span>
-</a>
+  <a href="#{id}">
+      <span>{name|limitSize:50}</span>
+      <span ui:if={label} class="label">{label}</span>
+  </a>
 </template>
 
 <template id="NavTree">
-<ul class="nav">
-    <li class="nav-item {item.class}" ui:for="item of data">
-        <NavTreeItem ui:props={item}>
-        <NavTree ui:if={item.subs} data={item.subs} />
-    </li>
-</ul>
+  <ul class="nav">
+      <li class="nav-item {item.class}" ui:for="item of data">
+          <NavTreeItem ui:props={item}>
+          <NavTree ui:if={item.subs} data={item.subs} />
+      </li>
+  </ul>
 </template>
 ```
 
-## Control flow 
+# Control. 
 
-### Conditionals
+## Conditionals
 
  With `ui:if` attribute, an element(and its inner context) presents only if value of expression is truthy.
 
   ```html
-  <tag ... ui:if={expression}>
+  <div ... ui:if={expression}>...</div>
   ```
 
-##### `then-else` syntax
+#### full `then-else` syntax
 
   ```html
   <ui:fragment ui:if={enabled}>
-    <ui:then><innerContent1/></ui:then>
-    <ui:else><innerContentN/></ui:else>
+    <ui:then><Case1/></ui:then>
+    <ui:else><Case2/></ui:else>
   </ui:fragment>
   ```
 
-### Iterations
+## Iterations
 
- `ui:for` attribute multiples component instsnces iterating over given items array.
+ `ui:for` attribute multiples component instances along items from given  array.
 
   ```html
   <ul>
-    <li ui:for="item of itemsExpression">
-      <span>{{itemIndex}}. {{item.name}}</span>
+    <li ui:for="item of expression">
+      <a href="/item/{item.id}">{{itemIndex}}. {{item.name}}</span>
     </li>
   </ul>
   ```
-
-> - Current list item is set into `this.item` and accessible programmatically.
-> - iterative elements are MUST BE distinguished by `item.id`
->  - `itemIndex` contains current 0-based index
+here 
+> - items MUST BE distinguished by `item.id`
+> - `itemIndex` contains current 0-based index
+> - current item is accessible programmatically as `this.item`.
 
 ##### There are also two special containers: 
 
  - `<x:empty>` for empty list.
  - `<x:loading>` for non-existing list.
 
-### Fragment
+## Fragment
 
 `<ui:fragment>` is a transparent container and works just like a parens for multiple compoments.
 
@@ -70,25 +71,14 @@
     <innerContent1/>...<innerContentN/>
   </ui:fragment>
   ```
-      
-## Properties binding expressions
+ 
+# Dynamic tags
 
-__syntax__ `prop="value"` sets a constant `value` into `prop` property.
+There is able to calculate tag at runtime.
 
->  - 'true', 'false' are narrowed to boolean, 
->  - numbers narrowed to number type.
-
-__syntax__ `prop=":resId"` sets value of resource from `app.resources[resId]` into `prop`.
-
-__syntax__ `prop={owner.Prop.Path}` sets bvalue of owner property
-
-> values of `function` type are bound to the owner instance.
-
-__syntax__ `prop="prefix{prop1}suffix{prop2}"` interpolates string with values of owner `prop1` and `prop2` properties into `prop`
-
-__syntax__ `ui:props={ownerDataProp}` spreads keys/values of the object from `ownerDataProp` into properties of an element.
-
-__syntax__ `prop={expr|pipeFn1:arg1:arg2|pipeFn2:@prop2}` applies chain of pipes defined in `app.pipes`. Optional arguments can be passed separated by colon. Use `@` prefix to refer to owner props.
+```html
+  <ui:tag tag="{type}Field" ...>
+```
 
 ## Reference
 
@@ -99,16 +89,43 @@ There is able to globally refer any component through `ui:ref` attribute.
     ...
     <UserAvatar data="<- user.profile" onSave="->user.update"/>
 ```
+  
+# Data flow
 
-## Left arrows
+Property values could be set 
 
-Left arrow makes hot subscription to specifed property of refered component:
+## with constant 
 
-```html
-    <List data="<-ref.prop|pipes"/>
-```
+`prop="value"` sets a `value` constant into `prop` property.
 
-## Right arrows
+>  - 'true', 'false' values are narrowed to boolean, 
+>  - numbers narrowed to number type.
+>  - functions are bound to the owner instance.
+
+## with resource
+
+`prop=":resId"` sets value of resource from `app.resources[resId]` into `prop`.
+
+## with result of instant expression
+
+`prop={prop2}` sets value of `prop2` owner property
+
+`prop={data.key}` sets value of `prop2.key` owner property in depth.
+
+`class="{prop1} prefix-{prop2}"` produces string interpolation with values of owner `prop1` and `prop2` properties.
+
+`ui:props={ownerData}` spreads keys/values of the object from `ownerData` into properties of an element.
+
+`prop={expr|pipeFn1:arg1:arg2|pipeFn2:@prop2}` applies chain of pipes defined in `app.resources`. 
+
+> - Optional arguments can be passed separated by colon. 
+> - Use `@` prefix to refer owner props as agrument.
+
+## with left arrow expression
+
+`data="<-ref.prop|pipes"` makes a hot subscription to any property of orbitrary component by its `ref`.
+
+## with right arrow expression
  
 ```html
     <Button ... 
@@ -122,24 +139,16 @@ Right arrow creates a function that invokes `app[ref].onKey1(data)` action handl
 
 > Invocation result-object then updates the `ref`-component.
 
->  use `this` keyword to refer owner component: 
-`click="-> this.action"`
+> `click="-> this.action"`, where `this` keyword refers owner.
 
-### Right arrows as owner updaters
+#### Right arrows as owner updaters
 
 Often all what we need is just to update owner state
-- `->` updates owner properties with `dataset` object spreaded.
-- `-> prop` updates given property of owner with `dataset` object.
 
-## Dynamic tags
+- `click="->"` updates owner properties with `dataset` object spreaded.
+- `click="-> prop"` updates given property of owner with `dataset` object.
 
-There is able to calculate tag at runtime.
-
-```html
-  <ui:tag tag="{type}Field" ...>
-```
-
-## Slots
+# Slots
 
 Slots are placeholders for extra content.
 
@@ -185,6 +194,3 @@ Extra content could be multiple-part and thus, orbitrary distributed inside comp
     <x:slot> 
 </div>
 ```       
-
-
- 

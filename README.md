@@ -5,22 +5,24 @@
 `Armatura` is a mean to define and compose components of any kind.
 
 It is   
- - declarative, thus almost codeless
- - reactive and functional oriented
+ - declarative until codeless
  - non-obtrusive, platform-independent
+ - reactive 
+ - functional oriented
  - easy to learn and get started. 
 
  ## Purpose 
 
 `Armatura` is a first-citizen minimalistic UI framework, 
-that extends pure HTML with true dynamic components.
+that extends pure HTML with arrows, pipes and dynamic components.
 
 Despite born-for-dom, it is also well-suited to develop wide range of modular component-based applications.
 
 ## Audience	
 
-- Newbies, amateurs, students - to dig into a web dev world easy and fast.
-- Professional developers, start-upers - to adopt, simplify and unify their creatures using one single declarative language.
+- Newbies, amateurs, students - to dig into a web dev easy and fast.
+- Professional developers - to re-think, simplify and unify zoo of their creatures using one single declarative language.
+- start-upers - to fail fast.
 
 # Get Started
 
@@ -28,18 +30,19 @@ Despite born-for-dom, it is also well-suited to develop wide range of modular co
 
 ```javascript
     import {launch} from 'arrmatura';
+    ...
 
-    const classes = [
-        TopClass, // first one is the top one
-        Class1,
+    const types = [
+        TopClass, 
+        SomeService,
+        // template only
         {NAME:'Name2', TEMPLATE:'<...>'}
     ];
 
     launch({
-      classes, 
-      resources:{
-            key:val // to be used in placeholders
-      }	
+      types, 
+      template: '<TopClass/>',
+      resources: { ... }	
     })
 ```
 
