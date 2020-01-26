@@ -13,7 +13,7 @@ Array.slice = (x, b = 0, e) => x ? x.slice(b, e) : [];
  * @param {*} list source
  * @param {*} field to be used as group key
  */
-Array.groupBy = function (list, field = 'id') {
+Array.groupBy = function (list, field = 'type') {
     const result = {};
     const fieldFn = typeof field === 'string' ? e => e[field] : field;
     const iter = (v, entry) => {

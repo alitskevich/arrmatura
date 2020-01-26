@@ -27,7 +27,7 @@
             </a>
             <!-- menu component -->
             <ul class="menu" style="right:0;left:auto;">
-                <li ui:for="item of data|selectizedBy" class="menu-item {item.id|equals:@value|then:active}"
+                <li ui:for="item of data" class="menu-item {item.id|equals:@value|then:active}"
                     data-id={item.id}
                     data-name={item.name}
                     click={change}>
