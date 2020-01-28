@@ -20,12 +20,36 @@
     "@babel/core": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "babel-loader": "^8.0.6",
-    "eslint": "^6.7.1",
+    "raw-loader": "^4.0.0",
+    "standard": "^14.3.1",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "standard": {
+    "globals": [
+      "console"
+    ],
+    "ignore": [
+      "node_modules/**"
+    ],
+    "plugins": [
+      "html"
+    ],
+    "parser": "babel-eslint",
+    "envs": [
+      "jest"
+    ],
+    "validate": [
+      "javascript",
+      "javascriptreact",
+      {
+        "language": "html",
+        "autoFix": true
+      }
+    ]
   },
   "dependencies": {
-    "raw-loader": "^4.0.0",
-    "webpack-dev-server": "^3.9.0"
+    "eslint": "^6.8.0"
   }
 }

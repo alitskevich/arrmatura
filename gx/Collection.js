@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 /**
  * @OnlyCurrentDoc
  */
-var _cache ={};
 
 function Collection(sheetName, opts) {
   opts = opts || {};
@@ -15,7 +16,6 @@ function Collection(sheetName, opts) {
   }
   
   var keys = opts.keys || sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0];
-  function columnOf(name) { return keys.indexOf(name)+1;} 
   
   var appendum = []
   var updendum = {};
@@ -51,7 +51,7 @@ function Collection(sheetName, opts) {
   
   this.forEach = function(fn){
     var T = this;
-    list.forEach(function(e, i){ 
+    list.forEach(function(e){ 
       var d = fn.call(T, e) 
       if (d) {
         T.upsert(d);
@@ -110,7 +110,7 @@ function Collection(sheetName, opts) {
     return this;
   }
   
-  this.vacuum = function(field){
+  this.vacuum = function(){
     var rFrom = sheet.getFrozenRows()+1
     var rLast = sheet.getLastRow()
     if(rLast>rFrom){
@@ -123,7 +123,7 @@ function Collection(sheetName, opts) {
     return this.clear();
   }
   
-  this.clear = function(field){
+  this.clear = function(){
     var rFrom = sheet.getFrozenRows()+1
     var rLast = sheet.getLastRow()
     if(rLast>rFrom){

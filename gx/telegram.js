@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /**
  * https://core.telegram.org/bots/api#sendmessage
  */

@@ -49,13 +49,12 @@ Object.valueOf = function (v){
 /**
  * String
  */
-
-// produces hash from array using `_keyFn` as key generator.
-String.capitalize = function (s) {
+function capitalize(s) {
   return !s ? '' : s.slice(0,1).toUpperCase()+s.slice(1);
 }
 
-// produces hash from array using `_keyFn` as key generator.
+String.capitalize = capitalize
+
 String.camelCase = function camelCase(s) {
   return !s ? '' : s.split('_').map(capitalize).join('');
 }
@@ -67,6 +66,7 @@ String.extract = function (s, expr, subst) {
   }
   return result          
 }
+
 String.pad = function(x) { var s = String(x); return s.length === 1 ? '0' + s : s };
 
 /**
@@ -269,6 +269,7 @@ String.decodeXml = (function() {
       try{
        s = s.replace(RE_XML_ENTITY, FN_XML_ENTITY);
       } catch(e){
+        // no-op
       }
       return s;
     };
