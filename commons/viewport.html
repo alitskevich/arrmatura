@@ -4,7 +4,7 @@
             <ToastService ui:ref="toaster" />
             <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
             <ui:fragment ui:if="slot(aside)">
-                <Sidebar caption={caption}>
+                <Sidebar caption={caption} size={sideBarWidth}>
                     <Sidebar:aside>
                         <ui:slot id="aside" />
                     </Sidebar:aside>
@@ -44,7 +44,7 @@
                 <Icon type="bars" />
             </a>
             <div id="sidebar" class="off-canvas-sidebar">
-                <aside style="display:flex; flex-direction: column; height: 100vh; width:200px">
+                <aside style="display:flex; flex-direction: column; height: 100vh; width:{size|or:250}px">
                     <div class="text-center" ui:if={caption}>
                         <a href="#/main">
                             <h5 class="p-2">{caption}</h5>

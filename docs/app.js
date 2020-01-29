@@ -943,7 +943,7 @@ function (_Service) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src}\n                 alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src}\n                 alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
 
 /***/ }),
 
@@ -1045,7 +1045,7 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"Select\">\n        <select class=\"{class}\" change={change} disabled={disabled} data={data}>\n            <option selected={value|not} value=\"\" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>\n            <option ui:for=\"option of options\" selected={option.id|equals:@value} value={option.id}>\n                {option.name}\n            </option>\n        </select>\n    </template>\n\n    <template id=\"RadioGroup\">\n        <div class=\"{class}\">\n            <label class=\"form-radio\" ui:for=\"option of options\">\n                <input type=\"radio\" name={id|or:rg}\n                       value={option.id}\n                       checked={option.id|equals:@value} change={change} data={data}\n                       disabled={disabled}>\n                <i class=\"form-icon\"></i>{option.name}\n            </label>\n        </div>\n    </template>\n\n    <template id=\"Dropdown\">\n        <div class=\"dropdown\">\n            <a href=\"#\" class=\"btn btn-link dropdown-toggle\" tabindex=\"0\">\n                {data|selectedName}<i class=\"icon icon-caret\"></i>\n            </a>\n            <!-- menu component -->\n            <ul class=\"menu\" style=\"right:0;left:auto;\">\n                <li ui:for=\"item of data|selectizedBy\" class=\"menu-item {item.id|equals:@value|then:active}\"\n                    data-id={item.id}\n                    data-name={item.name}\n                    click={change}>\n                    <a>{item.name}</a>\n                </li>\n            </ul>\n        </div>\n    </template>\n\n    <template id=\"DateTimeInput\">\n        <input class=\"form-input flatpickr-input\"\n               init={:support.initFlatpickr}\n               disabled={disabled}\n               type=\"text\"\n               placeholder={placeholder}\n               value={value|support.setFlatpickrValue}\n               change={change}>\n    </template>\n\n    <template id=\"SearchBar\">\n        <span class=\"ant-input-search ant-input-affix-wrapper\">\n            <input placeholder=\"Поиск...\" class=\"ant-input\" type=\"text\"\n                   value={value} enter={action}\n                   style=\"min-height:40px;\">\n            <span class=\"ant-input-suffix\">\n                <i class=\"anticon anticon-search ant-input-search-icon\" style=\"margin-top: 4px;\"></i>\n            </span>\n        </span>\n    </template>\n\n    <template id=\"ReferenceInput\">\n        <div class=\"form-autocomplete\">\n            <div class=\"form-input has-icon-right\" data-showMenu={showMenu|not} click=\"->\">\n                <div>{entry.fullNameRu}</div>\n                <i class=\"form-icon icon icon-edit c-hand\"></i>\n            </div>\n            <Modal ui:if={showMenu} open=\"true\" title=\"Выбор опции {title}\" data-showMenu=\"false\" close=\"->\">\n                <div class=\"menu\" style=\"position:sticky;top:-20;z-index:101; border-bottom: none; box-shadow: unset\">\n                    <div class=\"form-group has-icon-right\">\n                        <input class=\"form-input\" type=\"text\"\n                               value={keyword} placeholder=\"search...\" change={onKeyword}>\n                        <i class=\"form-icon icon icon-cross c-hand\" data-value=\"\" click={onKeyword}></i>\n                    </div>\n                    <div ui:if={options} class=\"menu-item\">\n                        <div class=\"tile tile-centered mx-1\">\n                            <b class=\"tile-content\">Найдено: {options.length}</b>\n                        </div>\n                    </div>\n                </div>\n                <ul class=\"menu\" style=\"position:unset; border-top: none; box-shadow: unset\">\n                    <li class=\"menu-item\" ui:for=\"item of options\" data-showMenu=\"false\" click=\"->\">\n                        <div click={change} data-value={item.id}>\n                            <div class=\"tile tile-centered mx-1\">\n                                <figure class=\"avatar avatar-xs bg-primary\" data-initial={item.fullNameRu|initials}>\n                                </figure>\n                                <div class=\"tile-content\">{item.fullNameRu}, {item.birthday|date}</div>\n                            </div>\n                        </div>\n                    </li>\n                </ul>\n            </Modal>\n        </div>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"Select\">\n        <select class=\"{class}\" change={change} disabled={disabled} data={data}>\n            <option selected={value|not} value=\"\" ui:if={value|not|or:@emptyCaption}>{emptyCaption}</option>\n            <option ui:for=\"option of options\" selected={option.id|equals:@value} value={option.id}>\n                {option.name}\n            </option>\n        </select>\n    </template>\n\n    <template id=\"RadioGroup\">\n        <div class=\"{class}\">\n            <label class=\"form-radio\" ui:for=\"option of options\">\n                <input type=\"radio\" name={id|or:rg}\n                       value={option.id}\n                       checked={option.id|equals:@value} change={change} data={data}\n                       disabled={disabled}>\n                <i class=\"form-icon\"></i>{option.name}\n            </label>\n        </div>\n    </template>\n\n    <template id=\"Dropdown\">\n        <div class=\"dropdown\">\n            <a href=\"#\" class=\"btn btn-link dropdown-toggle\" tabindex=\"0\">\n                {data|selectedName}<i class=\"icon icon-caret\"></i>\n            </a>\n            <!-- menu component -->\n            <ul class=\"menu\" style=\"right:0;left:auto;\">\n                <li ui:for=\"item of data\" class=\"menu-item {item.id|equals:@value|then:active}\"\n                    data-id={item.id}\n                    data-name={item.name}\n                    click={change}>\n                    <a>{item.name}</a>\n                </li>\n            </ul>\n        </div>\n    </template>\n\n    <template id=\"DateTimeInput\">\n        <input class=\"form-input flatpickr-input\"\n               init={:support.initFlatpickr}\n               disabled={disabled}\n               type=\"text\"\n               placeholder={placeholder}\n               value={value|support.setFlatpickrValue}\n               change={change}>\n    </template>\n\n    <template id=\"SearchBar\">\n        <span class=\"ant-input-search ant-input-affix-wrapper\">\n            <input placeholder=\"Поиск...\" class=\"ant-input\" type=\"text\"\n                   value={value} enter={action}\n                   style=\"min-height:40px;\">\n            <span class=\"ant-input-suffix\">\n                <i class=\"anticon anticon-search ant-input-search-icon\" style=\"margin-top: 4px;\"></i>\n            </span>\n        </span>\n    </template>\n\n    <template id=\"ReferenceInput\">\n        <div class=\"form-autocomplete\">\n            <div class=\"form-input has-icon-right\" data-showMenu={showMenu|not} click=\"->\">\n                <div>{entry.fullNameRu}</div>\n                <i class=\"form-icon icon icon-edit c-hand\"></i>\n            </div>\n            <Modal ui:if={showMenu} open=\"true\" title=\"Выбор опции {title}\" data-showMenu=\"false\" close=\"->\">\n                <div class=\"menu\" style=\"position:sticky;top:-20;z-index:101; border-bottom: none; box-shadow: unset\">\n                    <div class=\"form-group has-icon-right\">\n                        <input class=\"form-input\" type=\"text\"\n                               value={keyword} placeholder=\"search...\" change={onKeyword}>\n                        <i class=\"form-icon icon icon-cross c-hand\" data-value=\"\" click={onKeyword}></i>\n                    </div>\n                    <div ui:if={options} class=\"menu-item\">\n                        <div class=\"tile tile-centered mx-1\">\n                            <b class=\"tile-content\">Найдено: {options.length}</b>\n                        </div>\n                    </div>\n                </div>\n                <ul class=\"menu\" style=\"position:unset; border-top: none; box-shadow: unset\">\n                    <li class=\"menu-item\" ui:for=\"item of options\" data-showMenu=\"false\" click=\"->\">\n                        <div click={change} data-value={item.id}>\n                            <div class=\"tile tile-centered mx-1\">\n                                <figure class=\"avatar avatar-xs bg-primary\" data-initial={item.fullNameRu|initials}>\n                                </figure>\n                                <div class=\"tile-content\">{item.fullNameRu}, {item.birthday|date}</div>\n                            </div>\n                        </div>\n                    </li>\n                </ul>\n            </Modal>\n        </div>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -1350,7 +1350,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:200px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sideBarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:250}px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -1386,15 +1386,13 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************!*\
   !*** ./lib/compile.js ***!
   \************************/
-/*! exports provided: expression, stringInterpolation, placeholder, withPipes, filterMapKey, compileFor, compileIf, compileTag, compile, compileNode */
+/*! exports provided: stringInterpolation, placeholder, filterMapKey, compileFor, compileIf, compileTag, compile, compileNode */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "expression", function() { return expression; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stringInterpolation", function() { return stringInterpolation; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "placeholder", function() { return placeholder; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withPipes", function() { return withPipes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterMapKey", function() { return filterMapKey; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compileFor", function() { return compileFor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compileIf", function() { return compileIf; });
@@ -1449,10 +1447,20 @@ function pipe(value, key) {
     console.error('ERROR: Object.pipes.' + id, ex);
     return value;
   }
+}
+
+function withPipes(pipes) {
+  return !pipes.length ? function (c, v) {
+    return v;
+  } : function (c, initialValue) {
+    return pipes.reduce(function (r, pk) {
+      return pipe.call(c, r, pk);
+    }, initialValue);
+  };
 } // Compilation
 
 
-function expression(v) {
+function parseExpression(v) {
   if (v[0] === ':') {
     return placeholder(v);
   }
@@ -1470,6 +1478,7 @@ function expression(v) {
 
   return stringInterpolation(v);
 }
+
 function stringInterpolation(v) {
   var fnx = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   var pattern = v.replace(RE_PLACEHOLDER, function (s, expr) {
@@ -1498,19 +1507,13 @@ function placeholder(expr) {
   }(stringInterpolation(key.slice(1).trim())) : function (c) {
     return c.prop(key);
   };
-  var pipec = withPipes(pipes);
-  return function (c) {
-    return pipec(c, initGettr(c));
-  };
-}
-function withPipes(pipes) {
-  return !pipes.length ? function (c, v) {
-    return v;
-  } : function (c, initialValue) {
-    return pipes.reduce(function (r, pk) {
-      return pipe.call(c, r, pk);
-    }, initialValue);
-  };
+  return !pipes.length ? function (c) {
+    return initGettr(c);
+  } : function (pipec) {
+    return function (c) {
+      return pipec(c, initGettr(c));
+    };
+  }(withPipes(pipes));
 }
 
 var assignKeyValue = function assignKeyValue(acc, val, k) {
@@ -1591,7 +1594,7 @@ function compileFor(_ref) {
       });
     });
   } else {
-    (r.updates || (r.updates = [])).push(makeApplicator(expression('{:'.includes(expr[0]) ? expr : '{' + expr + '}'), '$data'));
+    (r.updates || (r.updates = [])).push(makeApplicator(parseExpression('{:'.includes(expr[0]) ? expr : '{' + expr + '}'), '$data'));
   }
 
   var $nodes = nodes;
@@ -1678,7 +1681,7 @@ function compileIf(_ref2) {
       acc['$data'] = neg ? !gttr(c) : gttr(c);
     });
   } else {
-    var _gttr = expression(expr.includes('{') ? expr : '{' + expr + '}');
+    var _gttr = parseExpression(expr.includes('{') ? expr : '{' + expr + '}');
 
     (r.updates || (r.updates = [])).push(function (c, acc) {
       acc['$data'] = neg ? !_gttr(c) : _gttr(c);
@@ -1736,7 +1739,7 @@ function compileTag(_ref3) {
       });
     });
   } else {
-    var gttr = expression(expr);
+    var gttr = parseExpression(expr);
     (r.updates || (r.updates = [])).push(function (c, acc) {
       acc['$data'] = gttr(c);
     });
@@ -1775,7 +1778,7 @@ function compile(r) {
         });
       });
     } else {
-      var getter = expression(aProps);
+      var getter = parseExpression(aProps);
       (r.updates || (r.updates = [])).push(function (c, acc) {
         return Object.assign(acc, getter(c));
       });
@@ -1810,7 +1813,7 @@ function compile(r) {
             _key2 = _v$slice$split$map4[0],
             _pipes2 = _v$slice$split$map4.slice(1);
 
-        var expr = expression(_key2);
+        var expr = parseExpression(_key2);
 
         var _pipec2 = withPipes(_pipes2);
 
@@ -1829,7 +1832,7 @@ function compile(r) {
         if (!v.includes('{') && v[0] !== ':' && k.slice(0, 5) !== 'data-') {
           assignKeyValue(r.initials || (r.initials = {}), v, k);
         } else {
-          (r.updates || (r.updates = [])).push(makeApplicator(expression(v), k));
+          (r.updates || (r.updates = [])).push(makeApplicator(parseExpression(v), k));
         }
       }
     }
@@ -1921,28 +1924,6 @@ var methodName = function methodName(x) {
   return pre + s[0].toUpperCase() + s.slice(1);
 };
 
-function bindFn(f) {
-  var $ = this;
-  var map = $.$boundFnMap || ($.$boundFnMap = new Map());
-  var fn = map.get(f);
-
-  if (!fn) {
-    var bound = f.bind($.impl);
-
-    fn = function fn() {
-      var r = bound.apply(void 0, arguments);
-
-      if (r) {
-        $.up(r);
-      }
-    };
-
-    map.set(f, fn);
-  }
-
-  return fn;
-}
-
 var upAsync = function upAsync($, promise, key) {
   var racer = $.raceCondition('set:' + (key || 'up'));
 
@@ -1981,25 +1962,35 @@ var propGetter = function propGetter($, key) {
   }
 
   var impl = $.impl;
+  var instant = impl[key];
 
-  var _key$split = key.split('.'),
-      _key$split2 = _toArray(_key$split),
-      pk = _key$split2[0],
-      path = _key$split2.slice(1);
+  if (instant && typeof instant === 'function') {
+    var bound = instant.bind(impl);
 
-  var gettr = impl[methodName(pk, 'get')];
-  var extractor1 = gettr ? function () {
-    return gettr.call(impl);
-  } : function () {
-    var $$ = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : impl.get ? impl.get(impl) : impl;
-    return pk in $$ ? $$[pk] : void 0;
-  };
-  fn = !path.length ? extractor1 : function () {
-    return path.reduce(function (r, p) {
-      return r && p in r ? r[p] : void 0;
-    }, extractor1());
-  };
-  return map[key] = fn;
+    fn = function fn() {
+      return bound;
+    };
+  } else {
+    var _key$split = key.split('.'),
+        _key$split2 = _toArray(_key$split),
+        pk = _key$split2[0],
+        path = _key$split2.slice(1);
+
+    var gettr = impl[methodName(pk, 'get')];
+    var fn0 = gettr ? function () {
+      return gettr.call(impl);
+    } : function () {
+      return impl[pk];
+    };
+    fn = !path.length ? fn0 : function () {
+      return path.reduce(function (r, p) {
+        return r && p in r ? r[p] : void 0;
+      }, fn0());
+    };
+  }
+
+  map[key] = fn;
+  return fn;
 };
 
 var Component =
@@ -2205,7 +2196,7 @@ function () {
     key: "prop",
     value: function prop(propId) {
       var value = propGetter(this, propId)();
-      return typeof value === 'function' ? bindFn.call(this, value) : value;
+      return value;
     }
     /**
      *  Left Arrow.
@@ -2828,13 +2819,14 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 /*!*************************!*\
   !*** ./lib/fragment.js ***!
   \*************************/
-/*! exports provided: Fragment, FragmentSlot, FragmentFor, FragmentIf, FragmentTag */
+/*! exports provided: Fragment, FragmentSlot, FragmentForItem, FragmentFor, FragmentIf, FragmentTag */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Fragment", function() { return Fragment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentSlot", function() { return FragmentSlot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentForItem", function() { return FragmentForItem; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentFor", function() { return FragmentFor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentIf", function() { return FragmentIf; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FragmentTag", function() { return FragmentTag; });
@@ -2899,6 +2891,46 @@ function () {
 
   return FragmentSlot;
 }();
+var FragmentForItem =
+/*#__PURE__*/
+function () {
+  function FragmentForItem() {
+    _classCallCheck(this, FragmentForItem);
+  }
+
+  _createClass(FragmentForItem, [{
+    key: "resolveTemplate",
+    value: function resolveTemplate($) {
+      return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($, $.$spec);
+    }
+  }, {
+    key: "prop",
+    value: function prop(key) {
+      if (key === this.itemId || key === this.itemId + 'Index') {
+        return this[key];
+      }
+
+      return this.$.owner.prop(key);
+    }
+  }, {
+    key: "up",
+    value: function up(delta) {
+      return this.$.owner.up(delta);
+    }
+  }, {
+    key: "connect",
+    value: function connect(key, applicator) {
+      return this.$.owner.connect(key, applicator);
+    }
+  }, {
+    key: "emit",
+    value: function emit(key, data) {
+      return this.$.owner.emit(key, data);
+    }
+  }]);
+
+  return FragmentForItem;
+}();
 var FragmentFor =
 /*#__PURE__*/
 function () {
@@ -2920,36 +2952,31 @@ function () {
           updates = itemNode.updates,
           _itemNode$initials = itemNode.initials,
           initials = _itemNode$initials === void 0 ? {} : _itemNode$initials,
-          nodes = itemNode.nodes,
-          uid = itemNode.uid;
+          nodes = itemNode.nodes;
 
       if (data && data.length) {
         if (!data.forEach) {
-          throw new Error('wrong ui:for data', data);
+          throw new Error('[ui:for] data has no forEach()', data);
         }
 
         data.forEach(function (d, index) {
-          var _Object$assign;
+          var _initials;
 
-          var id = "".concat(uid, "-$").concat(d.id || index);
-          var $ownerImpl = Object.assign(Object.create($.owner.impl), (_Object$assign = {}, _defineProperty(_Object$assign, itemId, d), _defineProperty(_Object$assign, itemId + 'Index', index), _Object$assign));
+          var uid = "".concat(itemNode.uid, "-$").concat(d.id || index);
 
-          var up = function up(Δ) {
-            return $.owner.up(Δ);
-          };
-
-          var $owner = Object.assign(Object.create($.owner), {
-            impl: $ownerImpl,
-            $propFnMap: {},
-            up: up
-          });
-
-          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($owner, {
-            tag: tag,
-            initials: initials,
-            updates: updates,
-            nodes: nodes,
-            uid: id
+          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, {
+            tag: 'ui:item',
+            initials: (_initials = {
+              itemId: itemId
+            }, _defineProperty(_initials, itemId, d), _defineProperty(_initials, itemId + 'Index', index), _initials),
+            $spec: {
+              tag: tag,
+              initials: initials,
+              updates: updates,
+              nodes: nodes,
+              uid: uid
+            },
+            uid: uid + '_item'
           }, acc);
         });
       } else if (!data) {
@@ -3060,7 +3087,7 @@ var fnName = function fnName(ctor) {
   return (/^function\s+([\w$]+)\s*\(/.exec(ctor.toString()) || [])[1] || nextId('$C');
 };
 
-var REGISTRY = new Map([['ui:fragment', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["Fragment"]], ['ui:for', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentFor"]], ['ui:if', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentIf"]], ['ui:tag', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentTag"]], ['ui:slot', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentSlot"]]]);
+var REGISTRY = new Map([['ui:fragment', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["Fragment"]], ['ui:for', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentFor"]], ['ui:item', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentForItem"]], ['ui:if', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentIf"]], ['ui:tag', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentTag"]], ['ui:slot', _fragment_js__WEBPACK_IMPORTED_MODULE_2__["FragmentSlot"]]]);
 
 var reg = function reg(ctr) {
   var ctor = typeof ctr === 'function' ? ctr : Object.assign(function () {}, ctr);
@@ -3474,7 +3501,7 @@ Array.slice = function (x) {
 
 
 Array.groupBy = function (list) {
-  var field = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
+  var field = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'type';
   var result = {};
   var fieldFn = typeof field === 'string' ? function (e) {
     return e[field];
@@ -3674,7 +3701,7 @@ Date.narrow = function (x) {
   return Date.parseISO8601String(x);
 };
 
-var FORMATTERS = {
+var DATE_FORMATTERS = {
   hh: function hh(date) {
     return pad(date.getHours());
   },
@@ -3722,7 +3749,7 @@ Date.format = function (x) {
 
   var date = Date.narrow(x);
   return !date ? '' : format.replace(/[_]/g, '\n').replace(/[hidwmyl]+/g, function (key) {
-    var fn = FORMATTERS[key];
+    var fn = DATE_FORMATTERS[key];
     return fn ? fn(date) : key;
   });
 };
