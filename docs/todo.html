@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arrmatura • TodoMVC</title>
+    <link rel="stylesheet" href="css/todo.css">
+  </head>
+
+  <script type="text/x-template" id="TodoApp">
+  <div>
+    <TodoStore ui:ref="todo" />
+    <section class="todoapp">
+      <Caption title=":title" />
+      <ui:fragment ui:if="<- todo.notEmpty">
+        <Main />
+        <Filter current="<- todo.filterId">
+          <span class="todo-count"><strong><- todo.itemsLeft</strong><span>:items_left</span></span>
+          <Filter:right>
+            <button class="clear-completed" ui:if="<- todo.hasCompleted" click="-> todo.purge">:clear_completed</button>
+          </Filter:right>
+        </Filter>
+      </ui:fragment>
+    </section>
+    <Footer hasItems="<-todo.shownItemsCount"/>
+  </div>
+</script>
+
+  <script type="text/x-template" id="Footer">
+  <ui:tag tag={hasItems|then:Hint:Attribution}/>
+</script>
+
+  <script type="text/x-template" id="Caption">
+  <header class="header">
+    <h1>{title|upper}</h1>
+    <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> todo.add"/> 
+  </header>
+</script>
+
+  <script type="text/x-template" id="Main">
+  <section class="main">
+    <input id="toggle-all" class="toggle-all" type="checkbox" toggle="-> todo.toggle"/>
+    <label for="toggle-all">Mark all as complete</label>
+    <TodoList data="<- todo.shownItems"/>
+  </section>
+</script>
+
+  <script type="text/x-template" id="TodoList">
+  <ul class="todo-list">
+    <TodoItem ui:props={item} ui:for="item of data"/>
+  </ul>
+</script>
+
+  <script type="text/x-template" id="Filter">
+  <footer class="footer">
+    <ui:slot/>
+    <ul class="filters">
+      <li ui:for="filter of :filters">
+        <a class="selected:{current}=={filter.id}" id={filter.id} href="#{filter.id}">{filter.id|capitalize}</a>
+      </li>
+    </ul>
+    <ui:slot id="right"/>
+  </footer>
+</script>
+
+  <script type="text/x-template" id="Attribution">
+  <footer class="info">
+    <p>Created by <a href="https://github.com/alitskevich/dzi-todomvc">alitskevich</a></p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+  </footer>
+</script>
+
+  <script type="text/x-template" id="Hint">
+  <footer class="info">
+    <p>:hint</p>
+  </footer>
+</script>
+
+  <script type="text/x-template" id="TodoItem">
+  <li class="{completed|then:completed} {editing|then:editing}">
+    <div class="view">
+      <input class="toggle" type="checkbox" checked={completed} data-id={id} click="-> todo.inverse"/>
+      <label data-editing="true" dblclick="->">{name}</label>
+      <button ui:if="completed" class="destroy" data-id={id} click="-> todo.rm"></button>
+    </div>
+    <input type="text" class="edit" value={name} data-editing="false" data-id={id} enter="-> todo.save" blur="->"/>
+  </li>
+</script>
+
+  <script type="text/javascript" src="index.js"></script>
+
+  <script type="module">
+    // filters metadata
+    const then = (cond, left = '', right = '') => cond ? left : right
+    const upper = s => ('' + s).toUpperCase()
+    const capitalize = s => !s ? '' : s[0].toUpperCase() + s.slice(1);
+    const FILTERS = [
+      { id: 'all', values: [true, false] },
+      { id: 'active', values: [false] },
+      { id: 'completed', values: [true] }
+    ]
+    //pure actions:
+    const ACTIONS = {
+      inverse: ({ items }, { id }) => ({ items: items.map(e => { if (e.id === id) { e.completed = !e.completed }; return e }) }),
+      save: ({ items }, { id, value }) => ({ items: (!value) ? items.filter(e => e.id !== id) : items.map(e => { if (e.id === id) { e.name = value }; return e }) }),
+      rm: ({ items }, { id }) => ({ items: items.filter(e => e.id !== id) }),
+      filter: (st, { filterId }) => ({ filterId: FILTERS.find(e => e.id === filterId) ? filterId : 'all' }),
+      purge: ({ items }) => ({ items: items.filter(e => !e.completed) }),
+      toggle: ({ items }, { value }) => ({ items: items.map(e => { e.completed = value; return e }) }),
+      add: ({ items, nextId }, { value }) => !value ? null : { nextId: nextId + 1, items: [].concat({ id: nextId, name: value, completed: false }, items) }
+    }
+    const resources = {
+      title: 'todos',
+      items_left: ' item(s) left',
+      clear_completed: 'Clear completed',
+      hint: 'Double-click to edit a todo',
+      new_todo_hint: 'What needs to be done?',
+      filters: FILTERS,
+      upper,
+      capitalize,
+      then,
+    };
+
+    // service component
+    class TodoStore {
+      constructor() {
+        //load data from storage
+        this.data = JSON.parse(localStorage.getItem('TODO:1') || 'null') || { items: [], nextId: 1 }
+        // generate action handlers
+        Object.entries(ACTIONS).forEach(([key, fn]) => {
+          this['on' + capitalize(key)] = ({ data: payload }) => {
+            const data = Object.assign({}, this.data, fn(this.data, payload))
+            localStorage.setItem('TODO:1', JSON.stringify(data))
+            return { data }
+          }
+        })
+      }
+      // hook on init
+      init($) {
+        // use hash as a filter key. invoke immediately.
+        (onhash => { window.onhashchange = onhash; return onhash })(() => $.emit('this.filter', { filterId: window.location.hash.slice(1) || FILTERS[0].id }))()
+      }
+      getShownItems() {
+        const { filterId, items } = this.data
+        const values = !filterId ? [] : FILTERS.find(e => e.id === filterId).values
+        return items.filter(e => values.includes(!!e.completed))
+      }
+      getNotEmpty() {
+        return this.data.items.length > 0
+      }
+      getFilterId() {
+        return this.data.filterId
+      }
+      getItemsLeft() {
+        return this.data.items.filter(e => !e.completed).length
+      }
+      getHasCompleted() {
+        return this.data.items.length - this.getItemsLeft()
+      }
+      getShownItemsCount() {
+        return this.getShownItems().length
+      }
+    }
+
+    // load components from templates
+    const types = ([]).concat([...document.getElementsByTagName('script')])
+      .filter(e => e.id)
+      .map(e => ({ NAME: e.id, TEMPLATE: e.innerHTML }))
+      .concat(TodoStore)
+
+    // launch with types and resources 
+    launch({ types, resources });
+  </script>
+
+</html>

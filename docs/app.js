@@ -96,212 +96,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
-/***/ "./app/TodoStore.js":
-/*!**************************!*\
-  !*** ./app/TodoStore.js ***!
-  \**************************/
-/*! exports provided: TodoStore */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TodoStore", function() { return TodoStore; });
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var FILTERS = [{
-  id: 'all',
-  values: [true, false]
-}, {
-  id: 'active',
-  values: [false]
-}, {
-  id: 'completed',
-  values: [true]
-}]; //pure actions:
-
-var ACTIONS = {
-  inverse: function inverse(_ref, _ref2) {
-    var items = _ref.items;
-    var id = _ref2.id;
-    return {
-      items: items.map(function (e) {
-        if (e.id === id) {
-          e.completed = !e.completed;
-        }
-
-        return e;
-      })
-    };
-  },
-  save: function save(_ref3, _ref4) {
-    var items = _ref3.items;
-    var id = _ref4.id,
-        value = _ref4.value;
-    return {
-      items: !value ? items.filter(function (e) {
-        return e.id !== id;
-      }) : items.map(function (e) {
-        if (e.id === id) {
-          e.name = value;
-        }
-
-        return e;
-      })
-    };
-  },
-  rm: function rm(_ref5, _ref6) {
-    var items = _ref5.items;
-    var id = _ref6.id;
-    return {
-      items: items.filter(function (e) {
-        return e.id !== id;
-      })
-    };
-  },
-  filter: function filter(st, _ref7) {
-    var filterId = _ref7.filterId;
-    return {
-      filterId: FILTERS.find(function (e) {
-        return e.id === filterId;
-      }) ? filterId : 'all'
-    };
-  },
-  purge: function purge(_ref8) {
-    var items = _ref8.items;
-    return {
-      items: items.filter(function (e) {
-        return !e.completed;
-      })
-    };
-  },
-  toggle: function toggle(_ref9, _ref10) {
-    var items = _ref9.items;
-    var value = _ref10.value;
-    return {
-      items: items.map(function (e) {
-        e.completed = value;
-        return e;
-      })
-    };
-  },
-  add: function add(_ref11, _ref12) {
-    var items = _ref11.items,
-        nextId = _ref11.nextId;
-    var value = _ref12.value;
-    return !value ? null : {
-      nextId: nextId + 1,
-      items: [].concat({
-        id: nextId,
-        name: value,
-        completed: false
-      }, items)
-    };
-  }
-}; // service component
-
-var TodoStore =
-/*#__PURE__*/
-function () {
-  function TodoStore() {
-    var _this = this;
-
-    _classCallCheck(this, TodoStore);
-
-    //load data from storage
-    this.data = JSON.parse(localStorage.getItem('TODO:1') || 'null') || {
-      items: [],
-      nextId: 1
-    }; // generate action handlers
-
-    Object.entries(ACTIONS).forEach(function (_ref13) {
-      var _ref14 = _slicedToArray(_ref13, 2),
-          key = _ref14[0],
-          fn = _ref14[1];
-
-      _this['on' + String.capitalize(key)] = function (_ref15) {
-        var payload = _ref15.data;
-        var data = Object.assign({}, _this.data, fn(_this.data, payload));
-        localStorage.setItem('TODO:1', JSON.stringify(data));
-        return {
-          data: data
-        };
-      };
-    });
-  } // hook on init
-
-
-  _createClass(TodoStore, [{
-    key: "init",
-    value: function init($) {
-      // use hash as a filter key. invoke immediately.
-      (function (onhash) {
-        window.onhashchange = onhash;
-        return onhash;
-      })(function () {
-        return $.emit('this.filter', {
-          filterId: window.location.hash.slice(1) || FILTERS[0].id
-        });
-      })();
-    }
-  }, {
-    key: "getShownItems",
-    value: function getShownItems() {
-      var _this$data = this.data,
-          filterId = _this$data.filterId,
-          items = _this$data.items;
-      var values = !filterId ? [] : FILTERS.find(function (e) {
-        return e.id === filterId;
-      }).values;
-      return items.filter(function (e) {
-        return values.includes(!!e.completed);
-      });
-    }
-  }, {
-    key: "getNotEmpty",
-    value: function getNotEmpty() {
-      return this.data.items.length > 0;
-    }
-  }, {
-    key: "getFilterId",
-    value: function getFilterId() {
-      return this.data.filterId;
-    }
-  }, {
-    key: "getItemsLeft",
-    value: function getItemsLeft() {
-      return this.data.items.filter(function (e) {
-        return !e.completed;
-      }).length;
-    }
-  }, {
-    key: "getHasCompleted",
-    value: function getHasCompleted() {
-      return this.data.items.length - this.getItemsLeft();
-    }
-  }, {
-    key: "getShownItemsCount",
-    value: function getShownItemsCount() {
-      return this.getShownItems().length;
-    }
-  }]);
-
-  return TodoStore;
-}();
-
-/***/ }),
-
 /***/ "./app/app.html":
 /*!**********************!*\
   !*** ./app/app.html ***!
@@ -311,7 +105,7 @@ function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"App\">\n        <NavigationService ui:ref=\"nav\" />\n        <ViewPort caption=\"Arrmatura\">\n            <ViewPort:aside>\n                <NavTree data=\":sitemap\" />\n            </ViewPort:aside>\n            <PageRouter ui:props=\"<-nav.route\" />\n        </ViewPort>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar bg-primary\" style=\"min-height:48px\">\n            <section class=\"navbar-section mx-2\">\n                <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                <ui:slot />\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} alt=\"\" height=\"40\" width=\"140\" />\n            </section>\n            <section class=\"navbar-section mx-2\">\n                <ui:slot id=\"right\" />\n                <UserAvatar ui:props={user} ui:if={user} />\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"MainPage\">\n        <Navbar caption=\"Gallery\" />\n        <Panel caption=\"Icons\">\n            <!-- <LoadingIndicator /> -->\n            Using Font Awesome\n            <Icon type=\"cog\" />\n        </Panel>\n        <Panel caption=\"Buttons\">\n            <Button title=\"Default\" trackId=\"action1\" />\n            <Button icon=\"cog\" title=\"Large primary with icon\" primary large />\n            <Button icon=\"123\" title=\"Link\" link />\n        </Panel>\n        <Panel caption=\"Panel\" hint=\"with hint\">\n            here...\n        </Panel>\n    </template>\n\n    <template id=\"TodoPage\">\n        <Navbar caption={name|or:todo|upper} />\n        <div>\n            <TodoStore ui:ref=\"todo\" />\n            <section class=\"todoapp\">\n                <ui:fragment ui:if=\"<- todo.notEmpty\">\n                    <Main />\n                    <Filter current=\"<- todo.filterId\">\n                        <span class=\"todo-count\">\n                            <strong>\n                                <- todo.itemsLeft</strong>\n                                   <span>:items_left</span>\n                        </span>\n                        <Filter:right>\n                            <button class=\"clear-completed\" ui:if=\"<- todo.hasCompleted\"\n                                    click=\"-> todo.purge\">:clear_completed</button>\n                        </Filter:right>\n                    </Filter>\n                </ui:fragment>\n            </section>\n            <Footer hasItems=\"<-todo.shownItemsCount\" />\n        </div>\n    </template>\n\n    <template id=\"Footer\">\n        <ui:tag tag={hasItems|then:Hint:Attribution} />\n    </template>\n\n    <template id=\"Caption\">\n        <header class=\"header\">\n            <h1>{title|upper}</h1>\n            <input type=\"text\" class=\"new-todo\" placeholder=\":new_todo_hint\" autofocus=\"true\" enter=\"-> todo.add\" />\n        </header>\n    </template>\n\n    <template id=\"Main\">\n        <section class=\"main\">\n            <input id=\"toggle-all\" class=\"toggle-all\" type=\"checkbox\" toggle=\"-> todo.toggle\" />\n            <label for=\"toggle-all\">Mark all as complete</label>\n            <TodoList data=\"<- todo.shownItems\" />\n        </section>\n    </template>\n\n    <template id=\"TodoList\">\n        <ul class=\"todo-list\">\n            <TodoItem ui:props={item} ui:for=\"item of data\" />\n        </ul>\n    </template>\n\n    <template id=\"Filter\">\n        <footer class=\"footer\">\n            <ui:slot />\n            <ul class=\"filters\">\n                <li ui:for=\"filter of :filters\">\n                    <a class=\"selected:{current}=={filter.id}\" id={filter.id}\n                       href=\"#{filter.id}\">{filter.id|capitalize}</a>\n                </li>\n            </ul>\n            <ui:slot id=\"right\" />\n        </footer>\n    </template>\n\n    <template id=\"Attribution\">\n        <footer class=\"info\">\n            <p>Created by <a href=\"https://github.com/alitskevich/dzi-todomvc\">alitskevich</a></p>\n            <p>Part of <a href=\"http://todomvc.com\">TodoMVC</a></p>\n        </footer>\n    </template>\n\n    <template id=\"Hint\">\n        <footer class=\"info\">\n            <p>:hint</p>\n        </footer>\n    </template>\n\n    <template id=\"TodoItem\">\n        <li class=\"{completed|then:completed} {editing|then:editing}\">\n            <div class=\"view\">\n                <input class=\"toggle\" type=\"checkbox\" checked={completed} data-id={id} click=\"-> todo.inverse\" />\n                <label data-editing=\"true\" dblclick=\"->\">{name}</label>\n                <button ui:if=\"completed\" class=\"destroy\" data-id={id} click=\"-> todo.rm\"></button>\n            </div>\n            <input type=\"text\" class=\"edit\" value={name} data-editing=\"false\" data-id={id} enter=\"-> todo.save\"\n                   blur=\"->\" />\n        </li>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"App\">\n        <NavigationService ui:ref=\"nav\" />\n        <ViewPort caption=\":top.title\" sidebarWidth=\"300\">\n            <ViewPort:aside>\n                <NavTree data=\":top.sitemap\" />\n            </ViewPort:aside>\n            <PageRouter ui:props=\"<-nav.route\" />\n        </ViewPort>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar bg-primary\" style=\"min-height:48px\">\n            <section class=\"navbar-section mx-2\">\n                <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                <ui:slot />\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} alt=\"\" height=\"40\" width=\"140\" />\n            </section>\n            <section class=\"navbar-section mx-2\">\n                <ui:slot id=\"right\" />\n                <UserAvatar ui:props={user} ui:if={user} />\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"MainPage\">\n        <Navbar caption=\"Gallery\" />\n        <Panel caption=\"Icons\">\n            <!-- <LoadingIndicator /> -->\n            Using Font Awesome\n            <Icon type=\"cog\" />\n        </Panel>\n        <Panel caption=\"Buttons\">\n            <Button title=\"Default\" trackId=\"action1\" />\n            <Button icon=\"cog\" title=\"Large primary with icon\" primary large />\n            <Button icon=\"123\" title=\"Link\" link />\n        </Panel>\n        <Panel caption=\"Panel\" hint=\"with hint\">\n            here...\n        </Panel>\n    </template>\n\n    <template id=\"TodoPage\">\n        <Navbar caption=\"To-Do\" />\n        <Panel caption=\"Todo\">\n            Todo\n            <Icon type=\"cog\" />\n        </Panel>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -327,7 +121,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../index.js */ "./index.js");
 /* harmony import */ var _app_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.html */ "./app/app.html");
 /* harmony import */ var _res__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./res */ "./app/res.js");
-/* harmony import */ var _TodoStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TodoStore */ "./app/TodoStore.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -339,14 +138,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
 
- // load components from templates
+var types = [].concat(_toConsumableArray(window.commonTypes), _toConsumableArray(Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["loadTemplates"])(_app_html__WEBPACK_IMPORTED_MODULE_1__["default"])));
 
-var types = [].concat(_toConsumableArray(window.commonTypes), [_TodoStore__WEBPACK_IMPORTED_MODULE_3__["TodoStore"]], _toConsumableArray(Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["loadTemplates"])(_app_html__WEBPACK_IMPORTED_MODULE_1__["default"]))); // launch with types and resources 
+var resources = _objectSpread({}, window.commonPipes, {}, _res__WEBPACK_IMPORTED_MODULE_2__["default"]);
 
 Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["launch"])({
   template: '<App/>',
   types: types,
-  resources: _res__WEBPACK_IMPORTED_MODULE_2__["default"]
+  resources: resources
 });
 
 /***/ }),
@@ -360,45 +159,18 @@ Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["launch"])({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-// filters metadata
-var then = function then(cond) {
-  var left = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
-  return cond ? left : right;
-};
-
-var upper = function upper(s) {
-  return ('' + s).toUpperCase();
-};
-
-var capitalize = function capitalize(s) {
-  return !s ? '' : s[0].toUpperCase() + s.slice(1);
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (_objectSpread({
-  sitemap: [{
-    id: 'main',
-    name: 'Main'
-  }, {
-    id: 'todo',
-    name: 'To-Do'
-  }],
-  title: 'todos',
-  items_left: ' item(s) left',
-  clear_completed: 'Clear completed',
-  hint: 'Double-click to edit a todo',
-  new_todo_hint: 'What needs to be done?',
-  // filters: FILTERS,
-  upper: upper,
-  capitalize: capitalize,
-  then: then
-}, window.commonPipes));
+/* harmony default export */ __webpack_exports__["default"] = ({
+  top: {
+    title: 'The Sample',
+    sitemap: [{
+      id: 'main',
+      name: 'Main'
+    }, {
+      id: 'todo',
+      name: 'To-Do'
+    }]
+  }
+});
 
 /***/ }),
 
@@ -1350,7 +1122,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sideBarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:250}px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sidebarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
 
 /***/ }),
 

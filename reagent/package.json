@@ -1,0 +1,32 @@
+{
+  "name": "arrmatura-react",
+  "version": "3.0.1",
+  "description": "framework over react",
+  "scripts": {
+    "start": "npx webpack-dev-server --hot --port 3034",
+    "build": "npx webpack-cli",
+    "share-dma": "cp docs/index.js* ~/aimd-dma-client/vendor/armatura"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alitskevich/arrmatura.git"
+  },
+  "author": "alitskevich",
+  "license": "MIT",
+  "main": "index.js",
+  "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.7.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "raw-loader": "^4.0.0",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}

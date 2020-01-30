@@ -6,16 +6,10 @@ module.exports = {
     index: [
       './index.js'
     ],
-    app: [
-      './app/index.js'
-    ],
-    ultis: [
-      './ultis/index.js'
-    ],
   },
   output: {
     // eslint-disable-next-line no-undef
-    path: path.resolve(__dirname, 'docs'),
+    path: path.resolve(__dirname, ''),
     filename: '[name].js',
     libraryTarget: 'umd2',
     globalObject: 'this',
@@ -29,6 +23,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        exclude: /node_modules/
       }
     ]
   },

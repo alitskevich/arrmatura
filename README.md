@@ -2,13 +2,12 @@
 
 ## Definitions	
 
-`Armatura` is a mean to define and compose components of any kind.
+`Armatura` proposes an unified approach to define and compose components of any kind.
 
 It is   
- - declarative until codeless
+ - declarative and codeless
  - non-obtrusive, platform-independent
- - reactive 
- - functional oriented
+ - reactive and functional oriented
  - easy to learn and get started. 
 
  ## Purpose 
@@ -51,6 +50,8 @@ Despite born-for-dom, it is also well-suited to develop wide range of modular co
 - [Glossary](md/GLOSSARY.md)
 - [Templates](md/TEMPLATE.md)
 - [Custom components](md/CUSTOM.md)
-# Samples
 
-- [TODOS Application](https://alitskevich.github.io/dzi-todomvc)
+# Usages
+
+- [TODO](https://alitskevich.github.io/arrmatura/todo.html)
+- [Grodno.co](https://grodno.co)

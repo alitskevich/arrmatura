@@ -1,12 +1,11 @@
 {
   "name": "arrmatura",
-  "version": "3.0.1",
+  "version": "3.0.5",
   "description": "framework",
   "scripts": {
-    "start": "npx webpack-dev-server --hot",
+    "start": "npx webpack-dev-server --hot --contentBase docs",
     "build": "npx webpack-cli",
-    "share-grodno": "cp docs/index.js* ~/grodno/vendor/armatura",
-    "share-dma": "cp docs/index.js* ~/aimd-dma-client/vendor/armatura"
+    "publish": "npm publish"
   },
   "repository": {
     "type": "git",
@@ -14,14 +13,19 @@
   },
   "author": "alitskevich",
   "license": "MIT",
-  "main": "index.js",
+  "main": "docs/index.js",
+  "files": [
+    "docs/index.js",
+    "docs/ultis.js",
+    "docs/index.js.map",
+    "docs/ultis.js.map"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "babel-loader": "^8.0.6",
     "raw-loader": "^4.0.0",
-    "eslint": "^6.8.0",
     "standard": "^14.3.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
