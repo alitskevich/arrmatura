@@ -1,5 +1,6 @@
 <body>
     <template id="App">
+        <Store ui:ref="store" />
         <NavigationService ui:ref="nav" />
         <ViewPort caption=":top.title" sidebarWidth="300">
             <ViewPort:aside>
@@ -57,8 +58,7 @@
     <template id="TodoPage">
         <Navbar caption="To-Do" />
         <Panel caption="Todo">
-            Todo
-            <Icon type="cog" />
+            <Tabs value="<-store.tab" data=":top.sitemap" action="->store.select" />
         </Panel>
     </template>
 </body>

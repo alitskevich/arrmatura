@@ -6,4 +6,4 @@ export default {
             { id: 'todo', name: 'To-Do' },
         ],
     }
-};
+}

@@ -105,7 +105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"App\">\n        <NavigationService ui:ref=\"nav\" />\n        <ViewPort caption=\":top.title\" sidebarWidth=\"300\">\n            <ViewPort:aside>\n                <NavTree data=\":top.sitemap\" />\n            </ViewPort:aside>\n            <PageRouter ui:props=\"<-nav.route\" />\n        </ViewPort>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar bg-primary\" style=\"min-height:48px\">\n            <section class=\"navbar-section mx-2\">\n                <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                <ui:slot />\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} alt=\"\" height=\"40\" width=\"140\" />\n            </section>\n            <section class=\"navbar-section mx-2\">\n                <ui:slot id=\"right\" />\n                <UserAvatar ui:props={user} ui:if={user} />\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"MainPage\">\n        <Navbar caption=\"Gallery\" />\n        <Panel caption=\"Icons\">\n            <!-- <LoadingIndicator /> -->\n            Using Font Awesome\n            <Icon type=\"cog\" />\n        </Panel>\n        <Panel caption=\"Buttons\">\n            <Button title=\"Default\" trackId=\"action1\" />\n            <Button icon=\"cog\" title=\"Large primary with icon\" primary large />\n            <Button icon=\"123\" title=\"Link\" link />\n        </Panel>\n        <Panel caption=\"Panel\" hint=\"with hint\">\n            here...\n        </Panel>\n    </template>\n\n    <template id=\"TodoPage\">\n        <Navbar caption=\"To-Do\" />\n        <Panel caption=\"Todo\">\n            Todo\n            <Icon type=\"cog\" />\n        </Panel>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"App\">\n        <Store ui:ref=\"store\" />\n        <NavigationService ui:ref=\"nav\" />\n        <ViewPort caption=\":top.title\" sidebarWidth=\"300\">\n            <ViewPort:aside>\n                <NavTree data=\":top.sitemap\" />\n            </ViewPort:aside>\n            <PageRouter ui:props=\"<-nav.route\" />\n        </ViewPort>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar bg-primary\" style=\"min-height:48px\">\n            <section class=\"navbar-section mx-2\">\n                <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                <ui:slot />\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} alt=\"\" height=\"40\" width=\"140\" />\n            </section>\n            <section class=\"navbar-section mx-2\">\n                <ui:slot id=\"right\" />\n                <UserAvatar ui:props={user} ui:if={user} />\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"MainPage\">\n        <Navbar caption=\"Gallery\" />\n        <Panel caption=\"Icons\">\n            <!-- <LoadingIndicator /> -->\n            Using Font Awesome\n            <Icon type=\"cog\" />\n        </Panel>\n        <Panel caption=\"Buttons\">\n            <Button title=\"Default\" trackId=\"action1\" />\n            <Button icon=\"cog\" title=\"Large primary with icon\" primary large />\n            <Button icon=\"123\" title=\"Link\" link />\n        </Panel>\n        <Panel caption=\"Panel\" hint=\"with hint\">\n            here...\n        </Panel>\n    </template>\n\n    <template id=\"TodoPage\">\n        <Navbar caption=\"To-Do\" />\n        <Panel caption=\"Todo\">\n            <Tabs value=\"<-store.tab\" data=\":top.sitemap\" action=\"->store.select\" />\n        </Panel>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -121,6 +121,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../index.js */ "./index.js");
 /* harmony import */ var _app_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.html */ "./app/app.html");
 /* harmony import */ var _res__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./res */ "./app/res.js");
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./store.js */ "./app/store.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -138,7 +139,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
 
-var types = [].concat(_toConsumableArray(window.commonTypes), _toConsumableArray(Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["loadTemplates"])(_app_html__WEBPACK_IMPORTED_MODULE_1__["default"])));
+
+var types = [].concat(_toConsumableArray(window.commonTypes), _toConsumableArray(Object(_index_js__WEBPACK_IMPORTED_MODULE_0__["loadTemplates"])(_app_html__WEBPACK_IMPORTED_MODULE_1__["default"])), [_store_js__WEBPACK_IMPORTED_MODULE_3__["Store"]]);
 
 var resources = _objectSpread({}, window.commonPipes, {}, _res__WEBPACK_IMPORTED_MODULE_2__["default"]);
 
@@ -171,6 +173,47 @@ __webpack_require__.r(__webpack_exports__);
     }]
   }
 });
+
+/***/ }),
+
+/***/ "./app/store.js":
+/*!**********************!*\
+  !*** ./app/store.js ***!
+  \**********************/
+/*! exports provided: Store */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Store", function() { return Store; });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Store =
+/*#__PURE__*/
+function () {
+  function Store() {
+    _classCallCheck(this, Store);
+  }
+
+  _createClass(Store, [{
+    key: "onSelect",
+    value: function onSelect(_ref) {
+      var id = _ref.id,
+          value = _ref.value,
+          _ref$key = _ref.key,
+          key = _ref$key === void 0 ? 'tab' : _ref$key;
+      return _defineProperty({}, key, value || id);
+    }
+  }]);
+
+  return Store;
+}();
 
 /***/ }),
 
@@ -715,7 +758,7 @@ function (_Service) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src}\n                 alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src}\n                 alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
 
 /***/ }),
 
@@ -843,6 +886,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ultis__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ultis */ "./ultis/index.js");
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   // system
   log: function log(x, pre) {
@@ -856,19 +901,17 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   // eslint-disable-next-line no-debugger
-  debug: function debug() {
+  "debugger": function _debugger() {
     debugger;
   },
-  // logical
-  equals: function equals(x, p) {
-    return x == p;
-  },
-  greater: function greater(x, p) {
-    return x > p;
+  // data structures
+  dot: function dot(x, k) {
+    return x ? x[k] : null;
   },
   includes: function includes(x, p) {
     return x.includes && x.includes(p);
   },
+  // logical
   then: function then(x) {
     var p = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
     var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
@@ -877,8 +920,18 @@ __webpack_require__.r(__webpack_exports__);
   not: function not(x) {
     return !x;
   },
-  or: function or(x, alt) {
-    return x || alt;
+  or: function or(x, s) {
+    return x || s;
+  },
+  and: function and(x, s) {
+    return x && s;
+  },
+  // math
+  equals: function equals(x, p) {
+    return x == p;
+  },
+  greater: function greater(x, p) {
+    return x > p;
   },
   plus: function plus(x, alt) {
     return +x + +alt;
@@ -1122,7 +1175,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sidebarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sidebarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -1135,19 +1188,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ultis__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ultis */ "./ultis/index.js");
-/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib */ "./lib/index.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "launch", function() { return _lib__WEBPACK_IMPORTED_MODULE_1__["launch"]; });
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib */ "./lib/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "launch", function() { return _lib__WEBPACK_IMPORTED_MODULE_0__["launch"]; });
 
-/* harmony import */ var _commons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./commons */ "./commons/index.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "loadTemplates", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["loadTemplates"]; });
+/* harmony import */ var _commons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./commons */ "./commons/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "loadTemplates", function() { return _commons__WEBPACK_IMPORTED_MODULE_1__["loadTemplates"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "commonPipes", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["commonPipes"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "commonPipes", function() { return _commons__WEBPACK_IMPORTED_MODULE_1__["commonPipes"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "commonTypes", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["commonTypes"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "commonTypes", function() { return _commons__WEBPACK_IMPORTED_MODULE_1__["commonTypes"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _commons__WEBPACK_IMPORTED_MODULE_2__["Service"]; });
-
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _commons__WEBPACK_IMPORTED_MODULE_1__["Service"]; });
 
 
 
@@ -2609,6 +2660,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -2676,28 +2735,33 @@ function () {
       return Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($, $.$spec);
     }
   }, {
-    key: "prop",
-    value: function prop(key) {
-      if (key === this.itemId || key === this.itemId + 'Index') {
-        return this[key];
-      }
+    key: "init",
+    value: function init($) {
+      var _this = this;
 
-      return this.$.owner.prop(key);
-    }
-  }, {
-    key: "up",
-    value: function up(delta) {
-      return this.$.owner.up(delta);
-    }
-  }, {
-    key: "connect",
-    value: function connect(key, applicator) {
-      return this.$.owner.connect(key, applicator);
-    }
-  }, {
-    key: "emit",
-    value: function emit(key, data) {
-      return this.$.owner.emit(key, data);
+      $.prop = function (key) {
+        var _key$split = key.split('.'),
+            _key$split2 = _toArray(_key$split),
+            pk = _key$split2[0],
+            path = _key$split2.slice(1);
+
+        if (pk === _this.itemId || key === _this.itemId + 'Index') {
+          return path.reduce(function (r, p) {
+            return r && p in r ? r[p] : void 0;
+          }, _this[pk]);
+        }
+
+        return $.owner.prop(key);
+      }; //$.up = delta => $.owner.up(delta)
+
+
+      $.connect = function (key, applicator) {
+        return $.owner.connect(key, applicator);
+      };
+
+      $.emit = function (key, data) {
+        return $.owner.emit(key, data);
+      };
     }
   }]);
 
@@ -2732,24 +2796,35 @@ function () {
         }
 
         data.forEach(function (d, index) {
-          var _initials;
+          var _Object$assign;
 
           var uid = "".concat(itemNode.uid, "-$").concat(d.id || index);
+          var $ownerImpl = Object.assign(Object.create($.owner.impl), (_Object$assign = {}, _defineProperty(_Object$assign, itemId, d), _defineProperty(_Object$assign, itemId + 'Index', index), _Object$assign));
 
-          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($.owner, {
-            tag: 'ui:item',
-            initials: (_initials = {
-              itemId: itemId
-            }, _defineProperty(_initials, itemId, d), _defineProperty(_initials, itemId + 'Index', index), _initials),
-            $spec: {
-              tag: tag,
-              initials: initials,
-              updates: updates,
-              nodes: nodes,
-              uid: uid
-            },
-            uid: uid + '_item'
-          }, acc);
+          var up = function up(Δ) {
+            return $.owner.up(Δ);
+          };
+
+          var $owner = Object.assign(Object.create($.owner), {
+            impl: $ownerImpl,
+            $propFnMap: {},
+            up: up
+          });
+
+          Object(_resolve_js__WEBPACK_IMPORTED_MODULE_0__["resolveTemplate"])($owner, {
+            tag: tag,
+            initials: initials,
+            updates: updates,
+            nodes: nodes,
+            uid: uid
+          }, acc); // const uid = `${itemNode.uid}-$${d.id || index}`;
+          // resolveTemplate($.owner, {
+          //     tag:'ui:item', 
+          //     initials:{ itemId, [itemId]: d, [itemId + 'Index']: index },
+          //     $spec:{ tag, initials, updates, nodes, uid },
+          //     uid: uid+'_item'
+          // }, acc);
+
         });
       } else if (!data) {
         if (loadingNode) {

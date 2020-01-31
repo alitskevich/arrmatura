@@ -97,4 +97,10 @@
             </li>
         </ul>
     </template>
+
+    <template id="NavLink">
+        <a data-value={href} click="-> nav.hash" class="c-hand {class}">
+            <ui:slot />
+        </a>
+    </template>
 </body>
