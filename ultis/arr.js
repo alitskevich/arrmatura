@@ -17,7 +17,7 @@ Array.groupBy = function (list, field = 'type') {
     const iter = (v, entry) => {
         const slot = result[v] || (result[v] = { id: v, count: 0, subs: [] });
         slot.count++;
-        slot.subs.push(entry);
+        (slot.items || (slot.items = slot.subs)).push(entry);
     };
     (list || []).forEach((e) => {
         const value = fieldFn(e);
@@ -58,17 +58,17 @@ Array.sortBy = function sortBy(arr, property = 'name', order = 1) {
 }
 
 /**
- * Transforms array into hash object.
+ * Produces key/value index on given array.
  * 
- * @param {*} list source array
+ * @param {*} arr source array
  * @param {*} idKey id key
  * @param {*} valKey value key
  */
-Array.toHash = (list, idKey = 'id', valKey) => {
+Array.toHash = Array.index = (arr, idKey = 'id', valKey) => {
     const r = {};
-    if (list) {
+    if (arr) {
         const isKeyFn = typeof idKey === 'string' ? e => e[idKey] : idKey
-        list.forEach((e) => { r[isKeyFn(e)] = valKey ? e[valKey] : e; });
+        arr.forEach((e) => { r[isKeyFn(e)] = valKey ? e[valKey] : e; });
     }
     return r;
 };

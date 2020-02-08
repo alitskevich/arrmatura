@@ -14,6 +14,9 @@ export default {
   // logical
   then: (x, p = '', n = '') => x ? p : n,
   not: x => !x,
+  isUndefined: x => typeof x === 'undefined',
+  isTrue: x => x===true,
+  isFalse: x => x===false,
   or: (x, s) => x || s,
   and: (x, s) => x && s,
   

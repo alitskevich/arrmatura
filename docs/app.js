@@ -920,6 +920,15 @@ __webpack_require__.r(__webpack_exports__);
   not: function not(x) {
     return !x;
   },
+  isUndefined: function isUndefined(x) {
+    return typeof x === 'undefined';
+  },
+  isTrue: function isTrue(x) {
+    return x === true;
+  },
+  isFalse: function isFalse(x) {
+    return x === false;
+  },
   or: function or(x, s) {
     return x || s;
   },
@@ -2705,9 +2714,9 @@ function () {
       if (!ocontent) return null;
       var otag = $.owner.tag;
       var acc = new Map();
-      ocontent.forEach(function (v) {
+      ocontent.forEach(function (v, idx) {
         if ($.id) {
-          if (v.tag === otag + ':' + $.id && v.content) {
+          if ((v.tag === otag + ':' + $.id || $.id === "#".concat(idx)) && v.content) {
             v.content.forEach(function (vv) {
               return acc.set(vv.uid, vv);
             });
@@ -3361,7 +3370,7 @@ Array.groupBy = function (list) {
       subs: []
     });
     slot.count++;
-    slot.subs.push(entry);
+    (slot.items || (slot.items = slot.subs)).push(entry);
   };
 
   (list || []).forEach(function (e) {
@@ -3414,24 +3423,24 @@ Array.sortBy = function sortBy(arr) {
   return (arr || []).slice(0).sort(compare);
 };
 /**
- * Transforms array into hash object.
+ * Produces key/value index on given array.
  * 
- * @param {*} list source array
+ * @param {*} arr source array
  * @param {*} idKey id key
  * @param {*} valKey value key
  */
 
 
-Array.toHash = function (list) {
+Array.toHash = Array.index = function (arr) {
   var idKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'id';
   var valKey = arguments.length > 2 ? arguments[2] : undefined;
   var r = {};
 
-  if (list) {
+  if (arr) {
     var isKeyFn = typeof idKey === 'string' ? function (e) {
       return e[idKey];
     } : idKey;
-    list.forEach(function (e) {
+    arr.forEach(function (e) {
       r[isKeyFn(e)] = valKey ? e[valKey] : e;
     });
   }
