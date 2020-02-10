@@ -1,6 +1,6 @@
 export class Service {
     constructor(props, $) {
-        Object.assign(this, props, {
+        Object.assign(this, {
             ref: $.ref,
             lookupService: (ref) => $.app ? $.app[ref] : null,
             up: (...args) => $.up(...args),

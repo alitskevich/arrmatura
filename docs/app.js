@@ -489,7 +489,7 @@ function () {
   function Service(props, $) {
     _classCallCheck(this, Service);
 
-    Object.assign(this, props, {
+    Object.assign(this, {
       ref: $.ref,
       lookupService: function lookupService(ref) {
         return $.app ? $.app[ref] : null;
