@@ -44,22 +44,28 @@
                 <Icon type="bars" />
             </a>
             <div id="sidebar" class="off-canvas-sidebar">
-                <aside style="display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px">
-                    <div class="text-center" ui:if={caption}>
-                        <a href="#/main">
-                            <h5 class="p-2">{caption}</h5>
-                        </a>
-                    </div>
-                    <div class="m-2" style="flex:1; overflow-y: auto;">
-                        <ui:slot id="aside" />
-                    </div>
-                </aside>
+                <Aside caption={caption}>
+                    <ui:slot id="aside" />
+                </Aside>
             </div>
             <a class="off-canvas-overlay" href="#"></a>
             <div class="off-canvas-content">
                 <ui:slot />
             </div>
         </div>
+    </template>
+
+    <template id="Aside">
+        <aside style="display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px">
+            <div class="text-center" ui:if={caption}>
+                <a href="#/main">
+                    <h5 class="p-2">{caption}</h5>
+                </a>
+            </div>
+            <div class="m-2" style="flex:1; overflow-y: auto;">
+                <ui:slot />
+            </div>
+        </aside>
     </template>
 
     <template id="Navbar">

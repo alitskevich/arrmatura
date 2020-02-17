@@ -637,7 +637,7 @@ function (_Service) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n\n    <template id=\"Icon\">\n        <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n    </template>\n\n    <template id=\"Img\">\n        <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n    </template>\n\n    <template id=\"Avatar\">\n        <figure class=\"avatar {large|then:avatar-lg}\">\n            <Img src={src}\n                 alt={alt}\n                 default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n        </figure>\n    </template>\n\n    <template id=\"Button\">\n        <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n                style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}\"\n                data={data}\n                click={action|track:@trackId:@title}>\n            <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n            <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n            <span ui:if=\"title\">{title}</span>\n        </button>\n    </template>\n\n    <template id=\"BigRedButton\">\n        <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n                style=\"border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n            <Icon type={icon|or:plus} />\n        </button>\n    </template>\n\n    <template id=\"Popover\">\n        <div class=\"popover popover-right\">\n            <ui:slot />\n            <div class=\"popover-container\">\n                <div class=\"card\">\n                    <div class=\"card-header\">\n                        <ui:slot id=\"body\" />\n                    </div>\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Modal\">\n        <div class=\"modal modal {open|then:active}\">\n            <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n            <div class=\"modal-container\">\n                <div class=\"modal-header\">\n                    <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                    <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                    <ui:slot id=\"header\" />\n                </div>\n                <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                    <div class=\"content\">\n                        <ui:slot />\n                    </div>\n                </div>\n                <div class=\"modal-footer\">\n                    <ui:slot id=\"footer\" />\n                </div>\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Tabs\">\n        <ul class=\"tab tab-block\">\n            <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n                <a data-id={item.id} click={action}>{item.name}</a>\n            </li>\n        </ul>\n    </template>\n\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<template id=\"Icon\">\n    <i class=\"fa{bundle|or:s} fa-{type} {class}\" style={style} data={data} click={click}></i>\n</template>\n\n<template id=\"Img\">\n    <img src={src|equals:*|then:@default:@src} alt={alt} class=\"img {class}\" style={style} />\n</template>\n\n<template id=\"Avatar\">\n    <figure class=\"avatar {large|then:avatar-lg}\">\n        <Img src={src}\n             alt={alt}\n             default=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" />\n    </figure>\n</template>\n\n<template id=\"Button\">\n    <button class=\"btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand\"\n            style={style}\n            data={data}\n            click={action|track:@trackId:@title}>\n        <i ui:if=\"{busy}\" class=\"loading mx-2\"></i>\n        <Icon ui:if=\"icon\" bundle={iconBundle} type={icon} class=\"mx-2\" />\n        <span ui:if=\"title\" style=\"white-space:nowrap; overflow: hidden; text-overflow: ellipsis;\">{title}</span>\n    </button>\n</template>\n\n<template id=\"BigRedButton\">\n    <button class=\"btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}\"\n            style=\"position: fixed;border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;\"\n            data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>\n        <Icon type={icon|or:plus} />\n    </button>\n</template>\n\n<template id=\"Popover\">\n    <div class=\"popover popover-right\">\n        <ui:slot />\n        <div class=\"popover-container\">\n            <div class=\"card\">\n                <div class=\"card-header\">\n                    <ui:slot id=\"body\" />\n                </div>\n            </div>\n        </div>\n    </div>\n</template>\n\n<template id=\"Modal\">\n    <div class=\"modal modal {open|then:active}\">\n        <a class=\"modal-overlay\" aria-label=\"Close\" data={data} click={close}></a>\n        <div class=\"modal-container\">\n            <div class=\"modal-header\">\n                <a class=\"btn btn-clear float-right\" aria-label=\":close\" data={data} click={close}></a>\n                <div class=\"modal-title h5\" ui:if={title}>{title}</div>\n                <ui:slot id=\"header\" />\n            </div>\n            <div class=\"modal-body\" style=\"max-height: 70vh;\">\n                <div class=\"content\">\n                    <ui:slot />\n                </div>\n            </div>\n            <div class=\"modal-footer\">\n                <ui:slot id=\"footer\" />\n            </div>\n        </div>\n    </div>\n</template>\n\n<template id=\"Tabs\">\n    <ul class=\"tab tab-block\">\n        <li class=\"tab-item {item.id|equals:@value|then:active} c-hand\" ui:for=\"item of data\">\n            <a data-id={item.id} click={action}>\n                <Icon ui:if={item.icon} type={item.icon} bundle={item.iconBundle} class=\"mx-2\" />\n                {item.name}\n            </a>\n        </li>\n    </ul>\n</template>");
 
 /***/ }),
 
@@ -654,6 +654,37 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./commons/index.css":
+/*!***************************!*\
+  !*** ./commons/index.css ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(/*! ../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+            var content = __webpack_require__(/*! !../node_modules/css-loader/dist/cjs.js!./index.css */ "./node_modules/css-loader/dist/cjs.js!./commons/index.css");
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
 /***/ "./commons/index.js":
 /*!**************************!*\
   !*** ./commons/index.js ***!
@@ -666,19 +697,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadTemplates", function() { return loadTemplates; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "commonPipes", function() { return commonPipes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "commonTypes", function() { return commonTypes; });
-/* harmony import */ var _support_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./support.js */ "./commons/support.js");
-/* harmony import */ var _pipes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pipes.js */ "./commons/pipes.js");
-/* harmony import */ var _elements_html__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./elements.html */ "./commons/elements.html");
-/* harmony import */ var _table_html__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./table.html */ "./commons/table.html");
-/* harmony import */ var _inputs_html__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./inputs.html */ "./commons/inputs.html");
-/* harmony import */ var _fields_html__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./fields.html */ "./commons/fields.html");
-/* harmony import */ var _layouts_html__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./layouts.html */ "./commons/layouts.html");
-/* harmony import */ var _viewport_html__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./viewport.html */ "./commons/viewport.html");
-/* harmony import */ var _NavigationService__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./NavigationService */ "./commons/NavigationService.js");
-/* harmony import */ var _ServiceWorker__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ServiceWorker */ "./commons/ServiceWorker.js");
-/* harmony import */ var _Form__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Form */ "./commons/Form.js");
-/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _Service__WEBPACK_IMPORTED_MODULE_11__["Service"]; });
+/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.css */ "./commons/index.css");
+/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_index_css__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _support_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./support.js */ "./commons/support.js");
+/* harmony import */ var _pipes_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pipes.js */ "./commons/pipes.js");
+/* harmony import */ var _elements_html__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./elements.html */ "./commons/elements.html");
+/* harmony import */ var _table_html__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./table.html */ "./commons/table.html");
+/* harmony import */ var _inputs_html__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./inputs.html */ "./commons/inputs.html");
+/* harmony import */ var _fields_html__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./fields.html */ "./commons/fields.html");
+/* harmony import */ var _layouts_html__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./layouts.html */ "./commons/layouts.html");
+/* harmony import */ var _viewport_html__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./viewport.html */ "./commons/viewport.html");
+/* harmony import */ var _NavigationService__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./NavigationService */ "./commons/NavigationService.js");
+/* harmony import */ var _ServiceWorker__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./ServiceWorker */ "./commons/ServiceWorker.js");
+/* harmony import */ var _Form__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Form */ "./commons/Form.js");
+/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return _Service__WEBPACK_IMPORTED_MODULE_12__["Service"]; });
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -689,6 +722,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 
 
 
@@ -719,8 +753,8 @@ var loadTemplates = function loadTemplates() {
   });
   return R;
 };
-var commonPipes = _pipes_js__WEBPACK_IMPORTED_MODULE_1__["default"];
-var commonTypes = [_ServiceWorker__WEBPACK_IMPORTED_MODULE_9__["ServiceWorker"], _NavigationService__WEBPACK_IMPORTED_MODULE_8__["NavigationService"]].concat(_toConsumableArray(Object.values(_support_js__WEBPACK_IMPORTED_MODULE_0__)), _toConsumableArray(Object.values(_Form__WEBPACK_IMPORTED_MODULE_10__)), _toConsumableArray(loadTemplates(_elements_html__WEBPACK_IMPORTED_MODULE_2__["default"], _table_html__WEBPACK_IMPORTED_MODULE_3__["default"], _fields_html__WEBPACK_IMPORTED_MODULE_5__["default"], _viewport_html__WEBPACK_IMPORTED_MODULE_7__["default"], _layouts_html__WEBPACK_IMPORTED_MODULE_6__["default"], _inputs_html__WEBPACK_IMPORTED_MODULE_4__["default"])));
+var commonPipes = _pipes_js__WEBPACK_IMPORTED_MODULE_2__["default"];
+var commonTypes = [_ServiceWorker__WEBPACK_IMPORTED_MODULE_10__["ServiceWorker"], _NavigationService__WEBPACK_IMPORTED_MODULE_9__["NavigationService"]].concat(_toConsumableArray(Object.values(_support_js__WEBPACK_IMPORTED_MODULE_1__)), _toConsumableArray(Object.values(_Form__WEBPACK_IMPORTED_MODULE_11__)), _toConsumableArray(loadTemplates(_elements_html__WEBPACK_IMPORTED_MODULE_3__["default"], _table_html__WEBPACK_IMPORTED_MODULE_4__["default"], _fields_html__WEBPACK_IMPORTED_MODULE_6__["default"], _viewport_html__WEBPACK_IMPORTED_MODULE_8__["default"], _layouts_html__WEBPACK_IMPORTED_MODULE_7__["default"], _inputs_html__WEBPACK_IMPORTED_MODULE_5__["default"])));
 
 if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
   window.commonTypes = commonTypes;
@@ -833,6 +867,7 @@ __webpack_require__.r(__webpack_exports__);
   fn: Function,
   str: String,
   arr: Array,
+  obj: Object,
   date: Object.assign(function (s, format) {
     return Date.format(s, format);
   }, Date, {
@@ -1063,7 +1098,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sidebarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px\">\n                    <div class=\"text-center\" ui:if={caption}>\n                        <a href=\"#/main\">\n                            <h5 class=\"p-2\">{caption}</h5>\n                        </a>\n                    </div>\n                    <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                        <ui:slot id=\"aside\" />\n                    </div>\n                </aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n</body>");
+/* harmony default export */ __webpack_exports__["default"] = ("<body>\n    <template id=\"ViewPort\">\n        <ui:fragment>\n            <ToastService ui:ref=\"toaster\" />\n            <ErrorHandlingService ui:ref=\"errorHandler\" show=\"-> toaster.send\" />\n            <ui:fragment ui:if=\"slot(aside)\">\n                <Sidebar caption={caption} size={sidebarWidth}>\n                    <Sidebar:aside>\n                        <ui:slot id=\"aside\" />\n                    </Sidebar:aside>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </Sidebar>\n                <ui:else>\n                    <main>\n                        <Toast event=\"<- toaster.top\" />\n                        <ui:slot />\n                    </main>\n                </ui:else>\n            </ui:fragment>\n        </ui:fragment>\n    </template>\n\n    <template id=\"PageRouter\">\n        <ui:tag tag=\"{target|str.capitalize|or:Main}Page\" ui:props={params} params={params} />\n    </template>\n\n    <template id=\"Toast\">\n        <div class=\"toast toast-{event.mode|or:@mode|or:primary}\"\n             style=\"position:absolute;top:1rem;right:1rem;left:1rem;{style}\"\n             ui:if=\"event\">\n            <button class=\"btn btn-clear float-right\" click={event.close}></button>\n            <p>{event.message}</p>\n            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />\n        </div>\n    </template>\n\n    <template id=\"Sidebar\">\n        <div class=\"off-canvas off-canvas-sidebar-show\">\n            <a class=\"off-canvas-toggle btn btn-primary btn-action show-lg bg-red\"\n               href=\"#sidebar\">\n                <Icon type=\"bars\" />\n            </a>\n            <div id=\"sidebar\" class=\"off-canvas-sidebar\">\n                <Aside caption={caption}>\n                    <ui:slot id=\"aside\" />\n                </Aside>\n            </div>\n            <a class=\"off-canvas-overlay\" href=\"#\"></a>\n            <div class=\"off-canvas-content\">\n                <ui:slot />\n            </div>\n        </div>\n    </template>\n\n    <template id=\"Aside\">\n        <aside style=\"display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px\">\n            <div class=\"text-center\" ui:if={caption}>\n                <a href=\"#/main\">\n                    <h5 class=\"p-2\">{caption}</h5>\n                </a>\n            </div>\n            <div class=\"m-2\" style=\"flex:1; overflow-y: auto;\">\n                <ui:slot />\n            </div>\n        </aside>\n    </template>\n\n    <template id=\"Navbar\">\n        <header class=\"navbar {class}\" style=\"min-height:48px\">\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n                    <NavLink href={back} ui:if={back}>\n                        <Button link class=\"text-primary\" icon=\"arrow-left\" title=\":action.back\" />\n                    </NavLink>\n                    <h4 class=\"m-1\" style=\"vertical-align: middle;\" ui:if={caption}>{caption}</h4>\n                    <ui:slot id=\"left\" />\n                </div>\n            </section>\n            <section class=\"navbar-center\" ui:if={logo}>\n                <img src={logo} style=\"max-height:44px;\" />\n            </section>\n            <section class=\"navbar-section\">\n                <div class=\"mx-2\">\n\n                    <ui:slot />\n                </div>\n\n            </section>\n        </header>\n    </template>\n\n    <template id=\"NavTree\">\n        <ul class=\"nav\">\n            <li class=\"nav-item {item.class}\" ui:for=\"item of data\">\n                <NavLink href={item.id}>\n                    <span>{item.name}</span>\n                    <span ui:if={item.label} class=\"label label-error\">{item.label}</span>\n                </NavLink>\n                <NavTree ui:if={item.subs} data={item.subs} />\n            </li>\n        </ul>\n    </template>\n\n    <template id=\"NavLink\">\n        <a data-value={href} click=\"-> nav.hash\" class=\"c-hand {class}\">\n            <ui:slot />\n        </a>\n    </template>\n</body>");
 
 /***/ }),
 
@@ -1097,13 +1132,11 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************!*\
   !*** ./lib/compile.js ***!
   \************************/
-/*! exports provided: stringInterpolation, placeholder, filterMapKey, compileFor, compileIf, compileTag, compile, compileNode */
+/*! exports provided: filterMapKey, compileFor, compileIf, compileTag, compile, compileNode */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stringInterpolation", function() { return stringInterpolation; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "placeholder", function() { return placeholder; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterMapKey", function() { return filterMapKey; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compileFor", function() { return compileFor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compileIf", function() { return compileIf; });
@@ -1143,10 +1176,10 @@ var RE_SINGLE_PLACEHOLDER = /^\{([^}]+)\}$/;
 var RE_PLACEHOLDER = /\{([^}]+)\}/g;
 
 function pipe(value, key) {
-  var _key$split = key.split(':'),
-      _key$split2 = _toArray(_key$split),
-      id = _key$split2[0],
-      args = _key$split2.slice(1);
+  var _key$replace$split = key.replace(':', ' ').split(' '),
+      _key$replace$split2 = _toArray(_key$replace$split),
+      id = _key$replace$split2[0],
+      args = _key$replace$split2.slice(1);
 
   try {
     var fn = this.res(id);
@@ -1171,9 +1204,9 @@ function withPipes(pipes) {
 } // Compilation
 
 
-function parseExpression(v) {
+function compileExpression(v) {
   if (v[0] === ':') {
-    return placeholder(v);
+    return resourceExpression(v.slice(1).trim());
   }
 
   if (!v.includes('{')) {
@@ -1203,7 +1236,8 @@ function stringInterpolation(v) {
     });
   };
 }
-function placeholder(expr) {
+
+function resourceExpression(expr) {
   var _expr$split$map = expr.split('|').map(function (s) {
     return s.trim();
   }),
@@ -1211,20 +1245,31 @@ function placeholder(expr) {
       key = _expr$split$map2[0],
       pipes = _expr$split$map2.slice(1);
 
-  var initGettr = key[0] === ':' ? function (fn) {
-    return function (c) {
-      return c.res(fn(c));
-    };
-  }(stringInterpolation(key.slice(1).trim())) : function (c) {
-    return c.prop(key);
-  };
+  var intrpltn = stringInterpolation(key);
   return !pipes.length ? function (c) {
-    return initGettr(c);
+    return c.res(intrpltn(c));
   } : function (pipec) {
     return function (c) {
-      return pipec(c, initGettr(c));
+      return pipec(c, c.res(intrpltn(c)));
     };
   }(withPipes(pipes));
+}
+
+function placeholder(expr) {
+  var _expr$split$map3 = expr.split('|').map(function (s) {
+    return s.trim();
+  }),
+      _expr$split$map4 = _toArray(_expr$split$map3),
+      key = _expr$split$map4[0],
+      pipes = _expr$split$map4.slice(1);
+
+  return !pipes.length ? function (c) {
+    return c.prop(key);
+  } : function (c) {
+    return pipes.reduce(function (r, pk) {
+      return pipe.call(c, r, pk);
+    }, c.prop(key));
+  };
 }
 
 var assignKeyValue = function assignKeyValue(acc, val, k) {
@@ -1305,7 +1350,7 @@ function compileFor(_ref) {
       });
     });
   } else {
-    (r.updates || (r.updates = [])).push(makeApplicator(parseExpression('{:'.includes(expr[0]) ? expr : '{' + expr + '}'), '$data'));
+    (r.updates || (r.updates = [])).push(makeApplicator(compileExpression('{:'.includes(expr[0]) ? expr : '{' + expr + '}'), '$data'));
   }
 
   var $nodes = nodes;
@@ -1392,7 +1437,7 @@ function compileIf(_ref2) {
       acc['$data'] = neg ? !gttr(c) : gttr(c);
     });
   } else {
-    var _gttr = parseExpression(expr.includes('{') ? expr : '{' + expr + '}');
+    var _gttr = compileExpression(expr.includes('{') ? expr : '{' + expr + '}');
 
     (r.updates || (r.updates = [])).push(function (c, acc) {
       acc['$data'] = neg ? !_gttr(c) : _gttr(c);
@@ -1450,7 +1495,7 @@ function compileTag(_ref3) {
       });
     });
   } else {
-    var gttr = parseExpression(expr);
+    var gttr = compileExpression(expr);
     (r.updates || (r.updates = [])).push(function (c, acc) {
       acc['$data'] = gttr(c);
     });
@@ -1489,7 +1534,7 @@ function compile(r) {
         });
       });
     } else {
-      var getter = parseExpression(aProps);
+      var getter = compileExpression(aProps);
       (r.updates || (r.updates = [])).push(function (c, acc) {
         return Object.assign(acc, getter(c));
       });
@@ -1524,7 +1569,7 @@ function compile(r) {
             _key2 = _v$slice$split$map4[0],
             _pipes2 = _v$slice$split$map4.slice(1);
 
-        var expr = parseExpression(_key2);
+        var expr = compileExpression(_key2);
 
         var _pipec2 = withPipes(_pipes2);
 
@@ -1543,7 +1588,7 @@ function compile(r) {
         if (!v.includes('{') && v[0] !== ':' && k.slice(0, 5) !== 'data-') {
           assignKeyValue(r.initials || (r.initials = {}), v, k);
         } else {
-          (r.updates || (r.updates = [])).push(makeApplicator(parseExpression(v), k));
+          (r.updates || (r.updates = [])).push(makeApplicator(compileExpression(v), k));
         }
       }
     }
@@ -3206,6 +3251,409 @@ var parseXML = function parseXML(_s, key) {
 
 
   return ctx[0].getChild(0);
+};
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./commons/index.css":
+/*!*****************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./commons/index.css ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "/* positions */\n.sticky {\n  top: 0px;\n  position: -webkit-sticky;\n  position: sticky;\n}\n.float-right {\n    float: right;\n}\n.relative {\n    position: relative;\n}\n.fixed {\n    position: fixed;\n}\n.top-right{\n    position:absolute;right:1rem;top:1rem;\n}\n\n/* flex */\n.flexoid {\n    display: flex;\n    flex-direction: row;\n}\n.flexoid.column, .stack {\n    display: flex;\n    flex-direction: column;\n}\n.flex, .flex1, .flex-1 {\n  flex: 1 1 0;\n  min-height: 0;\n}\n.flex2 {\n  flex: 2 2 0;\n  min-height: 0;\n}\n.flex0 {\n  flex: 0;\n}\n\n /* size */\n .w100 {\n    width: 100%;\n}\n.h100 {\n    height: 100%;\n}\n\n.m-0{\n  margin:0;\n}\n.mx-n4{\n  margin-left:-1rem;\n  margin-right:-1rem;\n}\n.m-4{\n  margin:16px;\n}\n.p-4{\n  padding:16px\n}\n\n.px-4{\n  padding-left:16px;\n  padding-right:16px;\n}\n\n/* Utilities */\n\n.text-pre-line {\n  white-space: pre-line;\n}\n.text-center{\n    text-align: center;\n}\n.text-strip {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  vertical-align: middle;\n  line-height: 1.2rem;\n  overflow: hidden;\n}\n\n.text-small {\n    font-size: 80%;\n    font-weight: 400;\n}\n.text-smaller {\n    font-size: 65%;\n    font-weight: 400;\n}\n\n.blur {\n  backdrop-filter: blur(5px);background: rgba(247,248,249,.65);\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/api.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/api.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+// eslint-disable-next-line func-names
+
+module.exports = function (useSourceMap) {
+  var list = []; // return the list of modules as css string
+
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = cssWithMappingToString(item, useSourceMap);
+
+      if (item[2]) {
+        return "@media ".concat(item[2], " {").concat(content, "}");
+      }
+
+      return content;
+    }).join('');
+  }; // import a list of modules into the list
+  // eslint-disable-next-line func-names
+
+
+  list.i = function (modules, mediaQuery, dedupe) {
+    if (typeof modules === 'string') {
+      // eslint-disable-next-line no-param-reassign
+      modules = [[null, modules, '']];
+    }
+
+    var alreadyImportedModules = {};
+
+    if (dedupe) {
+      for (var i = 0; i < this.length; i++) {
+        // eslint-disable-next-line prefer-destructuring
+        var id = this[i][0];
+
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+
+    for (var _i = 0; _i < modules.length; _i++) {
+      var item = [].concat(modules[_i]);
+
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      if (mediaQuery) {
+        if (!item[2]) {
+          item[2] = mediaQuery;
+        } else {
+          item[2] = "".concat(mediaQuery, " and ").concat(item[2]);
+        }
+      }
+
+      list.push(item);
+    }
+  };
+
+  return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+  var content = item[1] || ''; // eslint-disable-next-line prefer-destructuring
+
+  var cssMapping = item[3];
+
+  if (!cssMapping) {
+    return content;
+  }
+
+  if (useSourceMap && typeof btoa === 'function') {
+    var sourceMapping = toComment(cssMapping);
+    var sourceURLs = cssMapping.sources.map(function (source) {
+      return "/*# sourceURL=".concat(cssMapping.sourceRoot || '').concat(source, " */");
+    });
+    return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+  }
+
+  return [content].join('\n');
+} // Adapted from convert-source-map (MIT)
+
+
+function toComment(sourceMap) {
+  // eslint-disable-next-line no-undef
+  var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+  var data = "sourceMappingURL=data:application/json;charset=utf-8;base64,".concat(base64);
+  return "/*# ".concat(data, " */");
+}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isOldIE = function isOldIE() {
+  var memo;
+  return function memorize() {
+    if (typeof memo === 'undefined') {
+      // Test for IE <= 9 as proposed by Browserhacks
+      // @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+      // Tests for existence of standard globals is to allow style-loader
+      // to operate correctly into non-standard environments
+      // @see https://github.com/webpack-contrib/style-loader/issues/177
+      memo = Boolean(window && document && document.all && !window.atob);
+    }
+
+    return memo;
+  };
+}();
+
+var getTarget = function getTarget() {
+  var memo = {};
+  return function memorize(target) {
+    if (typeof memo[target] === 'undefined') {
+      var styleTarget = document.querySelector(target); // Special case to return head of iframe instead of iframe itself
+
+      if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+        try {
+          // This will throw an exception if access to iframe is blocked
+          // due to cross-origin restrictions
+          styleTarget = styleTarget.contentDocument.head;
+        } catch (e) {
+          // istanbul ignore next
+          styleTarget = null;
+        }
+      }
+
+      memo[target] = styleTarget;
+    }
+
+    return memo[target];
+  };
+}();
+
+var stylesInDom = [];
+
+function getIndexByIdentifier(identifier) {
+  var result = -1;
+
+  for (var i = 0; i < stylesInDom.length; i++) {
+    if (stylesInDom[i].identifier === identifier) {
+      result = i;
+      break;
+    }
+  }
+
+  return result;
+}
+
+function modulesToDom(list, options) {
+  var idCountMap = {};
+  var identifiers = [];
+
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    var id = options.base ? item[0] + options.base : item[0];
+    var count = idCountMap[id] || 0;
+    var identifier = "".concat(id, " ").concat(count);
+    idCountMap[id] = count + 1;
+    var index = getIndexByIdentifier(identifier);
+    var obj = {
+      css: item[1],
+      media: item[2],
+      sourceMap: item[3]
+    };
+
+    if (index !== -1) {
+      stylesInDom[index].references++;
+      stylesInDom[index].updater(obj);
+    } else {
+      stylesInDom.push({
+        identifier: identifier,
+        updater: addStyle(obj, options),
+        references: 1
+      });
+    }
+
+    identifiers.push(identifier);
+  }
+
+  return identifiers;
+}
+
+function insertStyleElement(options) {
+  var style = document.createElement('style');
+  var attributes = options.attributes || {};
+
+  if (typeof attributes.nonce === 'undefined') {
+    var nonce =  true ? __webpack_require__.nc : undefined;
+
+    if (nonce) {
+      attributes.nonce = nonce;
+    }
+  }
+
+  Object.keys(attributes).forEach(function (key) {
+    style.setAttribute(key, attributes[key]);
+  });
+
+  if (typeof options.insert === 'function') {
+    options.insert(style);
+  } else {
+    var target = getTarget(options.insert || 'head');
+
+    if (!target) {
+      throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");
+    }
+
+    target.appendChild(style);
+  }
+
+  return style;
+}
+
+function removeStyleElement(style) {
+  // istanbul ignore if
+  if (style.parentNode === null) {
+    return false;
+  }
+
+  style.parentNode.removeChild(style);
+}
+/* istanbul ignore next  */
+
+
+var replaceText = function replaceText() {
+  var textStore = [];
+  return function replace(index, replacement) {
+    textStore[index] = replacement;
+    return textStore.filter(Boolean).join('\n');
+  };
+}();
+
+function applyToSingletonTag(style, index, remove, obj) {
+  var css = remove ? '' : obj.media ? "@media ".concat(obj.media, " {").concat(obj.css, "}") : obj.css; // For old IE
+
+  /* istanbul ignore if  */
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = replaceText(index, css);
+  } else {
+    var cssNode = document.createTextNode(css);
+    var childNodes = style.childNodes;
+
+    if (childNodes[index]) {
+      style.removeChild(childNodes[index]);
+    }
+
+    if (childNodes.length) {
+      style.insertBefore(cssNode, childNodes[index]);
+    } else {
+      style.appendChild(cssNode);
+    }
+  }
+}
+
+function applyToTag(style, options, obj) {
+  var css = obj.css;
+  var media = obj.media;
+  var sourceMap = obj.sourceMap;
+
+  if (media) {
+    style.setAttribute('media', media);
+  } else {
+    style.removeAttribute('media');
+  }
+
+  if (sourceMap && btoa) {
+    css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
+  } // For old IE
+
+  /* istanbul ignore if  */
+
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    while (style.firstChild) {
+      style.removeChild(style.firstChild);
+    }
+
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var singleton = null;
+var singletonCounter = 0;
+
+function addStyle(obj, options) {
+  var style;
+  var update;
+  var remove;
+
+  if (options.singleton) {
+    var styleIndex = singletonCounter++;
+    style = singleton || (singleton = insertStyleElement(options));
+    update = applyToSingletonTag.bind(null, style, styleIndex, false);
+    remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+  } else {
+    style = insertStyleElement(options);
+    update = applyToTag.bind(null, style, options);
+
+    remove = function remove() {
+      removeStyleElement(style);
+    };
+  }
+
+  update(obj);
+  return function updateStyle(newObj) {
+    if (newObj) {
+      if (newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap) {
+        return;
+      }
+
+      update(obj = newObj);
+    } else {
+      remove();
+    }
+  };
+}
+
+module.exports = function (list, options) {
+  options = options || {}; // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+  // tags it will allow on a page
+
+  if (!options.singleton && typeof options.singleton !== 'boolean') {
+    options.singleton = isOldIE();
+  }
+
+  list = list || [];
+  var lastIdentifiers = modulesToDom(list, options);
+  return function update(newList) {
+    newList = newList || [];
+
+    if (Object.prototype.toString.call(newList) !== '[object Array]') {
+      return;
+    }
+
+    for (var i = 0; i < lastIdentifiers.length; i++) {
+      var identifier = lastIdentifiers[i];
+      var index = getIndexByIdentifier(identifier);
+      stylesInDom[index].references--;
+    }
+
+    var newLastIdentifiers = modulesToDom(newList, options);
+
+    for (var _i = 0; _i < lastIdentifiers.length; _i++) {
+      var _identifier = lastIdentifiers[_i];
+
+      var _index = getIndexByIdentifier(_identifier);
+
+      if (stylesInDom[_index].references === 0) {
+        stylesInDom[_index].updater();
+
+        stylesInDom.splice(_index, 1);
+      }
+    }
+
+    lastIdentifiers = newLastIdentifiers;
+  };
 };
 
 /***/ }),

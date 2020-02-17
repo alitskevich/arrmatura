@@ -1,80 +1,79 @@
-<body>
+<template id="Icon">
+    <i class="fa{bundle|or:s} fa-{type} {class}" style={style} data={data} click={click}></i>
+</template>
 
-    <template id="Icon">
-        <i class="fa{bundle|or:s} fa-{type} {class}" style={style} data={data} click={click}></i>
-    </template>
+<template id="Img">
+    <img src={src|equals:*|then:@default:@src} alt={alt} class="img {class}" style={style} />
+</template>
 
-    <template id="Img">
-        <img src={src|equals:*|then:@default:@src} alt={alt} class="img {class}" style={style} />
-    </template>
+<template id="Avatar">
+    <figure class="avatar {large|then:avatar-lg}">
+        <Img src={src}
+             alt={alt}
+             default="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
+    </figure>
+</template>
 
-    <template id="Avatar">
-        <figure class="avatar {large|then:avatar-lg}">
-            <Img src={src}
-                 alt={alt}
-                 default="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
-        </figure>
-    </template>
+<template id="Button">
+    <button class="btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
+            style={style}
+            data={data}
+            click={action|track:@trackId:@title}>
+        <i ui:if="{busy}" class="loading mx-2"></i>
+        <Icon ui:if="icon" bundle={iconBundle} type={icon} class="mx-2" />
+        <span ui:if="title" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">{title}</span>
+    </button>
+</template>
 
-    <template id="Button">
-        <button class="btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
-                style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;{style}"
-                data={data}
-                click={action|track:@trackId:@title}>
-            <i ui:if="{busy}" class="loading mx-2"></i>
-            <Icon ui:if="icon" bundle={iconBundle} type={icon} class="mx-2" />
-            <span ui:if="title">{title}</span>
-        </button>
-    </template>
+<template id="BigRedButton">
+    <button class="btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}"
+            style="position: fixed;border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;"
+            data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>
+        <Icon type={icon|or:plus} />
+    </button>
+</template>
 
-    <template id="BigRedButton">
-        <button class="btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}"
-                style="border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;"
-                data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>
-            <Icon type={icon|or:plus} />
-        </button>
-    </template>
-
-    <template id="Popover">
-        <div class="popover popover-right">
-            <ui:slot />
-            <div class="popover-container">
-                <div class="card">
-                    <div class="card-header">
-                        <ui:slot id="body" />
-                    </div>
+<template id="Popover">
+    <div class="popover popover-right">
+        <ui:slot />
+        <div class="popover-container">
+            <div class="card">
+                <div class="card-header">
+                    <ui:slot id="body" />
                 </div>
             </div>
         </div>
-    </template>
+    </div>
+</template>
 
-    <template id="Modal">
-        <div class="modal modal {open|then:active}">
-            <a class="modal-overlay" aria-label="Close" data={data} click={close}></a>
-            <div class="modal-container">
-                <div class="modal-header">
-                    <a class="btn btn-clear float-right" aria-label=":close" data={data} click={close}></a>
-                    <div class="modal-title h5" ui:if={title}>{title}</div>
-                    <ui:slot id="header" />
-                </div>
-                <div class="modal-body" style="max-height: 70vh;">
-                    <div class="content">
-                        <ui:slot />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <ui:slot id="footer" />
+<template id="Modal">
+    <div class="modal modal {open|then:active}">
+        <a class="modal-overlay" aria-label="Close" data={data} click={close}></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a class="btn btn-clear float-right" aria-label=":close" data={data} click={close}></a>
+                <div class="modal-title h5" ui:if={title}>{title}</div>
+                <ui:slot id="header" />
+            </div>
+            <div class="modal-body" style="max-height: 70vh;">
+                <div class="content">
+                    <ui:slot />
                 </div>
             </div>
+            <div class="modal-footer">
+                <ui:slot id="footer" />
+            </div>
         </div>
-    </template>
+    </div>
+</template>
 
-    <template id="Tabs">
-        <ul class="tab tab-block">
-            <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of data">
-                <a data-id={item.id} click={action}>{item.name}</a>
-            </li>
-        </ul>
-    </template>
-
-</body>
+<template id="Tabs">
+    <ul class="tab tab-block">
+        <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of data">
+            <a data-id={item.id} click={action}>
+                <Icon ui:if={item.icon} type={item.icon} bundle={item.iconBundle} class="mx-2" />
+                {item.name}
+            </a>
+        </li>
+    </ul>
+</template>

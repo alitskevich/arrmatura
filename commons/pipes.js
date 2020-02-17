@@ -30,6 +30,7 @@ export default {
   fn: Function,
   str: String,
   arr: Array,
+  obj: Object,
   date: Object.assign((s, format) => Date.format(s, format), Date, {
     orNow: x => x || (new Date()),
     time: Date.formatTime,

@@ -1,0 +1,95 @@
+/* positions */
+.sticky {
+  top: 0px;
+  position: -webkit-sticky;
+  position: sticky;
+}
+.float-right {
+    float: right;
+}
+.relative {
+    position: relative;
+}
+.fixed {
+    position: fixed;
+}
+.top-right{
+    position:absolute;right:1rem;top:1rem;
+}
+
+/* flex */
+.flexoid {
+    display: flex;
+    flex-direction: row;
+}
+.flexoid.column, .stack {
+    display: flex;
+    flex-direction: column;
+}
+.flex, .flex1, .flex-1 {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.flex2 {
+  flex: 2 2 0;
+  min-height: 0;
+}
+.flex0 {
+  flex: 0;
+}
+
+ /* size */
+ .w100 {
+    width: 100%;
+}
+.h100 {
+    height: 100%;
+}
+
+.m-0{
+  margin:0;
+}
+.mx-n4{
+  margin-left:-1rem;
+  margin-right:-1rem;
+}
+.m-4{
+  margin:16px;
+}
+.p-4{
+  padding:16px
+}
+
+.px-4{
+  padding-left:16px;
+  padding-right:16px;
+}
+
+/* Utilities */
+
+.text-pre-line {
+  white-space: pre-line;
+}
+.text-center{
+    text-align: center;
+}
+.text-strip {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  line-height: 1.2rem;
+  overflow: hidden;
+}
+
+.text-small {
+    font-size: 80%;
+    font-weight: 400;
+}
+.text-smaller {
+    font-size: 65%;
+    font-weight: 400;
+}
+
+.blur {
+  backdrop-filter: blur(5px);background: rgba(247,248,249,.65);
+}
