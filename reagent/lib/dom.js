@@ -162,6 +162,9 @@ class Element {
     //   });
     //   this.listeners = null;
     // }
+        if (this.prevElt) {
+      this.prevElt.nextElt = this.nextElt;
+    }
     const p = e.parentElement;
     if (p) {
       p.removeChild(e);

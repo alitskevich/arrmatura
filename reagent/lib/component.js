@@ -98,7 +98,6 @@ export class Component {
 
   render() {
     if (this.isDone) { return; }
-    this.ctx.cursor = this.prevElt;
     return this.impl.render ? this.impl.render(this, render) : render(this);
   }
 
@@ -152,9 +151,7 @@ export class Component {
     if (this.parent) {
       this.parent.children.delete(this.uid);
     }
-    if (this.prevElt) {
-      this.prevElt.nextElt = this.nextElt;
-    }
+
     if (this.defered) {
       this.defered.forEach(f => f(this));
       delete this.defered;

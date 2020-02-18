@@ -24,7 +24,6 @@ export const render = (c, $content = c.resolveTemplate()) => {
         }
         cc.owner = owner;
         cc.content = content;
-        cc.prevElt = c.elt.cursor;
         cc.up(props);
     });
     if (c.children) { c.children.forEach(cc => !cc.isInited ? cc.init() : 0); }
