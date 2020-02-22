@@ -77,14 +77,8 @@ export class FragmentIf extends React.Component {
 export class FragmentTag extends React.Component {
     render() {
         const $ = this;
-
-        const { $data } = this.$;
-        const acc = new Map();
-        const tag = $data;
-        if (tag) {
-            resolveTemplate($.owner, { ...$.$spec, tag, uid: tag + ':' + $.uid }, acc);
-        }
-        return acc;
+        const { $data: tag, $spec, $owner } = this.props;
+        return tag ? createElt({ ...$spec, tag, uid: tag + ':' + $.uid }, $owner) : null;
     }
 }
 

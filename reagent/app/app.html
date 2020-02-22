@@ -2,7 +2,7 @@
     <template id="App">
         <NavTree data=":sitemap" />
         <div class="container">
-            <div class="container">text</div>
+            <TodoPage />
         </div>
     </template>
 
@@ -54,13 +54,14 @@
         <div>
             <TodoStore ui:ref="todo" />
             <section class="todoapp">
+                <Caption />
                 <ui:fragment ui:if="<- todo.notEmpty">
                     <Main />
                     <Filter current="<- todo.filterId">
                         <span class="todo-count">
                             <strong>
                                 <- todo.itemsLeft</strong>
-                                   <span>:items_left</span>
+                                    <span>:items_left</span>
                         </span>
                         <Filter:right>
                             <button class="clear-completed" ui:if="<- todo.hasCompleted"

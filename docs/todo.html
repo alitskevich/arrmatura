@@ -57,7 +57,7 @@
     <ui:slot/>
     <ul class="filters">
       <li ui:for="filter of :filters">
-        <a class="selected:{current}=={filter.id}" id={filter.id} href="#{filter.id}">{filter.id|capitalize}</a>
+        <a class="{filter.id|equals:@current|then:selected}" id={filter.id} href="#{filter.id}">{filter.id|capitalize}</a>
       </li>
     </ul>
     <ui:slot id="right"/>
@@ -92,8 +92,6 @@
 
   <script type="module">
     // filters metadata
-    const then = (cond, left = '', right = '') => cond ? left : right
-    const upper = s => ('' + s).toUpperCase()
     const capitalize = s => !s ? '' : s[0].toUpperCase() + s.slice(1);
     const FILTERS = [
       { id: 'all', values: [true, false] },
@@ -117,9 +115,10 @@
       hint: 'Double-click to edit a todo',
       new_todo_hint: 'What needs to be done?',
       filters: FILTERS,
-      upper,
+      upper: s => ('' + s).toUpperCase(),
       capitalize,
-      then,
+      then: (cond, left = '', right = '') => cond ? left : right,
+      equals: (a, b) => a === b
     };
 
     // service component

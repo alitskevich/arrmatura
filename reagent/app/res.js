@@ -1,3 +1,4 @@
+import commonPipes from '../../commons/pipes'
 // filters metadata
 const then = (cond, left = '', right = '') => cond ? left : right
 const upper = s => ('' + s).toUpperCase()
@@ -22,5 +23,5 @@ export default {
     upper,
     capitalize,
     then,
-    ...window.commonPipes,
+    ...commonPipes,
 };

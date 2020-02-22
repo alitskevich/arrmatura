@@ -1,7 +1,7 @@
-import { applyDomAttrs } from './dom.js';
+import { applyDomAttrs } from './attrs.js';
 import { RComponent } from './component';
 import React from 'react';
-import { applyTemplate, createTemplate } from './compile.js';
+import { applyTemplate } from './compile.js';
 
 const REGISTRY = new Map();
 
@@ -40,7 +40,7 @@ export const createElt = (node, $owner, key) => {
         return state['#text'] || '';
     }
     const type = REGISTRY.get(tag);
-    const props = type ? state : applyDomAttrs(state);
+    const props = type ? state : applyDomAttrs($owner.origin, state);
     if ($spec) {
         props.$spec = $spec;
     }

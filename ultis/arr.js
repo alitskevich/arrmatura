@@ -64,7 +64,7 @@ Array.sortBy = function sortBy(arr, property = 'name', order = 1) {
  * @param {*} idKey id key
  * @param {*} valKey value key
  */
-Array.toHash = Array.index = (arr, idKey = 'id', valKey) => {
+Array.index = Array.toHash = (arr, idKey = 'id', valKey) => {
     const r = {};
     if (arr) {
         const isKeyFn = typeof idKey === 'string' ? e => e[idKey] : idKey

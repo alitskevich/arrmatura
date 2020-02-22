@@ -1,5 +1,3 @@
-import { render } from './render.js';
-
 const camelize = (key, sep = '_', jn = ' ') => ('' + key).split(sep).map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join(jn);
 
 // DOM
@@ -10,6 +8,9 @@ const DOM_SETTERS = {
   },
   class: (e, v) => {
     e.className = v;
+  },
+  autofocus: (e, v) => {
+    e.autoFocus = v==='true';
   },
   style: (e, v) => {
     e.style = v.split(';').reduce((r, e) => { const [key, val] = e.split(':'); r[camelize(key, '-', '')] = val; return r; }, {});
@@ -117,16 +118,16 @@ const DOM_SETTERS = {
       return false;
     });
   },
-  enter: function (e, v) {
-    this.setAttribute('enter:keyup', !v ? null : (ev) => {
+  enter: function (e, fn) {
+    e['onKeyUp'] = !fn ? null : (f => ev => {
       if (ev.keyCode === 13) {
-        this.$attributes.enter({ value: e.value, ...e.$dataset }, ev);
+        f({ value: e.value, ...e.$dataset }, ev);
       }
       if (ev.keyCode === 13 || ev.keyCode === 27) {
-        e.blur();
+       ev.target.blur();
       }
       return false;
-    });
+    })(wrapHook(this, fn));
   },
   change: function (e, v) {
     this.setAttribute('change:change', !v ? null : (ev) => {
@@ -142,113 +143,16 @@ const DOM_SETTERS = {
   }
 };
 
-const DOM_VALUE_COMPARATORS = {
-  value: (e, their) => (e.value === their),
-  _: (_, their, mine) => their === mine
-};
+const wrapHook = ($, fn) => (...args) => { if (!$.isDone) { fn.apply($,args) } }
 
-class Element {
-  constructor(attrs, $) {
-    this.elt = $.elt = $.tag === '#text' ? document.createTextNode('') : document.createElement($.tag);
-    this.applyAttributes(attrs);
-  }
-  done() {
-    const e = this.elt;
-    // const lstnrs = this.listeners;
-    // if (lstnrs) {
-    //   Object.keys(lstnrs).forEach((fn, key) => {
-    //     const [akey, ekey = akey] = key.split(':');
-    //     e.removeEventListener(ekey, fn);
-    //   });
-    //   this.listeners = null;
-    // }
-        if (this.prevElt) {
-      this.prevElt.nextElt = this.nextElt;
-    }
-    const p = e.parentElement;
-    if (p) {
-      p.removeChild(e);
-    }
-    this.elt = this.$attributes = null;
-  }
-  set(delta) {
-    this.delta = this.delta ? Object.assign(this.delta, delta) : delta;
-    return this.$.nodes || delta && Object.keys(delta).length;
-  }
-  render($) {
-    const e = this.elt;
-    const p = $.ctx;
-    if ($.content) {
-      e.cursor = null;
-      render($, $.content);
-      e.cursor = null;
-    }
-    if (this.delta) {
-      this.applyAttributes(this.delta);
-      this.delta = null;
-    }
-    const before = p.cursor ? p.cursor.nextSibling : p.firstChild;
-    if (!before) {
-      if (p !== e.parentElement) {
-        p.appendChild(e);
-      }
-    } else if (e !== before) {
-      p.insertBefore(e, before);
-    }
-    p.cursor = e;
-  }
-  applyAttributes(theirs = {}, mines = this.$attributes || {}) {
-    const e = this.elt;
-    for (let key in theirs) {
-      if (Object.prototype.hasOwnProperty.call(theirs, key) && !(DOM_VALUE_COMPARATORS[key] || DOM_VALUE_COMPARATORS._)(e, theirs[key], mines[key])) {
-        const value = theirs[key];
-        const setter = DOM_SETTERS[key];
-        if (setter) {
-          setter.call(this, e, value);
-        } else {
-          this.setAttribute(key, value);
-        }
-      }
-    }
-    this.$attributes = theirs;
-  }
-  getAttribute(key, def) {
-    return (this.$attributes && this.$attributes[key]) || def
-  }
-  setAttribute(key, value) {
-    if (value != null) {
-      if (typeof value === 'function') {
-        const fnValue = (...args) => { if (!this.isDone) { value(...args) } }
-        if (!this.listeners) {
-          this.listeners = new Map();
-        }
-        if (!this.listeners.has(key)) {
-          const [akey, ekey = akey] = key.split(':')
-          this.elt.addEventListener(ekey, fnValue, false);
-          this.listeners.set(key, fnValue);
-        }
-      } else {
-        this.elt.setAttribute(key, value);
-      }
-    } else {
-      if (this.listeners && this.listeners.has(key)) {
-        const [akey, ekey = akey] = key.split(':')
-        this.elt.removeEventListener(ekey, this.listeners.get(key));
-        this.listeners.delete(key);
-      } else {
-        this.elt.removeAttribute(key);
-      }
-    }
-  }
-}
-export const applyDomAttrs = (a) => {
+export const applyDomAttrs = (origin, a) => {
   const r = {};
   if (a) {
     for (let key in a) {
       const value = a[key];
       const setter = DOM_SETTERS[key];
       if (setter) {
-        setter.call(r, r, value);
+        setter.call(origin, r, value);
       } else {
         r[key] = value;
       }

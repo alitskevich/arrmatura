@@ -69,12 +69,11 @@ const propGetter = ($, key) => {
   return map[key] = fn;
 }
 
-
-export class Component {
-
-  constructor(Ctor, options) {
+export class RComponent extends React.Component {
+  constructor(options) {
+    super(options);
     Object.assign(this, options);
-    const { ref, parent, props } = this;
+    const { ref, parent, props } = options;
     if (parent) {
       this.app = parent.app;
       this.ctx = this.elt = parent.elt;
@@ -90,21 +89,13 @@ export class Component {
       this.app = this.impl = new Ctor(props, this);
       this.impl.$ = this;
     }
-  }
 
-  /**
-   * Rendering.
-   */
+  }
 
   render() {
-    if (this.isDone) { return; }
-    return this.impl.render ? this.impl.render(this, render) : render(this);
-  }
-
-  resolveTemplate() {
-    return this.impl.resolveTemplate
-      ? this.impl.resolveTemplate(this)
-      : resolveTemplate(this, this.impl.constructor.$TEMPLATE())
+    if (this.isDone) { return null; }
+    const root = this.origin.constructor.$TEMPLATE();
+    return createElt(root, this);
   }
 
   /**
@@ -193,6 +184,10 @@ export class Component {
     return changed;
   }
 
+  prop(propId) {
+    const value = propGetter(this, propId)();
+    return (typeof value === 'function') ? bindFn.call(this, value) : value;
+  }
   /**
    *  Left Arrow.
    */
@@ -216,7 +211,6 @@ export class Component {
     });
     return { hotValue: fn(this), cancel: () => listeners.delete(uuid) };
   }
-
   connect(key, applicator) {
     const [refId, propId] = key.split('.');
     const ref = refId === 'this' ? this.impl : this.app[refId];
@@ -237,7 +231,7 @@ export class Component {
     const [type, target] = key.split('.');
     const event = { data, ...data };
 
-    const ref = type === 'this' ? $.impl : $.app[type];
+    const ref = type === 'this' ? $.impl : window.app[type];
     if (!ref) {
       console.warn('emit: No such ref ' + type);
       return;
@@ -255,21 +249,6 @@ export class Component {
     } catch (ex) {
       console.error('emit ' + key + ':', ex)
     }
-  }
-
-
-
-}
-
-export class RComponent extends React.Component {
-  render() {
-    if (this.isDone) { return null; }
-    const root = this.origin.constructor.$TEMPLATE();
-    return createElt(root, this);
-  }
-  prop(propId) {
-    const value = propGetter(this, propId)();
-    return (typeof value === 'function') ? bindFn.call(this, value) : value;
   }
   /**
  * Routines.
