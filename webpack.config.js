@@ -9,9 +9,6 @@ module.exports = {
     app: [
       './app/index.js'
     ],
-    ultis: [
-      './ultis/index.js'
-    ],
   },
   output: {
     // eslint-disable-next-line no-undef

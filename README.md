@@ -1,8 +1,10 @@
-# Introduction
+# Arrmatura
+    
+    web framework on arrows
 
 ## Definitions	
 
-`Armatura` proposes an unified approach to define and compose components of any kind.
+`Arrmatura` proposes an unified approach to define and compose data-driven components of any kind.
 
 It is   
  - declarative and codeless
@@ -12,7 +14,7 @@ It is
 
  ## Purpose 
 
-`Armatura` is a first-citizen minimalistic UI framework, 
+`Arrmatura` is a minimalistic UI framework, 
 that extends pure HTML with arrows, pipes and dynamic components.
 
 Despite born-for-dom, it is also well-suited to develop wide range of modular component-based applications.

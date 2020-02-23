@@ -6,6 +6,5 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "eslint.enable": false,
-    "standard.autoFixOnSave": true
+    "eslint.enable": true,
 }
