@@ -10,29 +10,20 @@ import viewport from './viewport.html'
 import { NavigationService } from './NavigationService'
 import { ServiceWorker } from './ServiceWorker'
 import { pipes } from 'ultimus'
-
 import * as formTypes from './Form'
 
 export * from './Service'
 
-export const loadTemplates = (...args) => {
-  const R = []
-  args.forEach(s => s.replace(/<template\sid="(.+)">([\s\S]*?)<\/template>/gm,
-    (_, id, templ) => R.push({ NAME: id, TEMPLATE: `<ui:fragment>${templ.trim()}</ui:fragment>` })))
-  return R
-}
-
 export const commonPipes = pipes
 
 export const commonTypes = [
-  ServiceWorker, NavigationService,
-  ...Object.values(supportTypes),
-  ...Object.values(formTypes),
-  ...loadTemplates(elements, table, fields, viewport, layouts, inputs)
+    ServiceWorker, NavigationService,
+    ...Object.values(supportTypes),
+    ...Object.values(formTypes),
+    elements, table, fields, viewport, layouts, inputs
 ]
 
 if (typeof window === 'object') {
-  window.commonTypes = commonTypes
-  window.loadTemplates = loadTemplates
-  window.commonPipes = commonPipes
+    window.commonTypes = commonTypes
+    window.commonPipes = commonPipes
 }

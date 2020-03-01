@@ -1,113 +1,111 @@
-<body>
-    <template id="LoadingIndicator">
-        <div class="loading {large|then:loading-lg} {class}" />
-    </template>
+<component id="LoadingIndicator">
+    <div class="loading {large|then:loading-lg} {class}" />
+</component>
 
-    <template id="EmptyData">
-        <div class="empty {class}">
-            <div class="empty-icon">
-                <Icon type={icon|or:people} />
-            </div>
-            <p class="empty-title h5">{title}</p>
-            <p ui:if={subtitle} class="empty-subtitle">{subtitle}</p>
-            <div class="empty-action">
-                <ui:slot />
-            </div>
+<component id="EmptyData">
+    <div class="empty {class}">
+        <div class="empty-icon">
+            <Icon type={icon|or:people} />
         </div>
-    </template>
+        <p class="empty-title h5">{title}</p>
+        <p ui:if={subtitle} class="empty-subtitle">{subtitle}</p>
+        <div class="empty-action">
+            <ui:slot />
+        </div>
+    </div>
+</component>
 
-    <template id="LoadableItems">
-        <LoadingIndicator class="empty" ui:if="data|not">
-            <ui:else>
-                <h5 class="error text-error" ui:if="data.error">{data.error.message|or:@data.error}</h5>
-                <EmptyData title={emptyCaption|or:Empty} ui:if="data.length|not">
-                    <ui:else>
-                        <div style={style} ui:for="item of data">
-                            <ui:tag tag={itemType} ui:props={item} item={item} context={context} action={action} />
-                        </div>
-                    </ui:else>
-                </EmptyData>
-            </ui:else>
-        </LoadingIndicator>
-    </template>
-
-    <template id="LoadableEntity">
-        <LoadingIndicator class="empty" ui:if="data|not">
-            <ui:else>
-                <h5 class="error text-error" ui:if="data.error">
-                    <span>{data.error.message|or:@data.error}</span>
-                    <ui:else>
-                        <EmptyData title={emptyCaption|or:Empty} ui:if="data.id|not">
-                            <ui:else>
-                                <ui:tag tag={type} data={data} context={context} action={action} />
-                            </ui:else>
-                        </EmptyData>
-                    </ui:else>
-                </h5>
-            </ui:else>
-        </LoadingIndicator>
-    </template>
-
-    <template id="Cell">
-        <span class="" style="padding-left: 0px;">{value}</span>
-    </template>
-    <template id="EnumCell">
-        <span class=""
-              style="padding-left: 0px;">:map.{typeSpec}.{value}</span>
-    </template>
-
-    <template id="DateCell">
-        <span class="" style="padding-left: 0px;">{value|date}</span>
-    </template>
-
-    <template id="Table">
-        <table style="position: relative;">
-            <thead class="table-thead">
-                <tr>
-                    <th class="col-index" style="position: sticky; top: -1;"></th>
-                    <th class="col-index" style="position: sticky; top: -1;" ui:for="item of columns">
-                        <span>{item.name}</span>
-                        <div class="table-column-sorter" ui:if="item.sortable">
-                            <span class="table-column-sorter-up off" title="↑" data-id="-{item.id}"
-                                  click={doSort}><i class="anticon anticon-caret-up"></i></span>
-                            <span class="table-column-sorter-down off" title="↓" data-id={item.id} click={doSort}><i
-                                   class="anticon anticon-caret-down"></i></span>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <TableRow ui:for="item of data" data={item} selected={item.selected} columns={columns} kind={kind} />
-        </table>
-    </template>
-
-    <template id="TableRow">
-        <tbody class="table-tbody">
-            <tr class="table-row table-row-level-0" style="position:sticky;">
-                <td class="col-index" data-id={data.id} click={doItem}>
-                    <div ui:if={expandable}
-                         role="button"
-                         class="table-row-expand-icon table-row-expanded"
-                         aria-label="Collapse row"
-                         data-selected="false" click="->">
-                        <ui:else>
-                            <div role="button"
-                                 class="table-row-expand-icon table-row-collapsed"
-                                 aria-label="Expand row"
-                                 data-selected="true" click="->"></div>
-                        </ui:else>
+<component id="LoadableItems">
+    <LoadingIndicator class="empty" ui:if="data|not">
+        <ui:else>
+            <h5 class="error text-error" ui:if="data.error">{data.error.message|or:@data.error}</h5>
+            <EmptyData title={emptyCaption|or:Empty} ui:if="data.length|not">
+                <ui:else>
+                    <div style={style} ui:for="item of data">
+                        <ui:tag tag={itemType} ui:props={item} item={item} context={context} action={action} />
                     </div>
-                </td>
-                <td class="col-index" ui:for="col of columns">
-                    <ui:tag tag="{col.type|str.capitalize}Cell" ui:props={col} value={col.id|propObjectValueByKey}
-                            data={data} />
-                </td>
+                </ui:else>
+            </EmptyData>
+        </ui:else>
+    </LoadingIndicator>
+</component>
+
+<component id="LoadableEntity">
+    <LoadingIndicator class="empty" ui:if="data|not">
+        <ui:else>
+            <h5 class="error text-error" ui:if="data.error">
+                <span>{data.error.message|or:@data.error}</span>
+                <ui:else>
+                    <EmptyData title={emptyCaption|or:Empty} ui:if="data.id|not">
+                        <ui:else>
+                            <ui:tag tag={type} data={data} context={context} action={action} />
+                        </ui:else>
+                    </EmptyData>
+                </ui:else>
+            </h5>
+        </ui:else>
+    </LoadingIndicator>
+</component>
+
+<component id="Cell">
+    <span class="" style="padding-left: 0px;">{value}</span>
+</component>
+<component id="EnumCell">
+    <span class=""
+          style="padding-left: 0px;">:map.{typeSpec}.{value}</span>
+</component>
+
+<component id="DateCell">
+    <span class="" style="padding-left: 0px;">{value|date}</span>
+</component>
+
+<component id="Table">
+    <table style="position: relative;">
+        <thead class="table-thead">
+            <tr>
+                <th class="col-index" style="position: sticky; top: -1;"></th>
+                <th class="col-index" style="position: sticky; top: -1;" ui:for="item of columns">
+                    <span>{item.name}</span>
+                    <div class="table-column-sorter" ui:if="item.sortable">
+                        <span class="table-column-sorter-up off" title="↑" data-id="-{item.id}"
+                              click={doSort}><i class="anticon anticon-caret-up"></i></span>
+                        <span class="table-column-sorter-down off" title="↓" data-id={item.id} click={doSort}><i
+                               class="anticon anticon-caret-down"></i></span>
+                    </div>
+                </th>
             </tr>
-            <tr ui:if={expanded} class="table-expanded-row table-expanded-row-level-1">
-                <td class=""></td>
-                <td class="" colspan="100">
-                    <ui:tag tag="{kind|str.capitalize}RowInsider" data={data} />
-                </td>
-            </tr>
-        </tbody>
-    </template>
-</body>
+        </thead>
+        <TableRow ui:for="item of data" data={item} selected={item.selected} columns={columns} kind={kind} />
+    </table>
+</component>
+
+<component id="TableRow">
+    <tbody class="table-tbody">
+        <tr class="table-row table-row-level-0" style="position:sticky;">
+            <td class="col-index" data-id={data.id} click={doItem}>
+                <div ui:if={expandable}
+                     role="button"
+                     class="table-row-expand-icon table-row-expanded"
+                     aria-label="Collapse row"
+                     data-selected="false" click="->">
+                    <ui:else>
+                        <div role="button"
+                             class="table-row-expand-icon table-row-collapsed"
+                             aria-label="Expand row"
+                             data-selected="true" click="->"></div>
+                    </ui:else>
+                </div>
+            </td>
+            <td class="col-index" ui:for="col of columns">
+                <ui:tag tag="{col.type|str.capitalize}Cell" ui:props={col} value={col.id|propObjectValueByKey}
+                        data={data} />
+            </td>
+        </tr>
+        <tr ui:if={expanded} class="table-expanded-row table-expanded-row-level-1">
+            <td class=""></td>
+            <td class="" colspan="100">
+                <ui:tag tag="{kind|str.capitalize}RowInsider" data={data} />
+            </td>
+        </tr>
+    </tbody>
+</component>

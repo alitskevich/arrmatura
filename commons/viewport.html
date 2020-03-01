@@ -1,112 +1,110 @@
-<body>
-    <template id="ViewPort">
-        <ui:fragment>
-            <ToastService ui:ref="toaster" />
-            <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
-            <ui:fragment ui:if="slot(aside)">
-                <Sidebar caption={caption} size={sidebarWidth}>
-                    <Sidebar:aside>
-                        <ui:slot id="aside" />
-                    </Sidebar:aside>
-                    <main>
-                        <Toast event="<- toaster.top" />
-                        <ui:slot />
-                    </main>
-                </Sidebar>
-                <ui:else>
-                    <main>
-                        <Toast event="<- toaster.top" />
-                        <ui:slot />
-                    </main>
-                </ui:else>
-            </ui:fragment>
-        </ui:fragment>
-    </template>
-
-    <template id="PageRouter">
-        <ui:tag tag="{target|str.capitalize|or:Main}Page" ui:props={params} params={params} />
-    </template>
-
-    <template id="Toast">
-        <div class="toast toast-{event.mode|or:@mode|or:primary}"
-             style="position:absolute;top:1rem;right:1rem;left:1rem;{style}"
-             ui:if="event">
-            <button class="btn btn-clear float-right" click={event.close}></button>
-            <p>{event.message}</p>
-            <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />
-        </div>
-    </template>
-
-    <template id="Sidebar">
-        <div class="off-canvas off-canvas-sidebar-show">
-            <a class="off-canvas-toggle btn btn-primary btn-action show-lg bg-red"
-               href="#sidebar">
-                <Icon type="bars" />
-            </a>
-            <div id="sidebar" class="off-canvas-sidebar">
-                <Aside caption={caption}>
+<component id="ViewPort">
+    <ui:fragment>
+        <ToastService ui:ref="toaster" />
+        <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
+        <ui:fragment ui:if="slot(aside)">
+            <Sidebar caption={caption} size={sidebarWidth}>
+                <Sidebar:aside>
                     <ui:slot id="aside" />
-                </Aside>
-            </div>
-            <a class="off-canvas-overlay" href="#"></a>
-            <div class="off-canvas-content">
-                <ui:slot />
-            </div>
-        </div>
-    </template>
-
-    <template id="Aside">
-        <aside style="display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px">
-            <div class="text-center" ui:if={caption}>
-                <a href="#/main">
-                    <h5 class="p-2">{caption}</h5>
-                </a>
-            </div>
-            <div class="m-2" style="flex:1; overflow-y: auto;">
-                <ui:slot />
-            </div>
-        </aside>
-    </template>
-
-    <template id="Navbar">
-        <header class="navbar {class}" style="min-height:48px">
-            <section class="navbar-section">
-                <div class="mx-2">
-                    <NavLink href={back} ui:if={back}>
-                        <Button link class="text-primary" icon="arrow-left" title=":action.back" />
-                    </NavLink>
-                    <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
-                    <ui:slot id="left" />
-                </div>
-            </section>
-            <section class="navbar-center" ui:if={logo}>
-                <img src={logo} style="max-height:44px;" />
-            </section>
-            <section class="navbar-section">
-                <div class="mx-2">
-
+                </Sidebar:aside>
+                <main>
+                    <Toast event="<- toaster.top" />
                     <ui:slot />
-                </div>
+                </main>
+            </Sidebar>
+            <ui:else>
+                <main>
+                    <Toast event="<- toaster.top" />
+                    <ui:slot />
+                </main>
+            </ui:else>
+        </ui:fragment>
+    </ui:fragment>
+</component>
 
-            </section>
-        </header>
-    </template>
+<component id="PageRouter">
+    <ui:tag tag="{target|str.capitalize|or:Main}Page" ui:props={params} params={params} />
+</component>
 
-    <template id="NavTree">
-        <ul class="nav">
-            <li class="nav-item {item.class}" ui:for="item of data">
-                <NavLink href={item.id}>
-                    <span>{item.name}</span>
-                    <span ui:if={item.label} class="label label-error">{item.label}</span>
-                </NavLink>
-                <NavTree ui:if={item.subs} data={item.subs} />
-            </li>
-        </ul>
-    </template>
+<component id="Toast">
+    <div class="toast toast-{event.mode|or:@mode|or:primary}"
+         style="position:absolute;top:1rem;right:1rem;left:1rem;{style}"
+         ui:if="event">
+        <button class="btn btn-clear float-right" click={event.close}></button>
+        <p>{event.message}</p>
+        <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />
+    </div>
+</component>
 
-    <template id="NavLink">
-        <a data-value={href} click="-> nav.hash" class="c-hand {class}">
-            <ui:slot />
+<component id="Sidebar">
+    <div class="off-canvas off-canvas-sidebar-show">
+        <a class="off-canvas-toggle btn btn-primary btn-action show-lg bg-red"
+           href="#sidebar">
+            <Icon type="bars" />
         </a>
-    </template>
-</body>
+        <div id="sidebar" class="off-canvas-sidebar">
+            <Aside caption={caption}>
+                <ui:slot id="aside" />
+            </Aside>
+        </div>
+        <a class="off-canvas-overlay" href="#"></a>
+        <div class="off-canvas-content">
+            <ui:slot />
+        </div>
+    </div>
+</component>
+
+<component id="Aside">
+    <aside style="display:flex; flex-direction: column; height: 100vh; width:{size|or:300}px">
+        <div class="text-center" ui:if={caption}>
+            <a href="#/main">
+                <h5 class="p-2">{caption}</h5>
+            </a>
+        </div>
+        <div class="m-2" style="flex:1; overflow-y: auto;">
+            <ui:slot />
+        </div>
+    </aside>
+</component>
+
+<component id="Navbar">
+    <header class="navbar {class}" style="min-height:48px">
+        <section class="navbar-section">
+            <div class="mx-2">
+                <NavLink href={back} ui:if={back}>
+                    <Button link class="text-primary" icon="arrow-left" title=":action.back" />
+                </NavLink>
+                <h4 class="m-1" style="vertical-align: middle;" ui:if={caption}>{caption}</h4>
+                <ui:slot id="left" />
+            </div>
+        </section>
+        <section class="navbar-center" ui:if={logo}>
+            <img src={logo} style="max-height:44px;" />
+        </section>
+        <section class="navbar-section">
+            <div class="mx-2">
+
+                <ui:slot />
+            </div>
+
+        </section>
+    </header>
+</component>
+
+<component id="NavTree">
+    <ul class="nav">
+        <li class="nav-item {item.class}" ui:for="item of data">
+            <NavLink href={item.id}>
+                <span>{item.name}</span>
+                <span ui:if={item.label} class="label label-error">{item.label}</span>
+            </NavLink>
+            <NavTree ui:if={item.subs} data={item.subs} />
+        </li>
+    </ul>
+</component>
+
+<component id="NavLink">
+    <a data-value={href} click="-> nav.hash" class="c-hand {class}">
+        <ui:slot />
+    </a>
+</component>

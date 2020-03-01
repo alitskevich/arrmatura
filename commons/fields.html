@@ -1,138 +1,135 @@
-<body id="app">
-    <template id="FieldItem">
-        <div class="columns form-group {error|then:has-error} {class}">
-            <div class=" col-4 col-sm-12">
-                <label class="form-label" for="input-example-1">
-                    {caption}
-                    <sup ui:if={required}
-                         class="text-error">✱</sup>
-                </label>
-            </div>
-            <div class="col-8 col-sm-12">
-                <ui:slot />
-                <p class="form-input-hint" ui:if={error}>{error}</p>
-            </div>
+<component id="FieldItem">
+    <div class="columns form-group {error|then:has-error} {class}">
+        <div class=" col-4 col-sm-12">
+            <label class="form-label" for="input-example-1">
+                {caption}
+                <sup ui:if={required}
+                     class="text-error">✱</sup>
+            </label>
         </div>
-    </template>
-
-    <template id="TextField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <input class="form-input"
-                   type="text"
-                   disabled={disabled}
-                   placeholder={placeholder|or:@caption}
-                   value={value}
-                   change={onChange}>
-        </FieldItem>
-    </template>
-
-    <template id="DateField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <input class="form-input"
-                   disabled={disabled}
-                   type="date"
-                   placeholder={caption}
-                   value={value}
-                   change={onChange}>
-        </FieldItem>
-    </template>
-
-    <template id="DateTimeField">
-        <FieldItem caption="{caption}" error={error} required={required}>
-            <input class="form-input"
-                   disabled={disabled}
-                   type="datetime-local"
-                   placeholder={caption}
-                   value={value|date:yyyy-mm-ddTt}
-                   change={onChange}>
-        </FieldItem>
-    </template>
-
-    <template id="NumberField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <input class="form-input"
-                   disabled={disabled}
-                   type="number"
-                   placeholder={caption}
-                   value={value}
-                   change={onChange}>
-        </FieldItem>
-    </template>
-
-    <template id="TextareaField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <textarea
-                      class="form-input"
-                      style="min-height: 15vw"
-                      disabled={disabled} placeholder={caption} rows="3" change={onChange} value={value}></textarea>
-        </FieldItem>
-    </template>
-
-    <template id="SwitchField">
-        <div class="form-group">
-            <div class="col-sm-12">
-                <label class="form-switch">
-                    <span>{caption}</span>
-                    <input type="checkbox" toggle={onChange} data={data} checked={value|not|not}>
-                    <i class="form-icon"></i>
-                </label>
-            </div>
+        <div class="col-8 col-sm-12">
+            <ui:slot />
+            <p class="form-input-hint" ui:if={error}>{error}</p>
         </div>
-    </template>
+    </div>
+</component>
 
-    <template id="EnumField">
-        <FieldItem caption={caption} class={class} error={error} required={required}>
-            <Select class="form-select"
-                    change={onChange}
-                    value={value|or:@defaultValue}
-                    data={data}
-                    options=":enums.{typeSpec}"
-                    emptyCaption={emptyCaption}
+<component id="TextField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <input class="form-input"
+               type="text"
+               disabled={disabled}
+               placeholder={placeholder|or:@caption}
+               value={value}
+               change={onChange}>
+    </FieldItem>
+</component>
+
+<component id="DateField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <input class="form-input"
+               disabled={disabled}
+               type="date"
+               placeholder={caption}
+               value={value}
+               change={onChange}>
+    </FieldItem>
+</component>
+
+<component id="DateTimeField">
+    <FieldItem caption="{caption}" error={error} required={required}>
+        <input class="form-input"
+               disabled={disabled}
+               type="datetime-local"
+               placeholder={caption}
+               value={value|date:yyyy-mm-ddTt}
+               change={onChange}>
+    </FieldItem>
+</component>
+
+<component id="NumberField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <input class="form-input"
+               disabled={disabled}
+               type="number"
+               placeholder={caption}
+               value={value}
+               change={onChange}>
+    </FieldItem>
+</component>
+
+<component id="TextareaField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <textarea
+                  class="form-input"
+                  style="min-height: 15vw"
+                  disabled={disabled} placeholder={caption} rows="3" change={onChange} value={value}></textarea>
+    </FieldItem>
+</component>
+
+<component id="SwitchField">
+    <div class="form-group">
+        <div class="col-sm-12">
+            <label class="form-switch">
+                <span>{caption}</span>
+                <input type="checkbox" toggle={onChange} data={data} checked={value|not|not}>
+                <i class="form-icon"></i>
+            </label>
+        </div>
+    </div>
+</component>
+
+<component id="EnumField">
+    <FieldItem caption={caption} class={class} error={error} required={required}>
+        <Select class="form-select"
+                change={onChange}
+                value={value|or:@defaultValue}
+                data={data}
+                options=":enums.{typeSpec}"
+                emptyCaption={emptyCaption}
+                disabled={disabled} />
+    </FieldItem>
+</component>
+
+<component id="SelectField">
+    <FieldItem caption={caption} class={class} error={error} required={required}>
+        <Select class="form-select"
+                change={onChange}
+                value={value|or:@defaultValue}
+                data={data}
+                options={options}
+                emptyCaption={emptyCaption}
+                disabled={disabled} />
+    </FieldItem>
+</component>
+
+<component id="RadioField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <RadioGroup change={onChange}
+                    value={value} data={data} options=":enums.{typeSpec}"
                     disabled={disabled} />
-        </FieldItem>
-    </template>
+    </FieldItem>
+</component>
 
-    <template id="SelectField">
-        <FieldItem caption={caption} class={class} error={error} required={required}>
-            <Select class="form-select"
-                    change={onChange}
-                    value={value|or:@defaultValue}
-                    data={data}
-                    options={options}
-                    emptyCaption={emptyCaption}
-                    disabled={disabled} />
-        </FieldItem>
-    </template>
-
-    <template id="RadioField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <RadioGroup change={onChange}
-                        value={value} data={data} options=":enums.{typeSpec}"
+<component id="ReferenceField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <Loader from="-> references.{typeSpec}Search"
+                data-value={keyword.value|orDataPropValueByKey:keyword}
+                trigger={keyword.value}
+                into="->options" />
+        <Loader from="-> references.{typeSpec}Entry" data-id={value} trigger={value} into="->entry" />
+        <ReferenceInput change={onChange}
+                        value={value} entry={entry.data}
+                        onKeyword="->keyword" keyword={keyword.value|orDataPropValueByKey:keyword}
+                        onSelectMenuItem="->entry"
+                        options={options.data}
                         disabled={disabled} />
-        </FieldItem>
-    </template>
+    </FieldItem>
+</component>
 
-    <template id="ReferenceField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <Loader from="-> references.{typeSpec}Search"
-                    data-value={keyword.value|orDataPropValueByKey:keyword}
-                    trigger={keyword.value}
-                    into="->options" />
-            <Loader from="-> references.{typeSpec}Entry" data-id={value} trigger={value} into="->entry" />
-            <ReferenceInput change={onChange}
-                            value={value} entry={entry.data}
-                            onKeyword="->keyword" keyword={keyword.value|orDataPropValueByKey:keyword}
-                            onSelectMenuItem="->entry"
-                            options={options.data}
-                            disabled={disabled} />
-        </FieldItem>
-    </template>
-
-    <template id="RemoteEnumField">
-        <FieldItem caption={caption} error={error} required={required}>
-            <Loader from="-> references.{typeSpec}Enum" data={data} into="->options" />
-            <Select class="form-select" change={onChange} value={value} data={options.data} disabled={disabled} />
-        </FieldItem>
-    </template>
-
-</body>
+<component id="RemoteEnumField">
+    <FieldItem caption={caption} error={error} required={required}>
+        <Loader from="-> references.{typeSpec}Enum" data={data} into="->options" />
+        <Select class="form-select" change={onChange} value={value} data={options.data} disabled={disabled} />
+    </FieldItem>
+</component>

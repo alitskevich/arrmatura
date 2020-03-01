@@ -1,87 +1,83 @@
-<body>
+<component id="Grid">
+    <div class="columns {class}">
+        <ui:slot />
+    </div>
+</component>
 
-    <template id="Grid">
-        <div class="columns {class}">
+<component id="Col">
+    <div class="col-{size|or:6} col-sm-12 {class}">
+        <ui:slot />
+    </div>
+</component>
+<component id="Centroid">
+    <div class="{class}" style="display: flex;align-items: center;justify-content: center;{style}">
+        <ui:slot />
+    </div>
+</component>
+
+<component id="FlexBox">
+    <div class="{class}" style="display: flex;align-items: stretch;justify-content:space-around;{style}">
+        <ui:slot />
+    </div>
+</component>
+
+<component id="Tile">
+    <div class="tile {centered|then:tile-centered} m-2 {class}">
+        <div class="tile-icon" ui:if={image}>
+            <Avatar src={image} />
+        </div>
+        <div class="tile-icon" ui:if={icon}>
+            <Icon type={icon} />
+        </div>
+        <div class="tile-content">
+            <div class="tile-title text-bold" ui:if={title}>{title}</div>
+            <div class="tile-subtitle" ui:if={subtitle}>{subtitle}</div>
             <ui:slot />
         </div>
-    </template>
-
-    <template id="Col">
-        <div class="col-{size|or:6} col-sm-12 {class}">
-            <ui:slot />
+        <div class="tile-action btn-group" ui:if="slot(actions)">
+            <ui:slot id="actions" />
         </div>
-    </template>
-    <template id="Centroid">
-        <div class="{class}" style="display: flex;align-items: center;justify-content: center;{style}">
-            <ui:slot />
-        </div>
-    </template>
-
-    <template id="FlexBox">
-        <div class="{class}" style="display: flex;align-items: stretch;justify-content:space-around;{style}">
-            <ui:slot />
-        </div>
-    </template>
-
-    <template id="Tile">
-        <div class="tile {centered|then:tile-centered} m-2 {class}">
-            <div class="tile-icon" ui:if={image}>
-                <Avatar src={image} />
+    </div>
+</component>
+<component id="Panel">
+    <ui:fragment>
+        <h6 class="mt-2 pt-2 px-2 mx-2 text-gray" ui:if="caption">{caption}</h6>
+        <div class="panel mx-2 {class}" style={style}>
+            <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
+            <div class="panel-header" ui:if="slot(title)">
+                <div class="panel-title">
+                    <ui:slot id="title" />
+                </div>
             </div>
-            <div class="tile-icon" ui:if={icon}>
-                <Icon type={icon} />
+            <div class="panel-nav" ui:if="slot(nav)">
+                <ui:slot id="nav" />
             </div>
-            <div class="tile-content">
-                <div class="tile-title text-bold" ui:if="title">{title}</div>
-                <div class="tile-subtitle" ui:if="subtitle">{subtitle}</div>
+            <div class="panel-body">
                 <ui:slot />
             </div>
-            <div class="tile-action btn-group" ui:if="slot(actions)">
-                <ui:slot id="actions" />
-            </div>
-        </div>
-    </template>
-    <template id="Panel">
-        <ui:fragment>
-            <h6 class="mt-2 pt-2 px-2 mx-2 text-gray" ui:if="caption">{caption}</h6>
-            <div class="panel mx-2 {class}" style={style}>
-                <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
-                <div class="panel-header" ui:if="slot(title)">
-                    <div class="panel-title">
-                        <ui:slot id="title" />
-                    </div>
-                </div>
-                <div class="panel-nav" ui:if="slot(nav)">
-                    <ui:slot id="nav" />
-                </div>
-                <div class="panel-body">
-                    <ui:slot />
-                </div>
-                <div class="panel-footer" ui:if="slot(footer)">
-                    <ui:slot id="footer" />
-                </div>
-            </div>
-        </ui:fragment>
-    </template>
-    <template id="Card">
-        <div class="card" style={style}>
-            <div class="card-image" ui:if={image}>
-                <img src={image} class="img-responsive" />
-            </div>
-            <div class="card-header">
-                <a ui:if={title} href={link}>
-                    <h5 class="card-title">{title}</h5>
-                </a>
-                <div ui:if={subtitle} class="card-subtitle text-gray">{subtitle}</div>
-                <ui:slot id="header" />
-            </div>
-            <div class="card-body">
-                <ui:slot />
-            </div>
-            <div class="card-footer">
+            <div class="panel-footer" ui:if="slot(footer)">
                 <ui:slot id="footer" />
             </div>
         </div>
-    </template>
-
-</body>
+    </ui:fragment>
+</component>
+<component id="Card">
+    <div class="card" style={style}>
+        <div class="card-image" ui:if={image}>
+            <img src={image} class="img-responsive" />
+        </div>
+        <div class="card-header">
+            <a ui:if={title} href={link}>
+                <h5 class="card-title">{title}</h5>
+            </a>
+            <div ui:if={subtitle} class="card-subtitle text-gray">{subtitle}</div>
+            <ui:slot id="header" />
+        </div>
+        <div class="card-body">
+            <ui:slot />
+        </div>
+        <div class="card-footer">
+            <ui:slot id="footer" />
+        </div>
+    </div>
+</component>

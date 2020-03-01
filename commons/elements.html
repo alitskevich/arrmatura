@@ -1,39 +1,39 @@
-<template id="Icon">
+<component id="Icon">
     <i class="fa{bundle|or:s} fa-{type} {class}" style={style} data={data} click={click}></i>
-</template>
+</component>
 
-<template id="Img">
+<component id="Img">
     <img src={src|equals:*|then:@default:@src} alt={alt} class="img {class}" style={style} />
-</template>
+</component>
 
-<template id="Avatar">
+<component id="Avatar">
     <figure class="avatar {large|then:avatar-lg}">
         <Img src={src}
              alt={alt}
              default="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" />
     </figure>
-</template>
+</component>
 
-<template id="Button">
+<component id="Button">
     <button class="btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
             style={style}
             data={data}
             click={action|track:@trackId:@title}>
-        <i ui:if="{busy}" class="loading mx-2"></i>
-        <Icon ui:if="icon" bundle={iconBundle} type={icon} class="mx-2" />
-        <span ui:if="title" style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">{title}</span>
+        <i ui:if={busy} class="loading mx-2"></i>
+        <Icon ui:if={icon} bundle={iconBundle} type={icon} class="mx-2" />
+        <span ui:if={title} style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">{title}</span>
     </button>
-</template>
+</component>
 
-<template id="BigRedButton">
+<component id="BigRedButton">
     <button class="btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}"
             style="position: fixed;border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;"
             data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>
         <Icon type={icon|or:plus} />
     </button>
-</template>
+</component>
 
-<template id="Popover">
+<component id="Popover">
     <div class="popover popover-right">
         <ui:slot />
         <div class="popover-container">
@@ -44,9 +44,9 @@
             </div>
         </div>
     </div>
-</template>
+</component>
 
-<template id="Modal">
+<component id="Modal">
     <div class="modal modal {open|then:active}">
         <a class="modal-overlay" aria-label="Close" data={data} click={close}></a>
         <div class="modal-container">
@@ -65,9 +65,9 @@
             </div>
         </div>
     </div>
-</template>
+</component>
 
-<template id="Tabs">
+<component id="Tabs">
     <ul class="tab tab-block">
         <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of data">
             <a data-id={item.id} click={action}>
@@ -76,4 +76,4 @@
             </a>
         </li>
     </ul>
-</template>
+</component>
