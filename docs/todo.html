@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="todo.css">
   </head>
 
-  <script type="text/x-template" id="TodoApp">
+  <script type="text/x-template" id="App">
   <div>
     <TodoStore ui:ref="todo" />
     <section class="todoapp">
@@ -23,7 +23,7 @@
         </Filter>
       </ui:fragment>
     </section>
-    <Footer hasItems="<-todo.shownItemsCount"/>
+    <Footer hasItems="<- todo.shownItemsCount"/>
   </div>
 </script>
 

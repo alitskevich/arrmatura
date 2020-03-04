@@ -72,7 +72,7 @@
         <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of data">
             <a data-id={item.id} click={action}>
                 <Icon ui:if={item.icon} type={item.icon} bundle={item.iconBundle} class="mx-2" />
-                {item.name} {value|or:-}
+                {item.name}
             </a>
         </li>
     </ul>
