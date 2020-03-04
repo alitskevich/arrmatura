@@ -22,6 +22,10 @@
         <NavTree data=":top.sitemap" />
     </Panel>
 </component>
+<component id="Test4">
+    <Store ui:ref="store" />
+    <Button title="<- store.tab|or:None" data-id="Some" action="-> store.select" />
+</component>
 
 <component id="Navbar">
     <header class="navbar bg-primary" style="min-height:48px">
@@ -74,11 +78,15 @@
     <Panel caption="Panel" hint="with hint">
         here...
     </Panel>
+    <Panel caption="Todo">
+        <Tabs value="<- store.tab" data=":top.sitemap" action="-> store.select" />
+    </Panel>
 </component>
 
 <component id="TodoPage">
     <Navbar caption="To-Do" />
     <Panel caption="Todo">
-        <Tabs value="<-store.tab" data=":top.sitemap" action="->store.select" />
+        <Tabs value="<- store.tab" data=":top.sitemap" action="-> store.select" />
+        <Button title="<- store.tab|or:None" data-id="other" action="-> store.select" />
     </Panel>
 </component>
