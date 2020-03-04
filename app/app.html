@@ -9,8 +9,18 @@
     </ViewPort>
 </component>
 
-<component id="App2">
+<component id="Test1">
     <Button primary busy title="22" icon="plus" />
+</component>
+
+<component id="Test2">
+    <SimpleList data=":top.sitemap" />
+</component>
+
+<component id="Test3">
+    <Panel caption="Slots, for, if" hint="level 3">
+        <NavTree data=":top.sitemap" />
+    </Panel>
 </component>
 
 <component id="Navbar">
@@ -27,6 +37,14 @@
             <UserAvatar ui:props={user} ui:if={user} />
         </section>
     </header>
+</component>
+
+<component id="SimpleList">
+    <ul class="nav">
+        <li class="nav-item {item.class}" ui:for="item of data">
+            <span>{item.name}</span>
+        </li>
+    </ul>
 </component>
 
 <component id="NavTree">

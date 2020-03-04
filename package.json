@@ -1,6 +1,6 @@
 {
   "name": "arrmatura",
-  "version": "3.0.5",
+  "version": "4.0.1",
   "description": "framework",
   "scripts": {
     "start": "npx webpack-dev-server --hot --contentBase docs",
@@ -15,10 +15,9 @@
   "license": "MIT",
   "main": "docs/index.js",
   "files": [
+    "commons/index.css",
     "docs/index.js",
-    "docs/ultis.js",
-    "docs/index.js.map",
-    "docs/ultis.js.map"
+    "docs/index.js.map"
   ],
   "devDependencies": {
     "@babel/cli": "^7.7.4",
@@ -30,12 +29,9 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.8.0",
-    "css-loader": "^3.4.2",
-    "style-loader": "^1.1.3"
+    "eslint": "^6.8.0"
   },
   "dependencies": {
-    "eslint-plugin-react": "^7.18.3",
     "ultimus": "^1.0.6"
   }
 }

@@ -14,22 +14,21 @@ class Comp1 {
         return '<...>'
     }
 
-    constructor(initialProps, $) {
-        // not need to assign initialProps here
-        // all the initials props will be passed into $.up() just after
+    constructor($context) {
     }
 
     // life-cycle hooks
 
     // hook called once on component init
-    init($) {
+    init($$context) {
         // use defer() here if needed
-        $.defer(()=> this.close())
+        const cancel = api.listen(this)
+        $context.defer(() => cancel(this))
 
         // will update component state with returned result
         // can be promise as well
         return {
-            prop1:'',
+            prop1:'value',
         }
     }
 
@@ -53,8 +52,8 @@ class Comp1 {
     
     // action handler invoked when '-> ref.someAction' called
     onSomeAction(data, This) {
-        if (asynch) {
-            return promise.then(()=>delta)
+        if (asyncMode) {
+            return promise.then(() => delta)
         }
         // state update delta object
         return {
@@ -70,15 +69,11 @@ class Comp1 {
         }
     }
 
-    render($, renderFn) {
-        // custom rendering. very rare need to override
-        // renderFn($)
-    }
-
     // logic
     someMethodDemonstratingContextUsages() {
         // reference to this instance context.
         const $ = this.$;
+        
         // update its props state programmatically:
         $.up({ prop: 'value' });
 

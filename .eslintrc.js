@@ -5,7 +5,6 @@ module.exports = {
     },
     'extends': [
         'eslint:recommended',
-        'plugin:react/recommended'
     ],
     'globals': {
         'Atomics': 'readonly',
@@ -13,13 +12,12 @@ module.exports = {
     },
     'parserOptions': {
         'ecmaFeatures': {
-            'jsx': true
+            'jsx': false
         },
         'ecmaVersion': 2018,
         'sourceType': 'module'
     },
     'plugins': [
-        'react'
     ],
     'rules': {
         'indent': [

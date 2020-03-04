@@ -1,13 +1,13 @@
 # Arrmatura
     
-    web framework on arrows
+    Web framework on arrows.
 
 ## Definitions	
 
-`Arrmatura` proposes an unified approach to define and compose data-driven components of any kind.
+`Arrmatura` provides an unified approach to develop a data-driven systems by defining and composing components of any kind.
 
-It is   
- - declarative and codeless
+It is intended to be 
+ -  declarative and codeless as much as possible
  - non-obtrusive, platform-independent
  - reactive and functional oriented
  - easy to learn and get started. 
@@ -15,33 +15,23 @@ It is
  ## Purpose 
 
 `Arrmatura` is a minimalistic UI framework, 
-that extends pure HTML with arrows, pipes and dynamic components.
+that enriches the pure HTML with components, arrows and pipes.
 
-Despite born-for-dom, it is also well-suited to develop wide range of modular component-based applications.
-
-## Audience	
-
-- Newbies, amateurs, students - to dig into a web dev easy and fast.
-- Professional developers - to re-think, simplify and unify zoo of their creatures using one single declarative language.
-- start-upers - to fail fast.
+Although born-for-dom, it is also may be adopted to develop wide range of modular component-based applications.
 
 # Get Started
 
     npm i arrmatura
 
 ```javascript
-    import {launch} from 'arrmatura';
-    ...
-
-    const types = [
-        TopClass, 
-        SomeService,
-        // template only
-        {NAME:'Name2', TEMPLATE:'<...>'}
-    ];
+    import { launch } from 'arrmatura';
 
     launch({
-      types, 
+      types: [
+        TopClass, 
+        SomeService,
+        '<component id="H1"><...></component>'
+      ], 
       template: '<TopClass/>',
       resources: { ... }	
     })

@@ -1,4 +1,3 @@
-import './index.css'
 import * as supportTypes from './support.js'
 
 import elements from './elements.html'

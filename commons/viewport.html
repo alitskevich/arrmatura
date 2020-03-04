@@ -1,28 +1,27 @@
 <component id="ViewPort">
-    <ui:fragment>
-        <ToastService ui:ref="toaster" />
-        <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
-        <ui:fragment ui:if="slot(aside)">
-            <Sidebar caption={caption} size={sidebarWidth}>
-                <Sidebar:aside>
-                    <ui:slot id="aside" />
-                </Sidebar:aside>
-                <main>
-                    <Toast event="<- toaster.top" />
-                    <ui:slot />
-                </main>
-            </Sidebar>
-            <ui:else>
-                <main>
-                    <Toast event="<- toaster.top" />
-                    <ui:slot />
-                </main>
-            </ui:else>
-        </ui:fragment>
+    <ToastService ui:ref="toaster" />
+    <ErrorHandlingService ui:ref="errorHandler" show="-> toaster.send" />
+    <ui:fragment ui:if="slot(aside)">
+        <Sidebar caption={caption} size={sidebarWidth}>
+            <Sidebar:aside>
+                <ui:slot id="aside" />
+            </Sidebar:aside>
+            <main>
+                <Toast event="<- toaster.top" />
+                <ui:slot />
+            </main>
+        </Sidebar>
+        <ui:else>
+            <main>
+                <Toast event="<- toaster.top" />
+                <ui:slot />
+            </main>
+        </ui:else>
     </ui:fragment>
 </component>
 
 <component id="PageRouter">
+    {target|str.capitalize|or:Main}
     <ui:tag tag="{target|str.capitalize|or:Main}Page" ui:props={params} params={params} />
 </component>
 

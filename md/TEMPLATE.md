@@ -5,21 +5,21 @@
 
 ```html
 
-<template id="NavTreeItem">
+<component id="NavTreeItem">
   <a href="#{id}">
       <span>{name|limitSize:50}</span>
       <span ui:if={label} class="label">{label}</span>
   </a>
-</template>
+</component>
 
-<template id="NavTree">
+<component id="NavTree">
   <ul class="nav">
       <li class="nav-item {item.class}" ui:for="item of data">
           <NavTreeItem ui:props={item}>
           <NavTree ui:if={item.subs} data={item.subs} />
       </li>
   </ul>
-</template>
+</component>
 ```
 
 # Control. 
@@ -53,14 +53,9 @@
   </ul>
   ```
 here 
-> - items MUST BE distinguished by `item.id`
+> - items MUST HAVE unique `id` field
 > - `itemIndex` contains current 0-based index
 > - current item is accessible programmatically as `this.item`.
-
-##### There are also two special containers: 
-
- - `<x:empty>` for empty list.
- - `<x:loading>` for non-existing list.
 
 ## Fragment
 
@@ -141,7 +136,7 @@ Right arrow creates a function that invokes `app[ref].onKey1(data)` action handl
 
 > `click="-> this.action"`, where `this` keyword refers owner.
 
-#### Right arrows as owner updaters
+#### Right arrows as updater
 
 Often all what we need is just to update owner state
 
@@ -153,19 +148,18 @@ Often all what we need is just to update owner state
 Slots are placeholders for extra content.
 
 ```html
-    <Comp>
-        <ExtraContent/>
-    </Comp>
+<Comp>
+    <ExtraContent/>
+</Comp>
 ```
 
 ```html
-<template id="Comp">
+<component id="Comp">
 <div class="container"  ui:if="slot(key2)">
-    <!-- Extra content will be placed here 
-    instead of <x:slot/> -->
-    <x:slot> 
+    <!-- Extra content will be placed here instead of <ui:slot/> -->
+    <ui:slot> 
 </div>
-</template>
+</component>
 ```
 
 > special `slot(key)` conditional could be used to check if non-empty extra content passed.
@@ -184,12 +178,15 @@ Extra content could be multiple-part and thus, orbitrary distributed inside comp
 
 ```html
 <div class="component template">
+
     <!-- <Extra1/> will be placed here-->
     <x:slot key="key1">
+
     <div class="comp" ui:if="slot(key2)">
         <!-- <Extra2/> will be placed here -->
         <x:slot key="key2"> 
     </div> 
+
     <!-- <DefaultContent/> will be placed here -->
     <x:slot> 
 </div>

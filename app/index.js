@@ -14,4 +14,4 @@ const resources = {
     ...res
 }
 
-launch({ template: '<Button primary caption="22"/>', types, resources })
+launch({ template: '<App />', types, resources })
