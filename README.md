@@ -1,13 +1,13 @@
 # Arrmatura
     
-    Web framework on arrows.
+The "components-on-arrows" framework.
 
 ## Definitions	
 
-`Arrmatura` provides an unified approach to develop a data-driven systems by defining and composing components of any kind.
+`Arrmatura` provides an ultimate `specification-as-code` approach to develop a data-driven systems by defining and composing components of any kind.
 
 It is intended to be 
- -  declarative and codeless as much as possible
+ - declarative and codeless as much as possible
  - non-obtrusive, platform-independent
  - reactive and functional oriented
  - easy to learn and get started. 
@@ -28,12 +28,14 @@ Although born-for-dom, it is also may be adopted to develop wide range of modula
 
     launch({
       types: [
-        TopClass, 
+        Application,
         SomeService,
-        '<component id="H1"><...></component>'
+        '<component id="Footer"><Button title=":send_title"></component>'
       ], 
-      template: '<TopClass/>',
-      resources: { ... }	
+      template: '<Application />',
+      resources: { 
+        send_title:'Send'
+      }	
     })
 ```
 

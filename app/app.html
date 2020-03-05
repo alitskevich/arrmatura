@@ -71,22 +71,19 @@
         <Icon type="cog" />
     </Panel>
     <Panel caption="Buttons">
-        <Button title="Default" trackId="action1" />
-        <Button icon="cog" title="Large primary with icon" primary large />
-        <Button icon="123" title="Link" link />
+        <Button caption="Default" trackId="action1" />
+        <Button icon="cog" caption="Large primary with icon" primary large class="m-2" />
+        <Button icon="123" caption="Link" link />
     </Panel>
     <Panel caption="Panel" hint="with hint">
         here...
     </Panel>
-    <Panel caption="Todo">
-        <Tabs value="<- store.tab" data=":top.sitemap" action="-> store.select" />
-    </Panel>
 </component>
 
-<component id="TodoPage">
-    <Navbar caption="To-Do" />
-    <Panel caption="Todo">
-        <Tabs value="<- store.tab" data=":top.sitemap" action="-> store.select" />
-        <Button title="<- store.tab|or:None" data-id="other" action="-> store.select" />
+<component id="ArrowsPage">
+    <Navbar caption="Arrows" />
+    <Panel caption="Subscribe and Action">
+        <Tabs value="<- store.tab" items=":top.sitemap" action="-> store.select" />
+        <Button caption="<- store.tab|or:none|str.capitalize" data-id="other" action="-> store.select" />
     </Panel>
 </component>

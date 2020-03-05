@@ -9,95 +9,96 @@
   </head>
 
   <script type="text/x-template" id="App">
-  <div>
-    <TodoStore ui:ref="todo" />
-    <section class="todoapp">
-      <Caption title=":title" />
-      <ui:fragment ui:if="<- todo.notEmpty">
-        <Main />
-        <Filter current="<- todo.filterId">
-          <span class="todo-count"><strong><- todo.itemsLeft</strong><span>:items_left</span></span>
-          <Filter:right>
-            <button class="clear-completed" ui:if="<- todo.hasCompleted" click="-> todo.purge">:clear_completed</button>
-          </Filter:right>
-        </Filter>
-      </ui:fragment>
-    </section>
-    <Footer hasItems="<- todo.shownItemsCount"/>
-  </div>
-</script>
+    <div>
+      <TodoStore ui:ref="todo" />
+      <section class="todoapp">
+        <Caption title=":title" />
+        <ui:fragment ui:if="<- todo.notEmpty">
+          <Main />
+          <Filter current="<- todo.filterId">
+            <span class="todo-count"><strong><- todo.itemsLeft</strong><span>:items_left</span></span>
+            <Filter:right>
+              <button class="clear-completed" ui:if="<- todo.hasCompleted" click="-> todo.purge">:clear_completed</button>
+            </Filter:right>
+          </Filter>
+        </ui:fragment>
+      </section>
+      <Footer hasItems="<- todo.shownItemsCount"/>
+    </div>
+  </script>
 
   <script type="text/x-template" id="Footer">
-  <ui:tag tag={hasItems|then:Hint:Attribution}/>
-</script>
+    <ui:tag tag={hasItems|then:Hint:Attribution}/>
+  </script>
 
   <script type="text/x-template" id="Caption">
-  <header class="header">
-    <h1>{title|upper}</h1>
-    <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> todo.add"/> 
-  </header>
-</script>
+    <header class="header">
+      <h1>{title|upper}</h1>
+      <input type="text" class="new-todo" placeholder=":new_todo_hint" autofocus="true" enter="-> todo.add"/> 
+    </header>
+  </script>
 
   <script type="text/x-template" id="Main">
-  <section class="main">
-    <input id="toggle-all" class="toggle-all" type="checkbox" toggle="-> todo.toggle"/>
-    <label for="toggle-all">Mark all as complete</label>
-    <TodoList data="<- todo.shownItems"/>
-  </section>
-</script>
+    <section class="main">
+      <input id="toggle-all" class="toggle-all" type="checkbox" toggle="-> todo.toggle"/>
+      <label for="toggle-all">Mark all as complete</label>
+      <TodoList data="<- todo.shownItems"/>
+    </section>
+  </script>
 
   <script type="text/x-template" id="TodoList">
-  <ul class="todo-list">
-    <TodoItem ui:props={item} ui:for="item of data"/>
-  </ul>
-</script>
+    <ul class="todo-list">
+      <TodoItem ui:props={item} ui:for="item of data"/>
+    </ul>
+  </script>
 
   <script type="text/x-template" id="Filter">
-  <footer class="footer">
-    <ui:slot/>
-    <ul class="filters">
-      <li ui:for="filter of :filters">
-        <a class="{filter.id|equals:@current|then:selected}" id={filter.id} href="#{filter.id}">{filter.id|capitalize}</a>
-      </li>
-    </ul>
-    <ui:slot id="right"/>
-  </footer>
-</script>
+    <footer class="footer">
+      <ui:slot/>
+      <ul class="filters">
+        <li ui:for="filter of :filters">
+          <a class="{filter.id|equals:@current|then:selected}" id={filter.id} href="#{filter.id}">{filter.id|capitalize}</a>
+        </li>
+      </ul>
+      <ui:slot id="right"/>
+    </footer>
+  </script>
 
   <script type="text/x-template" id="Attribution">
-  <footer class="info">
-    <p>Created by <a href="https://github.com/alitskevich/dzi-todomvc">alitskevich</a></p>
-    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-  </footer>
-</script>
+    <footer class="info">
+      <p>Created by <a href="https://github.com/alitskevich/dzi-todomvc">alitskevich</a></p>
+      <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+    </footer>
+  </script>
 
   <script type="text/x-template" id="Hint">
-  <footer class="info">
-    <p>:hint</p>
-  </footer>
-</script>
+    <footer class="info">
+      <p>:hint</p>
+    </footer>
+  </script>
 
   <script type="text/x-template" id="TodoItem">
-  <li class="{completed|then:completed} {editing|then:editing}">
-    <div class="view">
-      <input class="toggle" type="checkbox" checked={completed} data-id={id} click="-> todo.inverse"/>
-      <label data-editing="true" dblclick="->">{name}</label>
-      <button ui:if="completed" class="destroy" data-id={id} click="-> todo.rm"></button>
-    </div>
-    <input type="text" class="edit" value={name} data-editing="false" data-id={id} enter="-> todo.save" blur="->"/>
-  </li>
-</script>
+    <li class="{completed|then:completed} {editing|then:editing}">
+      <div class="view">
+        <input class="toggle" type="checkbox" checked={completed} data-id={id} click="-> todo.inverse"/>
+        <label data-editing="true" dblclick="->">{name}</label>
+        <button ui:if="completed" class="destroy" data-id={id} click="-> todo.rm"></button>
+      </div>
+      <input type="text" class="edit" value={name} data-editing="false" data-id={id} enter="-> todo.save" blur="->"/>
+    </li>
+  </script>
 
   <script type="text/javascript" src="index.js"></script>
 
   <script type="module">
+
     // filters metadata
-    const capitalize = s => !s ? '' : s[0].toUpperCase() + s.slice(1);
     const FILTERS = [
       { id: 'all', values: [true, false] },
       { id: 'active', values: [false] },
       { id: 'completed', values: [true] }
     ]
+
     //pure actions:
     const ACTIONS = {
       inverse: ({ items }, { id }) => ({ items: items.map(e => { if (e.id === id) { e.completed = !e.completed }; return e }) }),
@@ -108,29 +109,17 @@
       toggle: ({ items }, { value }) => ({ items: items.map(e => { e.completed = value; return e }) }),
       add: ({ items, nextId }, { value }) => !value ? null : { nextId: nextId + 1, items: [].concat({ id: nextId, name: value, completed: false }, items) }
     }
-    const resources = {
-      title: 'todos',
-      items_left: ' item(s) left',
-      clear_completed: 'Clear completed',
-      hint: 'Double-click to edit a todo',
-      new_todo_hint: 'What needs to be done?',
-      filters: FILTERS,
-      upper: s => ('' + s).toUpperCase(),
-      capitalize,
-      then: (cond, left = '', right = '') => cond ? left : right,
-      equals: (a, b) => a === b
-    };
 
     // service component
     class TodoStore {
       constructor() {
         //load data from storage
-        this.data = JSON.parse(localStorage.getItem('TODO:1') || 'null') || { items: [], nextId: 1 }
+        this.data = JSON.parse(localStorage.getItem('TODO') || 'null') || { items: [], nextId: 1 }
         // generate action handlers
         Object.entries(ACTIONS).forEach(([key, fn]) => {
-          this['on' + capitalize(key)] = ({ data: payload }) => {
+          this['on' + key[0].toUpperCase() + key.slice(1)] = ({ data: payload }) => {
             const data = Object.assign({}, this.data, fn(this.data, payload))
-            localStorage.setItem('TODO:1', JSON.stringify(data))
+            localStorage.setItem('TODO', JSON.stringify(data))
             return { data }
           }
         })
@@ -162,14 +151,27 @@
       }
     }
 
+    // resources bundle: strings, metadata and pipes
+    const resources = {
+      title: 'todos',
+      items_left: ' item(s) left',
+      clear_completed: 'Clear completed',
+      hint: 'Double-click to edit a todo',
+      new_todo_hint: 'What needs to be done?',
+      filters: FILTERS,
+      upper: s => ('' + s).toUpperCase(),
+      capitalize: s => !s ? '' : s[0].toUpperCase() + s.slice(1),
+      then: (cond, left = '', right = '') => cond ? left : right,
+      equals: (a, b) => a === b
+    };
+
     // load components from templates
-    const types = ([]).concat([...document.getElementsByTagName('script')])
+    const templates = [...document.getElementsByTagName('script')]
       .filter(e => e.id)
-      .map(e => ({ NAME: e.id, TEMPLATE: e.innerHTML }))
-      .concat(TodoStore)
+      .map(e => `<component id="${e.id}">${e.innerHTML}</component>`)
 
     // launch with types and resources 
-    launch({ types, resources });
+    launch({ types: [TodoStore, ...templates], resources });
   </script>
 
 </html>

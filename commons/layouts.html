@@ -39,28 +39,28 @@
         </div>
     </div>
 </component>
+
 <component id="Panel">
-    <ui:fragment>
-        <h6 class="mt-2 pt-2 px-2 mx-2 text-gray" ui:if="caption">{caption}</h6>
-        <div class="panel mx-2 {class}" style={style}>
-            <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
-            <div class="panel-header" ui:if="slot(title)">
-                <div class="panel-title">
-                    <ui:slot id="title" />
-                </div>
-            </div>
-            <div class="panel-nav" ui:if="slot(nav)">
-                <ui:slot id="nav" />
-            </div>
-            <div class="panel-body">
-                <ui:slot />
-            </div>
-            <div class="panel-footer" ui:if="slot(footer)">
-                <ui:slot id="footer" />
+    <h6 class="mt-2 pt-2 px-2 text-gray" ui:if="caption">{caption}</h6>
+    <div class="panel {class}" style={style}>
+        <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
+        <div class="panel-header" ui:if="slot(title)">
+            <div class="panel-title">
+                <ui:slot id="title" />
             </div>
         </div>
-    </ui:fragment>
+        <div class="panel-nav" ui:if="slot(nav)">
+            <ui:slot id="nav" />
+        </div>
+        <div class="panel-body p-2">
+            <ui:slot />
+        </div>
+        <div class="panel-footer" ui:if="slot(footer)">
+            <ui:slot id="footer" />
+        </div>
+    </div>
 </component>
+
 <component id="Card">
     <div class="card" style={style}>
         <div class="card-image" ui:if={image}>
@@ -78,6 +78,19 @@
         </div>
         <div class="card-footer">
             <ui:slot id="footer" />
+        </div>
+    </div>
+</component>
+
+<component id="Popover">
+    <div class="popover popover-right">
+        <ui:slot />
+        <div class="popover-container">
+            <div class="card">
+                <div class="card-header">
+                    <ui:slot id="body" />
+                </div>
+            </div>
         </div>
     </div>
 </component>

@@ -3,7 +3,7 @@
 </component>
 
 <component id="Img">
-    <img src={src|equals:*|then:@default:@src} alt={alt} class="img {class}" style={style} />
+    <img src={src|or:@default} alt={alt} class="img {class}" style={style} />
 </component>
 
 <component id="Avatar">
@@ -18,32 +18,19 @@
     <button class="btn btn-{mode} {primary|then:btn-primary} {disabled|or:@busy|then:disabled} {class} {large|then:btn-lg} {link|then:btn-link} c-hand"
             style={style}
             data={data}
-            click={action|track:@trackId:@title}>
+            click={action|track:@trackId:@caption}>
         <i ui:if={busy} class="loading mx-2"></i>
         <Icon ui:if={icon} bundle={iconBundle} type={icon} class="mx-2" />
-        <span ui:if={title} style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">{title}</span>
+        <span ui:if={caption} style="white-space:nowrap; overflow: hidden; text-overflow: ellipsis;">{caption}</span>
     </button>
 </component>
 
-<component id="BigRedButton">
+<component id="FAB">
     <button class="btn2 {tooltip|then:tooltip} tooltip-left fixed bg-primary circle c-hand {class}"
             style="position: fixed;border:none; right:1.5rem; bottom:1.5rem; width: 2.5rem; height: 2.5rem; z-index:5;"
             data={data} data-tooltip={tooltip|or:} click={action|track:@trackId:big}>
         <Icon type={icon|or:plus} />
     </button>
-</component>
-
-<component id="Popover">
-    <div class="popover popover-right">
-        <ui:slot />
-        <div class="popover-container">
-            <div class="card">
-                <div class="card-header">
-                    <ui:slot id="body" />
-                </div>
-            </div>
-        </div>
-    </div>
 </component>
 
 <component id="Modal">
@@ -69,8 +56,8 @@
 
 <component id="Tabs">
     <ul class="tab tab-block">
-        <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of data">
-            <a data-id={item.id} click={action}>
+        <li class="tab-item {item.id|equals:@value|then:active} c-hand" ui:for="item of items">
+            <a data={data} data-id={item.id} click={action}>
                 <Icon ui:if={item.icon} type={item.icon} bundle={item.iconBundle} class="mx-2" />
                 {item.name}
             </a>
