@@ -1,17 +1,16 @@
-import { launch } from '../index.js'
+import { launch, commons } from '../index.js'
 import templates from './app.html'
-import res from './res'
+import resources from './res'
 import { Store } from './store.js'
 
 const types = [
-    ...window.commonTypes,
-    templates,
-    Store
+  ...commons.types,
+  templates,
+  Store
 ]
 
-const resources = {
-    ...window.commonPipes,
-    ...res
+const pipes = {
+  ...commons.pipes
 }
 
-launch({ template: '<App />', types, resources })
+launch({ template: '<App />', types, resources, pipes })

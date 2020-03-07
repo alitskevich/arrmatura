@@ -13,16 +13,17 @@ import * as formTypes from './Form'
 
 export * from './Service'
 
-export const commonPipes = pipes
-
-export const commonTypes = [
-    ServiceWorker, NavigationService,
+export const commons = {
+  pipes,
+  types: [
+    ServiceWorker,
+    NavigationService,
     ...Object.values(supportTypes),
     ...Object.values(formTypes),
     elements, table, fields, viewport, layouts, inputs
-]
+  ]
+}
 
 if (typeof window === 'object') {
-    window.commonTypes = commonTypes
-    window.commonPipes = commonPipes
+  window.commons = commons
 }

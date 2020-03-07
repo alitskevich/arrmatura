@@ -5,12 +5,12 @@
         <ViewPort:aside>
             <NavTree data=":top.sitemap" />
         </ViewPort:aside>
-        <PageRouter ui:props="<-nav.route" />
+        <PageRouter ui:props="<- nav.route" />
     </ViewPort>
 </component>
 
 <component id="Test1">
-    <Button primary busy title="22" icon="plus" />
+    <Button primary caption="Test1" icon="plus" />
 </component>
 
 <component id="Test2">
@@ -24,7 +24,30 @@
 </component>
 <component id="Test4">
     <Store ui:ref="store" />
-    <Button title="<- store.tab|or:None" data-id="Some" action="-> store.select" />
+    <Button caption="<- store.tab|or:None" data-id="Some" action="-> store.select" />
+</component>
+
+<component id="Test5">
+    <Panel caption="Slots into slot 1 - with title" hint="level 1">
+        <Panel:title>
+            <ui:slot />
+        </Panel:title>
+        <Panel caption="Slots into slot 2" hint="level 2">
+            <Panel caption="Slots into slot 3 - should contain a button" hint="level 3">
+                <Grid>
+                    <Grid>
+                        <Test1 />
+                    </Grid>
+                </Grid>
+            </Panel>
+        </Panel>
+    </Panel>
+</component>
+
+<component id="Test6">
+    <Test5 code="5">
+        <h2>Title slot 1</h2>
+    </Test5>
 </component>
 
 <component id="Navbar">

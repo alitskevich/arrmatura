@@ -1,3 +1,24 @@
+<component id="Panel">
+    <h6 class="mt-2 pt-2 px-2 text-gray" ui:if="caption">{caption}</h6>
+    <div class="panel {class}" style={style}>
+        <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
+        <div class="panel-header" ui:if="slot(title)">
+            <div class="panel-title">
+                <ui:slot id="title" key="panel-title" />
+            </div>
+        </div>
+        <div class="panel-nav" ui:if="slot(nav)">
+            <ui:slot id="nav" />
+        </div>
+        <div class="panel-body p-2">
+            <ui:slot />
+        </div>
+        <div class="panel-footer" ui:if="slot(footer)">
+            <ui:slot id="footer" />
+        </div>
+    </div>
+</component>
+
 <component id="Grid">
     <div class="columns {class}">
         <ui:slot />
@@ -40,26 +61,6 @@
     </div>
 </component>
 
-<component id="Panel">
-    <h6 class="mt-2 pt-2 px-2 text-gray" ui:if="caption">{caption}</h6>
-    <div class="panel {class}" style={style}>
-        <small class="p-2 bg-secondary" ui:if={hint}>{hint}</small>
-        <div class="panel-header" ui:if="slot(title)">
-            <div class="panel-title">
-                <ui:slot id="title" />
-            </div>
-        </div>
-        <div class="panel-nav" ui:if="slot(nav)">
-            <ui:slot id="nav" />
-        </div>
-        <div class="panel-body p-2">
-            <ui:slot />
-        </div>
-        <div class="panel-footer" ui:if="slot(footer)">
-            <ui:slot id="footer" />
-        </div>
-    </div>
-</component>
 
 <component id="Card">
     <div class="card" style={style}>

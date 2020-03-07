@@ -159,6 +159,8 @@
       hint: 'Double-click to edit a todo',
       new_todo_hint: 'What needs to be done?',
       filters: FILTERS,
+    }
+    const pipes = {
       upper: s => ('' + s).toUpperCase(),
       capitalize: s => !s ? '' : s[0].toUpperCase() + s.slice(1),
       then: (cond, left = '', right = '') => cond ? left : right,
@@ -171,7 +173,7 @@
       .map(e => `<component id="${e.id}">${e.innerHTML}</component>`)
 
     // launch with types and resources 
-    launch({ types: [TodoStore, ...templates], resources });
+    launch({ types: [TodoStore, ...templates], resources, pipes });
   </script>
 
 </html>

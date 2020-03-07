@@ -20,20 +20,6 @@
     </ui:fragment>
 </component>
 
-<component id="PageRouter">
-    <ui:tag tag="{target|str.capitalize|or:Main}Page" ui:props={params} params={params} />
-</component>
-
-<component id="Toast">
-    <div class="toast toast-{event.mode|or:@mode|or:primary}"
-         style="position:absolute;top:1rem;right:1rem;left:1rem;{style}"
-         ui:if="event">
-        <button class="btn btn-clear float-right" click={event.close}></button>
-        <p>{event.message}</p>
-        <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />
-    </div>
-</component>
-
 <component id="Sidebar">
     <div class="off-canvas off-canvas-sidebar-show">
         <a class="off-canvas-toggle btn btn-primary btn-action show-lg bg-red"
@@ -105,4 +91,18 @@
     <a data-value={href} click="-> nav.hash" class="c-hand {class}">
         <ui:slot />
     </a>
+</component>
+
+<component id="PageRouter">
+    <ui:tag tag="{target|str.capitalize|or:Main}Page" ui:props={params} params={params} />
+</component>
+
+<component id="Toast">
+    <div class="toast toast-{event.mode|or:@mode|or:primary}"
+         style="position:absolute;top:1rem;right:1rem;left:1rem;{style}"
+         ui:if="event">
+        <button class="btn btn-clear float-right" click={event.close}></button>
+        <p>{event.message}</p>
+        <Delay ui:if={event.closeAfter} action={event.close} period={event.closeAfter} />
+    </div>
 </component>
