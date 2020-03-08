@@ -41,15 +41,11 @@
   <script type="text/x-template" id="Main">
     <section class="main">
       <input id="toggle-all" class="toggle-all" type="checkbox" toggle="-> todo.toggle"/>
-      <label for="toggle-all">Mark all as complete</label>
-      <TodoList data="<- todo.shownItems"/>
+      <label for="toggle-all" title="Mark all as complete"></label>
+      <ul class="todo-list">
+        <TodoItem ui:props={item} ui:for="item of <-todo.shownItems"/>
+      </ul>
     </section>
-  </script>
-
-  <script type="text/x-template" id="TodoList">
-    <ul class="todo-list">
-      <TodoItem ui:props={item} ui:for="item of data"/>
-    </ul>
   </script>
 
   <script type="text/x-template" id="Filter">
@@ -57,7 +53,7 @@
       <ui:slot/>
       <ul class="filters">
         <li ui:for="filter of :filters">
-          <a class="{filter.id|equals:@current|then:selected}" id={filter.id} href="#{filter.id}">{filter.id|capitalize}</a>
+          <a class="{filter.id|equals:@current|then:selected}" id={filter.id} href="#{filter.id}">{filter.name}</a>
         </li>
       </ul>
       <ui:slot id="right"/>
@@ -66,8 +62,8 @@
 
   <script type="text/x-template" id="Attribution">
     <footer class="info">
-      <p>Created by <a href="https://github.com/alitskevich/dzi-todomvc">alitskevich</a></p>
-      <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+      <p>Created by <a href=":authorUrl">:author</a></p>
+      <p>Part of <a href=":todoMvcUrl">:todoMvc</a></p>
     </footer>
   </script>
 
@@ -91,12 +87,13 @@
   <script type="text/javascript" src="index.js"></script>
 
   <script type="module">
+    const capitalize = (s, pre = '') => (pre + (!s ? '' : s[0].toUpperCase() + s.slice(1)))
 
     // filters metadata
     const FILTERS = [
-      { id: 'all', values: [true, false] },
-      { id: 'active', values: [false] },
-      { id: 'completed', values: [true] }
+      { id: 'all', name: 'All', values: [true, false] },
+      { id: 'active', name: 'Active', values: [false] },
+      { id: 'completed', name: 'Completed', values: [true] }
     ]
 
     //pure actions:
@@ -113,16 +110,18 @@
     // service component
     class TodoStore {
       constructor() {
-        //load data from storage
-        this.data = JSON.parse(localStorage.getItem('TODO') || 'null') || { items: [], nextId: 1 }
         // generate action handlers
         Object.entries(ACTIONS).forEach(([key, fn]) => {
-          this['on' + key[0].toUpperCase() + key.slice(1)] = ({ data: payload }) => {
-            const data = Object.assign({}, this.data, fn(this.data, payload))
-            localStorage.setItem('TODO', JSON.stringify(data))
-            return { data }
-          }
+          this[capitalize(key, 'on')] = ({ data }, { state }) => ({ state: Object.assign({}, state, fn(state, data)) })
         })
+      }
+      get state() {
+        //initially, load data from storage
+        return this._state || (this._state = JSON.parse(localStorage.getItem('TODO') || 'null') || { items: [], nextId: 1 })
+      }
+      set state(state) {
+        this._state = state;
+        localStorage.setItem('TODO', JSON.stringify(state))
       }
       // hook on init
       init($) {
@@ -130,49 +129,54 @@
         (onhash => { window.onhashchange = onhash; return onhash })(() => $.emit('this.filter', { filterId: window.location.hash.slice(1) || FILTERS[0].id }))()
       }
       getShownItems() {
-        const { filterId, items } = this.data
+        const { filterId, items } = this.state
         const values = !filterId ? [] : FILTERS.find(e => e.id === filterId).values
         return items.filter(e => values.includes(!!e.completed))
       }
       getNotEmpty() {
-        return this.data.items.length > 0
+        return this.state.items.length > 0
       }
       getFilterId() {
-        return this.data.filterId
+        return this.state.filterId
       }
       getItemsLeft() {
-        return this.data.items.filter(e => !e.completed).length
+        return this.state.items.filter(e => !e.completed).length
       }
       getHasCompleted() {
-        return this.data.items.length - this.getItemsLeft()
+        return this.state.items.length - this.getItemsLeft()
       }
       getShownItemsCount() {
         return this.getShownItems().length
       }
     }
 
-    // resources bundle: strings, metadata and pipes
+    // resource bundle: strings and metadata
     const resources = {
       title: 'todos',
       items_left: ' item(s) left',
       clear_completed: 'Clear completed',
       hint: 'Double-click to edit a todo',
       new_todo_hint: 'What needs to be done?',
+      author: 'alitskevich',
+      authorUrl: 'https://github.com/alitskevich/dzi-todomvc',
+      todoMvc: 'TodoMVC',
+      todoMvcUrl: 'http://todomvc.com',
       filters: FILTERS,
     }
+
+    // pipes
     const pipes = {
+      capitalize,
       upper: s => ('' + s).toUpperCase(),
-      capitalize: s => !s ? '' : s[0].toUpperCase() + s.slice(1),
       then: (cond, left = '', right = '') => cond ? left : right,
       equals: (a, b) => a === b
     };
 
     // load components from templates
-    const templates = [...document.getElementsByTagName('script')]
-      .filter(e => e.id)
-      .map(e => `<component id="${e.id}">${e.innerHTML}</component>`)
+    const tag2template = e => `<component id="${e.id}">${e.innerHTML}</component>`;
+    const templates = [...document.getElementsByTagName('script')].filter(e => e.id).map(tag2template);
 
-    // launch with types and resources 
+    // launch with types, resources and pipes
     launch({ types: [TodoStore, ...templates], resources, pipes });
   </script>
 
