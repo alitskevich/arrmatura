@@ -1,23 +1,14 @@
 # Arrmatura
-    
-The "components-on-arrows" framework.
 
-## Definitions	
+`Arrmatura` introduces an ultimate `specification-as-a-code` approach to develop a data-driven systems by defining and composing components in a declarative way.
 
-`Arrmatura` provides an ultimate `specification-as-code` approach to develop a data-driven systems by defining and composing components of any kind.
-
-It is intended to be 
+`Arrmatura` is intended to be 
  - declarative and codeless as much as possible
  - non-obtrusive, platform-independent
  - reactive and functional oriented
  - easy to learn and get started. 
-
- ## Purpose 
-
-`Arrmatura` is a minimalistic UI framework, 
-that enriches the pure HTML with components, arrows and pipes.
-
-Although born-for-dom, it is also may be adopted to develop wide range of modular component-based applications.
+    
+`Arrmatura` is a minimalistic UI framework, that enriches the pure HTML with components, arrows and pipes. Born-for-dom, it is also may be adopted to develop wide range of modular component-based applications.
 
 # Get Started
 
@@ -26,18 +17,27 @@ Although born-for-dom, it is also may be adopted to develop wide range of modula
 ```javascript
     import { launch } from 'arrmatura';
 
+    const components = `<component id="Footer">
+          <Button title=":send_title|upper">
+        </component>`
+        
     launch({
       types: [
         Application,
         SomeService,
-        '<component id="Footer"><Button title=":send_title"></component>'
+        components
       ], 
       template: '<Application />',
       resources: { 
         send_title:'Send'
-      }	
+      },
+      pipes:{
+        upper: x => x.toUpperCase()
+      }
     })
 ```
+
+Please take a look into [Todo App](https://alitskevich.github.io/arrmatura/todo.html) to get very basic insight how it works.
 
 # Documentation
 
@@ -47,5 +47,4 @@ Although born-for-dom, it is also may be adopted to develop wide range of modula
 
 # Usages
 
-- [TODO](https://alitskevich.github.io/arrmatura/todo.html)
 - [Grodno.co](https://grodno.co)

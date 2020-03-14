@@ -1,4 +1,4 @@
-import * as supportTypes from './support.js'
+import * as effectsTypes from './effects.js'
 
 import elements from './elements.html'
 import table from './table.html'
@@ -11,14 +11,14 @@ import { ServiceWorker } from './ServiceWorker'
 import { pipes } from 'ultimus'
 import * as formTypes from './Form'
 
-export * from './Service'
+export * from './services'
 
 export const commons = {
   pipes,
   types: [
     ServiceWorker,
     NavigationService,
-    ...Object.values(supportTypes),
+    ...Object.values(effectsTypes),
     ...Object.values(formTypes),
     elements, table, fields, viewport, layouts, inputs
   ]

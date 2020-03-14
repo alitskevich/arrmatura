@@ -10,7 +10,7 @@ const SAMPLE = {
   }
 }
 
-test(({assert, run, describe}) => run(
+test(({ assert, run, describe }) => run(
   class Utils {
     get () {
       describe('dot get')

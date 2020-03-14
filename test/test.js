@@ -45,5 +45,5 @@ export default function (fn) {
     })
   }
 
-  fn({assert, run, describe})
+  fn({ assert, run, describe })
 }

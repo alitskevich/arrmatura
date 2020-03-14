@@ -2,7 +2,7 @@ import test from '../test/test.js'
 import '../test/xml.test.js'
 import '../test/utils.test.js'
 
-test(({assert, run, describe}) => run(
+test(({ assert, run, describe }) => run(
   class SelfTest {
     assert () {
       describe('describe assert test case')
