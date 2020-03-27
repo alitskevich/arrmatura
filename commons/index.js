@@ -11,7 +11,7 @@ import { ServiceWorker } from './ServiceWorker'
 import { pipes } from 'ultimus'
 import * as formTypes from './Form'
 
-export * from './services'
+import * as services from './services'
 
 export const commons = {
   pipes,
@@ -20,6 +20,7 @@ export const commons = {
     NavigationService,
     ...Object.values(effectsTypes),
     ...Object.values(formTypes),
+    ...Object.values(services),
     elements, table, fields, viewport, layouts, inputs
   ]
 }
