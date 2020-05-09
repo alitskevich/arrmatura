@@ -1,11 +1,11 @@
 {
   "name": "arrmatura",
-  "version": "4.0.1",
+  "version": "4.1.1",
   "description": "framework",
   "scripts": {
     "start": "npx webpack-dev-server --hot --contentBase docs",
     "build": "npx webpack-cli",
-    "publish": "npm publish"
+    "release": "npx webpack-cli && npm publish"
   },
   "repository": {
     "type": "git",

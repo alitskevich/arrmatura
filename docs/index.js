@@ -1498,19 +1498,24 @@ function () {
     value: function stateChanged(changes) {
       var _this3 = this;
 
-      changes.forEach(function (_ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
-            v = _ref4[0],
-            k = _ref4[1];
+      if (this.impl.stateChanged) {
+        this.impl.stateChanged(changes);
+      } else {
+        changes.forEach(function (_ref3) {
+          var _ref4 = _slicedToArray(_ref3, 2),
+              v = _ref4[0],
+              k = _ref4[1];
 
-        var setter = _this3.impl[Object(_component_utils__WEBPACK_IMPORTED_MODULE_0__["methodName"])(k, 'set')];
+          var setter = _this3.impl[Object(_component_utils__WEBPACK_IMPORTED_MODULE_0__["methodName"])(k, 'set')];
 
-        if (setter) {
-          setter.call(_this3.impl, v);
-        } else {
-          _this3.impl[k] = v;
-        }
-      });
+          if (setter) {
+            setter.call(_this3.impl, v);
+          } else {
+            _this3.impl[k] = v;
+          }
+        });
+      }
+
       this.recontent();
     }
   }, {
@@ -1769,6 +1774,37 @@ function () {
   return Component;
 }();
 
+function arrangeElements($) {
+  var cursor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+    elt: null,
+    parent: $
+  };
+  var p = $.first;
+
+  while (p) {
+    // TODO track this case
+    var e = p.impl && p.impl.elt;
+
+    if (e) {
+      Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["appendElt"])(e, cursor.parent.impl.elt, cursor.elt);
+      cursor.elt = e;
+
+      if (p.requireReflow) {
+        arrangeElements(p, {
+          elt: null,
+          parent: e
+        });
+      }
+    } else {
+      if (p.requireReflow) {
+        arrangeElements(p, cursor);
+      }
+    }
+
+    p = p.next;
+  }
+}
+
 function _recontent(parent, container, content) {
   (parent.children || Array.EMPTY).forEach(function (c) {
     return !content || !content.has(c.uid) ? c.done() : 0;
@@ -1799,6 +1835,21 @@ function _recontent(parent, container, content) {
   children.forEach(function (c) {
     return !c.isInited && c.init();
   });
+  var app = container.app;
+
+  if (!app.reflow) {
+    app.reflow = setTimeout(function () {
+      arrangeElements(app.$);
+      app.reflow = null;
+    }, 1);
+  }
+
+  p = parent;
+
+  while (p && !p.requireReflow) {
+    p.requireReflow = true;
+    p = p.parent;
+  }
 }
 
 var ContainerComponent =
@@ -1832,14 +1883,6 @@ function (_Component2) {
 
     return _possibleConstructorReturn(this, _getPrototypeOf(ElementComponent).apply(this, arguments));
   }
-
-  _createClass(ElementComponent, [{
-    key: "stateChanged",
-    value: function stateChanged(changes) {
-      this.recontent();
-      this.impl.stateChanged(changes);
-    }
-  }]);
 
   return ElementComponent;
 }(Component);
@@ -2418,13 +2461,11 @@ function setAttribute(key, value) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Element", function() { return Element; });
 /* harmony import */ var _dom_attrs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dom.attrs */ "./lib/dom.attrs.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./lib/utils.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 
 
 var Element =
@@ -2448,26 +2489,7 @@ function () {
   }, {
     key: "stateChanged",
     value: function stateChanged(attrs) {
-      var $ = this.$;
       _dom_attrs__WEBPACK_IMPORTED_MODULE_0__["applyAttributes"].call(this, attrs);
-      Object(_utils__WEBPACK_IMPORTED_MODULE_1__["arrangeElements"])($);
-
-      if (!this.$.isInited && this.parent.isInited) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_1__["arrangeElements"])(this.parent);
-      }
-    }
-  }, {
-    key: "parent",
-    get: function get() {
-      if (this.$parent) return this.$parent;
-      var p = this.$.parent;
-
-      while (!p.impl.elt) {
-        p = p.parent;
-      }
-
-      this.$parent = p;
-      return p;
     }
   }]);
 
@@ -2489,7 +2511,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component.js */ "./lib/component.js");
 /* harmony import */ var _register_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./register.js */ "./lib/register.js");
 /* harmony import */ var _node__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node */ "./lib/node.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./lib/utils.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -2505,7 +2526,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-
 
 
 
@@ -2532,7 +2552,6 @@ function launch() {
   var top = new _component_js__WEBPACK_IMPORTED_MODULE_0__["ContainerComponent"]($AppContext, new _node__WEBPACK_IMPORTED_MODULE_2__["Node"]('#top'));
   top.up(props);
   top.log('' + top);
-  Object(_utils__WEBPACK_IMPORTED_MODULE_3__["arrangeElements"])(top);
   return top.impl;
 }
 
@@ -2860,17 +2879,17 @@ var getByTag = function getByTag(tag) {
 /*!**********************!*\
   !*** ./lib/utils.js ***!
   \**********************/
-/*! exports provided: setNodeMap, wrapNode, hasSlot, filterMapKey, setKeyVal, arrangeElements, stringifyComponent, filterSlotNodes */
+/*! exports provided: setNodeMap, wrapNode, appendElt, hasSlot, filterMapKey, setKeyVal, stringifyComponent, filterSlotNodes */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNodeMap", function() { return setNodeMap; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wrapNode", function() { return wrapNode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "appendElt", function() { return appendElt; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hasSlot", function() { return hasSlot; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterMapKey", function() { return filterMapKey; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setKeyVal", function() { return setKeyVal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "arrangeElements", function() { return arrangeElements; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stringifyComponent", function() { return stringifyComponent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterSlotNodes", function() { return filterSlotNodes; });
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -2925,8 +2944,7 @@ var setNodeMap = function setNodeMap() {
 var wrapNode = function wrapNode(n) {
   return new Map([[n.uid, n]]);
 };
-
-function append(e, p, cursor) {
+function appendElt(e, p, cursor) {
   var before = cursor ? cursor.nextSibling : p.firstChild;
 
   if (!before) {
@@ -2939,7 +2957,6 @@ function append(e, p, cursor) {
 
   return e;
 }
-
 var hasSlot = function hasSlot(c, id) {
   var r = false;
   var _c$container = c.container,
@@ -2975,26 +2992,6 @@ var setKeyVal = function setKeyVal(acc, k, val) {
     acc[k] = val;
   }
 };
-function arrangeElements($) {
-  var cursor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
-    elt: null,
-    parent: $.impl.elt
-  };
-  var p = $.first;
-
-  while (p) {
-    var e = p.impl.elt;
-
-    if (e) {
-      append(e, cursor.parent, cursor.elt);
-      cursor.elt = e;
-    } else {
-      arrangeElements(p, cursor);
-    }
-
-    p = p.next;
-  }
-}
 
 var stringifyAttrs = function stringifyAttrs(attrs) {
   if (!attrs) {
