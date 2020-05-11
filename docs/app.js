@@ -1751,7 +1751,7 @@ function () {
         var d = this.impl.init(this);
 
         if (d) {
-          Object.asiign(initials, d);
+          Object.assign(initials, d);
         }
       }
 
