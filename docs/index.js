@@ -1485,7 +1485,7 @@ function () {
         }
       });
 
-      if (changes.length || force || !this.isInited) {
+      if (changes.length || force) {
         this.stateChanged(changes);
 
         if (this.refId) {
@@ -1604,7 +1604,11 @@ function () {
         var propId = Object(_component_utils__WEBPACK_IMPORTED_MODULE_0__["methodName"])(target, 'on');
         var impl = ref.impl;
         var method = impl[propId];
-        if (!method) Function["throw"]('emit ' + type + ': No such method ' + propId);
+
+        if (!method) {
+          Function["throw"]('emit ' + type + ': No such method ' + propId);
+        }
+
         var result = method.call(impl, event, impl, ref);
         this.log(type + ':' + propId, result, data, impl);
 
@@ -1618,7 +1622,7 @@ function () {
 
   }, {
     key: "init",
-    value: function init() {
+    value: function init(initials) {
       var _this5 = this;
 
       if (this.isDone || this.isInited) {
@@ -1626,11 +1630,19 @@ function () {
       }
 
       this.isInited = true;
+
+      if (this.impl.init) {
+        var d = this.impl.init(this);
+
+        if (d) {
+          Object.asiign(initials, d);
+        }
+      }
+
+      var all = [];
       var initializers = this.node.initializers;
 
       if (initializers && initializers.length) {
-        var initials = (this.impl.init ? this.impl.init(this) : null) || {};
-        var all = [];
         initializers.map(function (f) {
           return f(_this5);
         }).forEach(function (r) {
@@ -1646,24 +1658,16 @@ function () {
             Object.assign(initials, payload);
           }
         });
+      }
 
-        if (all.length) {
-          Promise.all(all).then(function (args) {
-            return _this5.up(args.reduce(function (r, e) {
-              return Object.assign(r, e);
-            }, initials));
-          });
-        } else {
-          this.up(initials);
-        }
+      if (all.length) {
+        Promise.all(all).then(function (args) {
+          return _this5.up(args.reduce(function (r, e) {
+            return Object.assign(r, e);
+          }, initials), true);
+        });
       } else {
-        if (this.impl.init) {
-          var d = this.impl.init(this);
-
-          if (d) {
-            this.up(d);
-          }
-        }
+        this.up(initials, true);
       }
 
       return this;
@@ -1779,9 +1783,8 @@ function arrangeElements($) {
     elt: null,
     parent: $
   };
-  var p = $.first;
 
-  while (p) {
+  for (var p = $.first; p; p = p.next) {
     // TODO track this case
     var e = p.impl && p.impl.elt;
 
@@ -1800,9 +1803,9 @@ function arrangeElements($) {
         arrangeElements(p, cursor);
       }
     }
-
-    p = p.next;
   }
+
+  $.requireReflow = false;
 }
 
 function _recontent(parent, container, content) {
@@ -1830,11 +1833,13 @@ function _recontent(parent, container, content) {
     p = (p || parent)[p ? 'next' : 'first'] = c;
   });
   children.forEach(function (c) {
-    return c.up(c.node.resolveProps(c, !c.isInited), true);
+    return !c.isInited ? c.init(c.node.resolveProps(c, true)) : c.up(c.node.resolveProps(c, false));
   });
-  children.forEach(function (c) {
-    return !c.isInited && c.init();
-  });
+
+  for (p = parent; p && !p.requireReflow; p = p.parent) {
+    p.requireReflow = true;
+  }
+
   var app = container.app;
 
   if (!app.reflow) {
@@ -1842,13 +1847,6 @@ function _recontent(parent, container, content) {
       arrangeElements(app.$);
       app.reflow = null;
     }, 1);
-  }
-
-  p = parent;
-
-  while (p && !p.requireReflow) {
-    p.requireReflow = true;
-    p = p.parent;
   }
 }
 
@@ -1919,7 +1917,10 @@ function (_Component4) {
       var items = this.state.items;
 
       if (items && items.length) {
-        if (!items.forEach) Function["throw"]('[ui:for] Items has no forEach() ' + items);
+        if (!items.forEach) {
+          Function["throw"]('[ui:for] Items has no forEach() ' + items);
+        }
+
         var itemNode = this.node.nodes[0];
         var itemName = itemNode.get('itemName');
         items.forEach(function (d, index) {
