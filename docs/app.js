@@ -1480,17 +1480,16 @@ function compileTemplate(text, name) {
 /*!**************************!*\
   !*** ./lib/component.js ***!
   \**************************/
-/*! exports provided: Component, ContainerComponent */
+/*! exports provided: ContainerComponent */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Component", function() { return Component; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContainerComponent", function() { return ContainerComponent; });
 /* harmony import */ var _component_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component.utils */ "./lib/component.utils.js");
-/* harmony import */ var _register_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./register.js */ "./lib/register.js");
-/* harmony import */ var _element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./element */ "./lib/element.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils.js */ "./lib/utils.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils.js */ "./lib/utils.js");
+/* harmony import */ var _register_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./register.js */ "./lib/register.js");
+/* harmony import */ var _element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./element */ "./lib/element.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
@@ -1610,37 +1609,30 @@ function () {
       });
 
       if (changes.length || force) {
-        this.stateChanged(changes);
+        if (this.impl.stateChanged) {
+          this.impl.stateChanged(changes);
+        } else {
+          changes.forEach(function (_ref3) {
+            var _ref4 = _slicedToArray(_ref3, 2),
+                v = _ref4[0],
+                k = _ref4[1];
+
+            var setter = _this2.impl[Object(_component_utils__WEBPACK_IMPORTED_MODULE_0__["methodName"])(k, 'set')];
+
+            if (setter) {
+              setter.call(_this2.impl, v);
+            } else {
+              _this2.impl[k] = v;
+            }
+          });
+        }
+
+        this.recontent();
 
         if (this.refId) {
           this.notify();
         }
       }
-    }
-  }, {
-    key: "stateChanged",
-    value: function stateChanged(changes) {
-      var _this3 = this;
-
-      if (this.impl.stateChanged) {
-        this.impl.stateChanged(changes);
-      } else {
-        changes.forEach(function (_ref3) {
-          var _ref4 = _slicedToArray(_ref3, 2),
-              v = _ref4[0],
-              k = _ref4[1];
-
-          var setter = _this3.impl[Object(_component_utils__WEBPACK_IMPORTED_MODULE_0__["methodName"])(k, 'set')];
-
-          if (setter) {
-            setter.call(_this3.impl, v);
-          } else {
-            _this3.impl[k] = v;
-          }
-        });
-      }
-
-      this.recontent();
     }
   }, {
     key: "get",
@@ -1662,15 +1654,15 @@ function () {
   }, {
     key: "subscribe",
     value: function subscribe(target, fn) {
-      var _this4 = this;
+      var _this3 = this;
 
       var uuid = Object(_component_utils__WEBPACK_IMPORTED_MODULE_0__["nextId"])();
       var listeners = this.listeners || (this.listeners = new Map());
       listeners.set(uuid, function () {
         try {
-          target.up(fn(_this4));
+          target.up(fn(_this3));
         } catch (ex) {
-          console.error(_this4.tag + _this4.uid + ' notify ', ex);
+          console.error(_this3.tag + _this3.uid + ' notify ', ex);
         }
       });
       return {
@@ -1747,7 +1739,7 @@ function () {
   }, {
     key: "init",
     value: function init(initials) {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.isDone || this.isInited) {
         return;
@@ -1768,13 +1760,13 @@ function () {
 
       if (initializers && initializers.length) {
         initializers.map(function (f) {
-          return f(_this5);
+          return f(_this4);
         }).forEach(function (r) {
           if (!r) return;
           var payload = r.payload,
               cancel = r.cancel;
 
-          _this5.defer(cancel);
+          _this4.defer(cancel);
 
           if (payload && payload.then) {
             all.push(payload);
@@ -1786,7 +1778,7 @@ function () {
 
       if (all.length) {
         Promise.all(all).then(function (args) {
-          return _this5.up(args.reduce(function (r, e) {
+          return _this4.up(args.reduce(function (r, e) {
             return Object.assign(r, e);
           }, initials), true);
         });
@@ -1799,7 +1791,7 @@ function () {
   }, {
     key: "done",
     value: function done() {
-      var _this6 = this;
+      var _this5 = this;
 
       if (this.isDone) {
         return;
@@ -1824,14 +1816,14 @@ function () {
 
       if (this.defered) {
         this.defered.forEach(function (f) {
-          return f(_this6);
+          return f(_this5);
         });
         delete this.defered;
       }
 
       this.impl.$ = null;
       ['parent', 'app', 'children', 'container', 'impl', 'state'].forEach(function (k) {
-        delete _this6[k];
+        delete _this5[k];
       });
     } // --- Routines.
 
@@ -1879,7 +1871,7 @@ function () {
   }, {
     key: "toString",
     value: function toString() {
-      return Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["stringifyComponent"])(this);
+      return Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["stringifyComponent"])(this);
     } // --- Content Reconciliation.
 
   }, {
@@ -1902,41 +1894,12 @@ function () {
   return Component;
 }();
 
-function arrangeElements($) {
-  var cursor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
-    elt: null,
-    parent: $
-  };
-
-  for (var p = $.first; p; p = p.next) {
-    // TODO track this case
-    var e = p.impl && p.impl.elt;
-
-    if (e) {
-      Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["appendElt"])(e, cursor.parent.impl.elt, cursor.elt);
-      cursor.elt = e;
-
-      if (p.requireReflow) {
-        arrangeElements(p, {
-          elt: null,
-          parent: e
-        });
-      }
-    } else {
-      if (p.requireReflow) {
-        arrangeElements(p, cursor);
-      }
-    }
-  }
-
-  $.requireReflow = false;
-}
-
 function _recontent(parent, container, content) {
+  parent.last = parent.first = null;
+  container.app.requestReflow();
   (parent.children || Array.EMPTY).forEach(function (c) {
     return !content || !content.has(c.uid) ? c.done() : 0;
   });
-  parent.last = parent.first = null;
   if (!content || !content.size) return;
   var children = parent.children || (parent.children = new Map());
   var p = null;
@@ -1946,32 +1909,20 @@ function _recontent(parent, container, content) {
     if (node.tag === 'ui:slot') {
       var snode = node.clone(node.uid);
       snode.id = node.id;
-      snode.nodeMap = Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["filterSlotNodes"])(node.id, container);
-      c = children.get(uid) || Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["setNodeMap"])(children, new FragmentComponent(Object(_register_js__WEBPACK_IMPORTED_MODULE_1__["getByTag"])('ui:fragment'), snode, parent, container.container));
+      snode.nodeMap = Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["filterSlotNodes"])(node.id, container);
+      c = children.get(uid) || Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(children, new Component(Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["getByTag"])('ui:fragment'), snode, parent, container.container));
     } else {
-      var Registered = Object(_register_js__WEBPACK_IMPORTED_MODULE_1__["getByTag"])(node.tag);
-      var Ctor = Ctors[node.tag] || (Registered ? ContainerComponent : ElementComponent);
-      c = children.get(uid) || Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["setNodeMap"])(children, new Ctor(Registered || _element__WEBPACK_IMPORTED_MODULE_2__["Element"], node, parent, container));
+      var Registered = Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["getByTag"])(node.tag);
+      var Ctor = Ctors[node.tag] || (Registered ? ContainerComponent : Component);
+      c = children.get(uid) || Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(children, new Ctor(Registered || _element__WEBPACK_IMPORTED_MODULE_3__["Element"], node, parent, container));
     }
 
+    c.next = null;
     p = (p || parent)[p ? 'next' : 'first'] = c;
   });
   children.forEach(function (c) {
-    return !c.isInited ? c.init(c.node.resolveProps(c, true)) : c.up(c.node.resolveProps(c, false));
+    return !c.isInited ? c.init(c.node.resolveProps(c, true)) : c.up(c.node.resolveProps(c, false), true);
   });
-
-  for (p = parent; p && !p.requireReflow; p = p.parent) {
-    p.requireReflow = true;
-  }
-
-  var app = container.app;
-
-  if (!app.reflow) {
-    app.reflow = setTimeout(function () {
-      arrangeElements(app.$);
-      app.reflow = null;
-    }, 1);
-  }
 }
 
 var ContainerComponent =
@@ -1995,38 +1946,10 @@ function (_Component) {
   return ContainerComponent;
 }(Component);
 
-var ElementComponent =
-/*#__PURE__*/
-function (_Component2) {
-  _inherits(ElementComponent, _Component2);
-
-  function ElementComponent() {
-    _classCallCheck(this, ElementComponent);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(ElementComponent).apply(this, arguments));
-  }
-
-  return ElementComponent;
-}(Component);
-
-var FragmentComponent =
-/*#__PURE__*/
-function (_Component3) {
-  _inherits(FragmentComponent, _Component3);
-
-  function FragmentComponent() {
-    _classCallCheck(this, FragmentComponent);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(FragmentComponent).apply(this, arguments));
-  }
-
-  return FragmentComponent;
-}(Component);
-
 var ForComponent =
 /*#__PURE__*/
-function (_Component4) {
-  _inherits(ForComponent, _Component4);
+function (_Component2) {
+  _inherits(ForComponent, _Component2);
 
   function ForComponent() {
     _classCallCheck(this, ForComponent);
@@ -2037,8 +1960,11 @@ function (_Component4) {
   _createClass(ForComponent, [{
     key: "recontent",
     value: function recontent() {
+      var _this6 = this;
+
       var nodes = new Map();
       var items = this.state.items;
+      this.datamap = new Map();
 
       if (items && items.length) {
         if (!items.forEach) {
@@ -2048,9 +1974,13 @@ function (_Component4) {
         var itemNode = this.node.nodes[0];
         var itemName = itemNode.get('itemName');
         items.forEach(function (d, index) {
-          var _itemNode$clone$addIn;
+          var pk = "".concat(d.id || index);
 
-          Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["setNodeMap"])(nodes, itemNode.clone("".concat(d.id || index)).addInitialState((_itemNode$clone$addIn = {}, _defineProperty(_itemNode$clone$addIn, itemName, d), _defineProperty(_itemNode$clone$addIn, itemName + 'Index', index), _itemNode$clone$addIn)));
+          _this6.datamap.set(pk, d);
+
+          Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(nodes, itemNode.clone(pk).addPropertyResolver(function (c) {
+            return c.parent.datamap.get(pk);
+          }, itemName));
         });
       }
 
@@ -2063,8 +1993,8 @@ function (_Component4) {
 
 var ItemComponent =
 /*#__PURE__*/
-function (_Component5) {
-  _inherits(ItemComponent, _Component5);
+function (_Component3) {
+  _inherits(ItemComponent, _Component3);
 
   function ItemComponent() {
     _classCallCheck(this, ItemComponent);
@@ -2095,7 +2025,7 @@ function (_Component5) {
 }(Component);
 
 var Ctors = {
-  'ui:fragment': FragmentComponent,
+  'ui:fragment': Component,
   'ui:for': ForComponent,
   'ui:item': ItemComponent
 };
@@ -2600,6 +2530,7 @@ function () {
     _classCallCheck(this, Element);
 
     this.$ = $;
+    this.$.isElementary = true;
     this.elt = elt || ($.tag === '#text' ? document.createTextNode('') : document.createElement($.tag));
     this.elt.impl = this;
   }
@@ -2636,6 +2567,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component.js */ "./lib/component.js");
 /* harmony import */ var _register_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./register.js */ "./lib/register.js");
 /* harmony import */ var _node__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node */ "./lib/node.js");
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils.js */ "./lib/utils.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -2648,9 +2580,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 
 
 
@@ -2664,12 +2601,33 @@ function launch() {
       rootElement = _ref$rootElement === void 0 ? document.body : _ref$rootElement,
       props = _objectWithoutProperties(_ref, ["types", "template", "rootElement"]);
 
-  var $AppContext = function $AppContext() {
-    _classCallCheck(this, $AppContext);
+  var $AppContext =
+  /*#__PURE__*/
+  function () {
+    function $AppContext() {
+      var _this = this;
 
-    this.elt = rootElement;
-    this.app = this;
-  };
+      _classCallCheck(this, $AppContext);
+
+      this.elt = rootElement;
+      this.app = this;
+
+      this.reflow = function () {
+        Object(_utils_js__WEBPACK_IMPORTED_MODULE_3__["arrangeElements"])(_this.$, _this.elt);
+        _this.reflowId = null;
+      };
+    }
+
+    _createClass($AppContext, [{
+      key: "requestReflow",
+      value: function requestReflow() {
+        if (this.reflowId) return;
+        this.reflowId = setTimeout(this.reflow, 10);
+      }
+    }]);
+
+    return $AppContext;
+  }();
 
   Object(_register_js__WEBPACK_IMPORTED_MODULE_1__["registerTypes"])([Object.assign($AppContext, {
     template: template
@@ -2829,6 +2787,7 @@ function () {
           return Object(_utils__WEBPACK_IMPORTED_MODULE_2__["setKeyVal"])(acc, key, val);
         });
       });
+      return this;
     }
   }, {
     key: "addInitialState",
@@ -3004,14 +2963,14 @@ var getByTag = function getByTag(tag) {
 /*!**********************!*\
   !*** ./lib/utils.js ***!
   \**********************/
-/*! exports provided: setNodeMap, wrapNode, appendElt, hasSlot, filterMapKey, setKeyVal, stringifyComponent, filterSlotNodes */
+/*! exports provided: setNodeMap, wrapNode, arrangeElements, hasSlot, filterMapKey, setKeyVal, stringifyComponent, filterSlotNodes */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNodeMap", function() { return setNodeMap; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wrapNode", function() { return wrapNode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "appendElt", function() { return appendElt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "arrangeElements", function() { return arrangeElements; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hasSlot", function() { return hasSlot; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterMapKey", function() { return filterMapKey; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setKeyVal", function() { return setKeyVal; });
@@ -3069,6 +3028,7 @@ var setNodeMap = function setNodeMap() {
 var wrapNode = function wrapNode(n) {
   return new Map([[n.uid, n]]);
 };
+
 function appendElt(e, p, cursor) {
   var before = cursor ? cursor.nextSibling : p.firstChild;
 
@@ -3081,6 +3041,25 @@ function appendElt(e, p, cursor) {
   }
 
   return e;
+}
+
+function arrangeElements($, parent) {
+  var cursor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+  for (var p = $.first; p; p = p.next) {
+    if (p.isElementary) {
+      var e = p.impl.elt;
+
+      if (e) {
+        arrangeElements(p, e);
+        cursor = appendElt(e, parent, cursor);
+      }
+    } else {
+      cursor = arrangeElements(p, parent, cursor);
+    }
+  }
+
+  return cursor;
 }
 var hasSlot = function hasSlot(c, id) {
   var r = false;
