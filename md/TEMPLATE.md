@@ -1,5 +1,4 @@
-
-> __template__ is a text in formal grammar allows to define component composition, data flow and interaction.
+> **template** is a text in formal grammar allows to define component composition, data flow and interaction.
 
 # Insight Sample
 
@@ -22,86 +21,85 @@
 </component>
 ```
 
-# Control. 
+# Control.
 
 ## Conditionals
 
- With `ui:if` attribute, an element(and its inner context) presents only if value of expression is truthy.
+With `ui:if` attribute, an element(and its inner context) presents only if value of expression is truthy.
 
-  ```html
-  <div ... ui:if={expression}>...</div>
-  ```
+```html
+<div ... ui:if="{expression}">...</div>
+```
 
 #### full `then-else` syntax
 
-  ```html
-  <ui:fragment ui:if={enabled}>
-    <ui:then><Case1/></ui:then>
-    <ui:else><Case2/></ui:else>
-  </ui:fragment>
-  ```
+```html
+<ui:fragment ui:if="{enabled}">
+  <ui:then><Case1 /></ui:then>
+  <ui:else><Case2 /></ui:else>
+</ui:fragment>
+```
 
 ## Iterations
 
- `ui:for` attribute multiples component instances along items from given  array.
+`ui:for` attribute multiplies component instances along items from given array.
 
-  ```html
-  <ul>
-    <li ui:for="item of expression">
-      <a href="/item/{item.id}">{{itemIndex}}. {{item.name}}</span>
-    </li>
-  </ul>
-  ```
-here 
+```html
+<ul>
+  <li ui:for="item of data">
+    <a href="/item/{item.id}">{{item.position}}. {{item.name}}</span>
+  </li>
+</ul>
+```
+
+here
+
 > - items MUST HAVE unique `id` field
-> - `itemIndex` contains current 0-based index
-> - current item is accessible programmatically as `this.item`.
 
 ## Fragment
 
-`<ui:fragment>` is a transparent container and works just like a parens for multiple compoments.
-
-  ```html
-  <ui:fragment ui:if="enabled">
-    <innerContent1/>...<innerContentN/>
-  </ui:fragment>
-  ```
- 
-# Dynamic tags
-
-There is able to calculate tag at runtime.
+`<ui:fragment>` is a transparent container and works just like a parens for multiple components.
 
 ```html
-  <ui:tag tag="{type}Field" ...>
+<ui:fragment ui:if="enabled">
+  <innerContent1 />...<innerContentN />
+</ui:fragment>
+```
+
+# Dynamic tags
+
+Used to calculate tag at runtime.
+
+```html
+<ui:tag tag="{type}Field" ...></ui:tag>
 ```
 
 ## Reference
 
-There is able to globally refer any component through `ui:ref` attribute.
+`ui:ref` attribute used to globally refer any component in expressions.
 
 ```html
-    <UserService ui:ref="user"/>
-    ...
-    <UserAvatar data="<- user.profile" onSave="->user.update"/>
+<UserService ui:ref="user" />
+...
+<UserAvatar data="<- user.profile" onSave="->user.update" />
 ```
-  
+
 # Data flow
 
-Property values could be set 
+Property values could be set
 
-## with constant 
+## with constant
 
 `prop="value"` sets a `value` constant into `prop` property.
 
->  - 'true', 'false' values are narrowed to boolean, 
->  - numbers narrowed to number type.
->  - functions are bound to the owner instance.
+> - 'true', 'false' values are narrowed to boolean,
+> - numbers narrowed to number type.
 
 ## with resource
 
 `prop=":resId"` sets value of resource from `app.resources[resId]` into `prop`.
 
-## with result of instant expression
+## with result of expression
 
 `prop={prop2}` sets value of `prop2` owner property
 
@@ -111,26 +109,30 @@ Property values could be set
 
 `ui:props={ownerData}` spreads keys/values of the object from `ownerData` into properties of an element.
 
-`prop={expr|pipeFn1:arg1:arg2|pipeFn2:@prop2}` applies chain of pipes defined in `app.resources`. 
+> - functions are bound to the owner instance.
 
-> - Optional arguments can be passed separated by colon. 
+## with result of chain of pipes
+
+`prop={expr|pipeFn1:arg1:arg2|pipeFn2:@prop2}` applies chain of pipes.
+
+> - Optional arguments can be passed separated by colon.
 > - Use `@` prefix to refer owner props as agrument.
 
 ## with left arrow expression
 
-`data="<-ref.prop|pipes"` makes a hot subscription to any property of orbitrary component by its `ref`.
+`data="<-ref.prop"` makes a hot subscription to any property of orbitrary component.
+
+> may use pipes to transform received value.
 
 ## with right arrow expression
- 
-```html
-    <Button ... 
-      action="-> ref.key1|dataPipes" 
-      data-key="val" 
-      data={expr} />
-```
-Right arrow creates a function that invokes `app[ref].onKey1(data)` action handler with an `dataset`-object. 
 
-> Pipes could be applied on `dataset`-object before it passed. 
+```html
+<button ... action="-> ref.key1" data-key="val" data="{expr}" />
+```
+
+Right arrow creates a function that invokes `app[ref].onKey1(data)` action handler with an `dataset`-object as parameter.
+
+> pipes may be applied on `dataset`-object before it passed.
 
 > Invocation result-object then updates the `ref`-component.
 
@@ -138,42 +140,40 @@ Right arrow creates a function that invokes `app[ref].onKey1(data)` action handl
 
 #### Right arrows as updater
 
-Often all what we need is just to update owner state
+Often all what we need is just to update the owner state
 
 - `click="->"` updates owner properties with `dataset` object spreaded.
 - `click="-> prop"` updates given property of owner with `dataset` object.
 
 # Slots
 
-Slots are placeholders for extra content.
+Slots are placeholders to inject an inner content.
 
 ```html
 <Comp>
-    <ExtraContent/>
+  <InnerContent />
 </Comp>
 ```
 
 ```html
 <component id="Comp">
 <div class="container"  ui:if="slot(key2)">
-    <!-- Extra content will be placed here instead of <ui:slot/> -->
-    <ui:slot> 
+    <!-- Inner content will be placed here instead of <ui:slot/> -->
+    <ui:slot>
 </div>
 </component>
 ```
 
-> special `slot(key)` conditional could be used to check if non-empty extra content passed.
-
 #### Multi-part extra content.
 
-Extra content could be multiple-part and thus, orbitrary distributed inside component template.
+Inner content could be multiple-part and thus, distributed separately inside component template.
 
 ```html
-    <Comp>
-        <Comp:key1><Extra1/></Comp:key1>
-        <Comp:key2><Extra2/></Comp:key2>
-        <DefaultContent/>
-    </Comp>
+<Comp>
+  <Comp:key1><Extra1 /></Comp:key1>
+  <Comp:key2><Extra2 /></Comp:key2>
+  <DefaultContent />
+</Comp>
 ```
 
 ```html
@@ -184,10 +184,12 @@ Extra content could be multiple-part and thus, orbitrary distributed inside comp
 
     <div class="comp" ui:if="slot(key2)">
         <!-- <Extra2/> will be placed here -->
-        <x:slot key="key2"> 
-    </div> 
+        <x:slot key="key2">
+    </div>
 
     <!-- <DefaultContent/> will be placed here -->
-    <x:slot> 
+    <x:slot>
 </div>
-```       
+```
+
+> special `slot(key)` conditional could be used to check if non-empty extra content passed.

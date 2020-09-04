@@ -1150,6 +1150,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withPipes", function() { return withPipes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compileExpression", function() { return compileExpression; });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./lib/utils.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -1164,6 +1165,7 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+
 var RE_SINGLE_PLACEHOLDER = /^\{([^}]+)\}$/;
 var RE_PLACEHOLDER = /\{([^}]+)\}/g;
 
@@ -1177,7 +1179,7 @@ function pipe(value, key) {
     var fn = this.pipes(id);
     var $ = this;
     return fn.apply($.impl, [value].concat(_toConsumableArray(args.map(function (a) {
-      return a[0] === '@' ? $.container.get(a.slice(1)) : a;
+      return a[0] === '@' ? $.container.get(a.slice(1)) : Object(_utils__WEBPACK_IMPORTED_MODULE_0__["parseValue"])(a);
     }))));
   } catch (ex) {
     console.error('ERROR: pipe ' + id, ex);
@@ -2963,11 +2965,12 @@ var getByTag = function getByTag(tag) {
 /*!**********************!*\
   !*** ./lib/utils.js ***!
   \**********************/
-/*! exports provided: setNodeMap, wrapNode, arrangeElements, hasSlot, filterMapKey, setKeyVal, stringifyComponent, filterSlotNodes */
+/*! exports provided: parseValue, setNodeMap, wrapNode, arrangeElements, hasSlot, filterMapKey, setKeyVal, stringifyComponent, filterSlotNodes */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseValue", function() { return parseValue; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNodeMap", function() { return setNodeMap; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "wrapNode", function() { return wrapNode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "arrangeElements", function() { return arrangeElements; });
@@ -3014,6 +3017,21 @@ Object.assign(Function, {
     var ErrorType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Error;
     throw typeof error === 'string' ? new ErrorType(error) : error;
   }
+});
+var parseValue = function (map) {
+  return function (value) {
+    if (value && '1234567890+-'.includes(value[0]) && value.length <= 17) {
+      var num = +value;
+      return isNaN(num) ? value : num;
+    }
+
+    return value in map ? map[value] : value;
+  };
+}({
+  "true": true,
+  "false": false,
+  "null": null,
+  undefined: undefined
 });
 var setNodeMap = function setNodeMap() {
   var map = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Map();
@@ -3239,6 +3257,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "decodeXmlEntities", function() { return decodeXmlEntities; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseAttrs", function() { return parseAttrs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stringifyNode", function() { return stringifyNode; });
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./lib/utils.js");
+
 var RE_ESCAPE_XML_ENTITY = /["'&<>]/g;
 var ESCAPE_XML_ENTITY = {
   34: '&quot;',
@@ -3278,28 +3298,11 @@ var decodeXmlEntities = function decodeXmlEntities() {
   var s = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
   return s.replace(RE_XML_ENTITY, FN_XML_ENTITY);
 };
-
-var parseValue = function (map) {
-  return function (value) {
-    if (value && '1234567890+-'.includes(value[0]) && value.length <= 17) {
-      var num = +value;
-      return isNaN(num) ? value : num;
-    }
-
-    return value in map ? map[value] : value;
-  };
-}({
-  "true": true,
-  "false": false,
-  "null": null,
-  undefined: undefined
-});
-
 var parseAttrs = function parseAttrs(s) {
   var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Map();
 
   for (var e = RE_ATTRS.exec(s); e; e = RE_ATTRS.exec(s)) {
-    r.set(e[1], !e[2] ? true : parseValue(decodeXmlEntities(skipQoutes(e[2].slice(1)))));
+    r.set(e[1], !e[2] ? true : Object(_utils__WEBPACK_IMPORTED_MODULE_0__["parseValue"])(decodeXmlEntities(skipQoutes(e[2].slice(1)))));
   }
 
   return r;
