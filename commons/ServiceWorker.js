@@ -1,4 +1,4 @@
-import { Service } from './services'
+import { Service } from './Service'
 
 export class ServiceWorker extends Service {
   get api () {

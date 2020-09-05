@@ -348,7 +348,7 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationService", function() { return NavigationService; });
-/* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./services */ "./commons/services.js");
+/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -466,7 +466,127 @@ function (_Service) {
   }]);
 
   return NavigationService;
-}(_services__WEBPACK_IMPORTED_MODULE_0__["Service"]);
+}(_Service__WEBPACK_IMPORTED_MODULE_0__["Service"]);
+
+/***/ }),
+
+/***/ "./commons/Service.js":
+/*!****************************!*\
+  !*** ./commons/Service.js ***!
+  \****************************/
+/*! exports provided: Service */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return Service; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Service =
+/*#__PURE__*/
+function () {
+  function Service(state, $) {
+    _classCallCheck(this, Service);
+
+    this.state = state;
+    this.$ = $;
+  }
+  /**
+   * Framework
+   */
+
+
+  _createClass(Service, [{
+    key: "lookupService",
+    value: function lookupService(ref) {
+      return this.$.app && this.$.app[ref] ? this.$.app[ref].impl : null;
+    }
+  }, {
+    key: "up",
+    value: function up() {
+      var _this$$;
+
+      return (_this$$ = this.$).up.apply(_this$$, arguments);
+    }
+  }, {
+    key: "defer",
+    value: function defer() {
+      var _this$$2;
+
+      return (_this$$2 = this.$).defer.apply(_this$$2, arguments);
+    }
+  }, {
+    key: "emit",
+    value: function emit() {
+      var _this$$3;
+
+      return (_this$$3 = this.$).emit.apply(_this$$3, arguments);
+    }
+  }, {
+    key: "log",
+    value: function log() {
+      var _console;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      (_console = console).log.apply(_console, [this.$.ref + ': '].concat(args));
+
+      return args[0];
+    }
+    /**
+     * Error handling
+     */
+
+  }, {
+    key: "handleError",
+    value: function handleError(_ref) {
+      var _ref$message = _ref.message,
+          message = _ref$message === void 0 ? '' : _ref$message,
+          _ref$code = _ref.code,
+          code = _ref$code === void 0 ? '' : _ref$code;
+      // may  overriden from props
+      var handler = this.lookupService('errorHandler');
+
+      if (handler) {
+        handler.handleError({
+          message: message,
+          code: code,
+          source: this.$.ref
+        });
+      } else {
+        console.error(this.$.ref + ': ERROR: ', message, code);
+      }
+    }
+  }, {
+    key: "safe",
+    value: function safe(p, def) {
+      var _this = this;
+
+      return p["catch"](function (error) {
+        _this.handleError(error);
+
+        return def ? def(error) : {
+          error: error
+        };
+      });
+    }
+  }, {
+    key: "onClearError",
+    value: function onClearError() {
+      return {
+        error: null
+      };
+    }
+  }]);
+
+  return Service;
+}();
 
 /***/ }),
 
@@ -480,7 +600,7 @@ function (_Service) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ServiceWorker", function() { return ServiceWorker; });
-/* harmony import */ var _services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./services */ "./commons/services.js");
+/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -661,7 +781,7 @@ function (_Service) {
   }]);
 
   return ServiceWorker;
-}(_services__WEBPACK_IMPORTED_MODULE_0__["Service"]);
+}(_Service__WEBPACK_IMPORTED_MODULE_0__["Service"]);
 
 /***/ }),
 
@@ -881,14 +1001,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************!*\
   !*** ./commons/services.js ***!
   \*****************************/
-/*! exports provided: Service, ErrorHandlingService, ToastService */
+/*! exports provided: ErrorHandlingService, ToastService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Service", function() { return Service; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErrorHandlingService", function() { return ErrorHandlingService; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ToastService", function() { return ToastService; });
+/* harmony import */ var _Service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Service */ "./commons/Service.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -896,6 +1016,12 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
@@ -907,113 +1033,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Service =
-/*#__PURE__*/
-function () {
-  function Service(state, $) {
-    _classCallCheck(this, Service);
-
-    this.state = state;
-    this.$ = $;
-  }
-  /**
-   * Framework
-   */
-
-
-  _createClass(Service, [{
-    key: "lookupService",
-    value: function lookupService(ref) {
-      return this.$.app && this.$.app[ref] ? this.$.app[ref].impl : null;
-    }
-  }, {
-    key: "up",
-    value: function up() {
-      var _this$$;
-
-      return (_this$$ = this.$).up.apply(_this$$, arguments);
-    }
-  }, {
-    key: "defer",
-    value: function defer() {
-      var _this$$2;
-
-      return (_this$$2 = this.$).defer.apply(_this$$2, arguments);
-    }
-  }, {
-    key: "emit",
-    value: function emit() {
-      var _this$$3;
-
-      return (_this$$3 = this.$).emit.apply(_this$$3, arguments);
-    }
-  }, {
-    key: "log",
-    value: function log() {
-      var _console;
-
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      (_console = console).log.apply(_console, [this.$.ref + ': '].concat(args));
-
-      return args[0];
-    }
-    /**
-     * Error handling
-     */
-
-  }, {
-    key: "handleError",
-    value: function handleError(_ref) {
-      var _ref$message = _ref.message,
-          message = _ref$message === void 0 ? '' : _ref$message,
-          _ref$code = _ref.code,
-          code = _ref$code === void 0 ? '' : _ref$code;
-      // may  overriden from props
-      var handler = this.lookupService('errorHandler');
-
-      if (handler) {
-        handler.handleError({
-          message: message,
-          code: code,
-          source: this.$.ref
-        });
-      } else {
-        console.error(this.$.ref + ': ERROR: ', message, code);
-      }
-    }
-  }, {
-    key: "safe",
-    value: function safe(p, def) {
-      var _this = this;
-
-      return p["catch"](function (error) {
-        _this.handleError(error);
-
-        return def ? def(error) : {
-          error: error
-        };
-      });
-    }
-  }, {
-    key: "onClearError",
-    value: function onClearError() {
-      return {
-        error: null
-      };
-    }
-  }]);
-
-  return Service;
-}();
 var ErrorHandlingService =
 /*#__PURE__*/
 function (_Service) {
@@ -1027,12 +1047,12 @@ function (_Service) {
 
   _createClass(ErrorHandlingService, [{
     key: "handleError",
-    value: function handleError(_ref2) {
-      var _ref2$message = _ref2.message,
-          message = _ref2$message === void 0 ? '' : _ref2$message,
-          code = _ref2.code,
-          _ref2$source = _ref2.source,
-          source = _ref2$source === void 0 ? {} : _ref2$source;
+    value: function handleError(_ref) {
+      var _ref$message = _ref.message,
+          message = _ref$message === void 0 ? '' : _ref$message,
+          code = _ref.code,
+          _ref$source = _ref.source,
+          source = _ref$source === void 0 ? {} : _ref$source;
       this.show({
         message: source + ': ' + message,
         code: code,
@@ -1041,18 +1061,18 @@ function (_Service) {
     }
   }, {
     key: "show",
-    value: function show(_ref3) {
-      var _ref3$message = _ref3.message,
-          message = _ref3$message === void 0 ? '' : _ref3$message,
-          _ref3$code = _ref3.code,
-          code = _ref3$code === void 0 ? '' : _ref3$code,
-          source = _ref3.source;
+    value: function show(_ref2) {
+      var _ref2$message = _ref2.message,
+          message = _ref2$message === void 0 ? '' : _ref2$message,
+          _ref2$code = _ref2.code,
+          code = _ref2$code === void 0 ? '' : _ref2$code,
+          source = _ref2.source;
       console.error(source + ': ERROR: ', code, message);
     }
   }]);
 
   return ErrorHandlingService;
-}(Service);
+}(_Service__WEBPACK_IMPORTED_MODULE_0__["Service"]);
 var ToastService =
 /*#__PURE__*/
 function (_Service2) {
@@ -1066,14 +1086,14 @@ function (_Service2) {
 
   _createClass(ToastService, [{
     key: "onSend",
-    value: function onSend(_ref4) {
-      var _this2 = this;
+    value: function onSend(_ref3) {
+      var _this = this;
 
-      var data = _ref4.data;
+      var data = _ref3.data;
       return {
         top: _objectSpread({}, data, {
           close: function close() {
-            return _this2.emit('this.close');
+            return _this.emit('this.close');
           },
           closeAfter: 5
         })
@@ -1089,7 +1109,7 @@ function (_Service2) {
   }]);
 
   return ToastService;
-}(Service);
+}(_Service__WEBPACK_IMPORTED_MODULE_0__["Service"]);
 
 /***/ }),
 
@@ -1237,15 +1257,16 @@ function placeholder(expr) {
       key = _expr$split$map4[0],
       pipes = _expr$split$map4.slice(1);
 
-  if (!pipes.length) return key[0] === ':' ? function (c) {
+  var fn = key[0] === ':' ? function (c) {
     return c.res(key.slice(1));
   } : function (c) {
     return c.container.get(key);
   };
+  if (!pipes.length) return fn;
   return function (c) {
     return pipes.reduce(function (r, pk) {
       return pipe.call(c, r, pk);
-    }, c.container.get(key));
+    }, fn(c));
   };
 }
 
@@ -1261,8 +1282,9 @@ function compileExpression(v) {
   }
 
   if (!v.includes('{')) {
+    var vv = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["parseValue"])(v);
     return function () {
-      return v;
+      return vv;
     };
   }
 
@@ -1748,15 +1770,6 @@ function () {
       }
 
       this.isInited = true;
-
-      if (this.impl.init) {
-        var d = this.impl.init(this);
-
-        if (d) {
-          Object.assign(initials, d);
-        }
-      }
-
       var all = [];
       var initializers = this.node.initializers;
 
@@ -1780,12 +1793,28 @@ function () {
 
       if (all.length) {
         Promise.all(all).then(function (args) {
-          return _this4.up(args.reduce(function (r, e) {
+          _this4.up(args.reduce(function (r, e) {
             return Object.assign(r, e);
           }, initials), true);
+
+          if (_this4.impl.init) {
+            var d = _this4.impl.init(_this4);
+
+            if (d) {
+              _this4.up(d);
+            }
+          }
         });
       } else {
         this.up(initials, true);
+
+        if (this.impl.init) {
+          var d = this.impl.init(this);
+
+          if (d) {
+            this.up(d);
+          }
+        }
       }
 
       return this;
@@ -1962,11 +1991,8 @@ function (_Component2) {
   _createClass(ForComponent, [{
     key: "recontent",
     value: function recontent() {
-      var _this6 = this;
-
       var nodes = new Map();
       var items = this.state.items;
-      this.datamap = new Map();
 
       if (items && items.length) {
         if (!items.forEach) {
@@ -1975,13 +2001,10 @@ function (_Component2) {
 
         var itemNode = this.node.nodes[0];
         var itemName = itemNode.get('itemName');
-        items.forEach(function (d, index) {
-          var pk = "".concat(d.id || index);
-
-          _this6.datamap.set(pk, d);
-
+        items.forEach(function (datum, index) {
+          var pk = "".concat(datum.id || index);
           Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(nodes, itemNode.clone(pk).addPropertyResolver(function (c) {
-            return c.parent.datamap.get(pk);
+            return datum;
           }, itemName));
         });
       }
@@ -2011,15 +2034,13 @@ function (_Component3) {
     }
   }, {
     key: "emit",
-    value: function emit(data) {
-      return this.container.emit(data);
+    value: function emit(key, data) {
+      return this.container.emit(key, data);
     }
   }, {
     key: "get",
     value: function get(propId) {
-      var itemName = this.state.itemName;
-      var pk = propId.slice(0, itemName.length);
-      return pk === itemName ? _get(_getPrototypeOf(ItemComponent.prototype), "get", this).call(this, propId) : this.container.get(propId);
+      return propId.startsWith(this.state.itemName) ? _get(_getPrototypeOf(ItemComponent.prototype), "get", this).call(this, propId) : this.container.get(propId);
     }
   }]);
 
@@ -3194,7 +3215,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var RE_EMPTY = /^\s*$/;
 var RE_XML_COMMENT = /<!--((?!-->)[\s\S])*-->/g;
-var RE_XML_TAG = /(<)(\/?)([a-zA-Z][a-zA-Z0-9-:]*)((?:\s+[a-z][a-zA-Z0-9-:]+(?:="[^"]*"|={[^}]*})?)*)\s*(\/?)>/g;
+var RE_XML_TAG = /(<)(\/?)([a-zа-я][a-zа-я0-9-:]*)((?:\s+[a-z][a-z0-9-:]+(?:="[^"]*"|={[^}]*})?)*)\s*(\/?)>/gi;
 var SINGLE_TAGS = 'img input br col'.split(' ').reduce(function (r, e) {
   r[e] = 1;
   return r;

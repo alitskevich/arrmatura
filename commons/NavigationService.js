@@ -1,4 +1,4 @@
-import { Service } from './services'
+import { Service } from './Service'
 
 export class NavigationService extends Service {
   init () {
