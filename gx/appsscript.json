@@ -1,6 +1,0 @@
-{
-  "timeZone": "Europe/Kaliningrad",
-  "dependencies": {
-  },
-  "exceptionLogging": "STACKDRIVER"
-}
