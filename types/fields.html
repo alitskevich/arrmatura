@@ -110,26 +110,3 @@
                     disabled={disabled} />
     </FieldItem>
 </component>
-
-<component id="ReferenceField">
-    <FieldItem caption={caption} error={error} required={required}>
-        <Loader from="-> references.{typeSpec}Search"
-                data-value={keyword.value|orDataPropValueByKey:keyword}
-                trigger={keyword.value}
-                into="->options" />
-        <Loader from="-> references.{typeSpec}Entry" data-id={value} trigger={value} into="->entry" />
-        <ReferenceInput change={onChange}
-                        value={value} entry={entry.data}
-                        onKeyword="->keyword" keyword={keyword.value|orDataPropValueByKey:keyword}
-                        onSelectMenuItem="->entry"
-                        options={options.data}
-                        disabled={disabled} />
-    </FieldItem>
-</component>
-
-<component id="RemoteEnumField">
-    <FieldItem caption={caption} error={error} required={required}>
-        <Loader from="-> references.{typeSpec}Enum" data={data} into="->options" />
-        <Select class="form-select" change={onChange} value={value} data={options.data} disabled={disabled} />
-    </FieldItem>
-</component>

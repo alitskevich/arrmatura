@@ -1,4 +1,5 @@
 import { Service } from './Service'
+import url from '../pipes/url'
 
 export class NavigationService extends Service {
   init () {
@@ -22,13 +23,13 @@ export class NavigationService extends Service {
   }
 
   update (d) {
-    const { target, path = ['*'], params } = Object.urlParse(d)
+    const { target, path = ['*'], params } = url.parse(d)
     const state = {
       target: (!target || target === '*' ? this.target : target) || 'main',
       path: path[0] === '*' ? this.path : path,
       params: params.reset ? { ...params, reset: null } : { ...this.params, ...params }
     }
-    window.location.hash = this.prevHash = '/' + Object.urlStringify(state)
+    window.location.hash = this.prevHash = '/' + url.stringify(state)
     return state
   }
 

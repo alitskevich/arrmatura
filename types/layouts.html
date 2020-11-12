@@ -1,3 +1,20 @@
+<component id="LoadingIndicator">
+    <div class="loading {large|then:loading-lg} {class}" />
+</component>
+
+<component id="EmptyData">
+    <div class="empty {class}">
+        <div class="empty-icon">
+            <Icon type={icon|or:people} />
+        </div>
+        <p class="empty-title h5">{title}</p>
+        <p ui:if={subtitle} class="empty-subtitle">{subtitle}</p>
+        <div class="empty-action">
+            <ui:slot />
+        </div>
+    </div>
+</component>
+
 <component id="Panel">
     <h6 class="mt-2 pt-2 px-2 text-gray" ui:if="caption">{caption}</h6>
     <div class="panel {class}" style={style}>
