@@ -77,6 +77,7 @@ export default {
   narrow (x) {
     const type = typeof x
     if (x == null) { return null }
+    // eslint-disable-next-line eqeqeq
     if (type === 'number' || +x == x) { return new Date(+x) }
     if (type === 'object') {
     // Date already

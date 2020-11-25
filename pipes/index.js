@@ -18,6 +18,7 @@ export default {
 
   // data structures
   dot: (x, k) => x && k in x ? x[k] : undefined,
+  wrap: (x, k) => ({ [k]: x }),
   includes: (x, p) => x.includes && x.includes(p),
   dig: (o, steps) => (steps.reduce ? steps : steps.split('.')).reduce((r, e) => r ? r[e] : undefined, o),
 
