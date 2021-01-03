@@ -144,7 +144,7 @@
       constructor() {
         // generate action handlers
         Object.entries(ACTIONS).forEach(([key, fn]) => {
-          this[capitalize(key, "on")] = ({ data }, { state }) => ({
+          this[capitalize(key, "on")] = (data, { state }) => ({
             state: Object.assign({}, state, fn(state, data)),
           });
         });

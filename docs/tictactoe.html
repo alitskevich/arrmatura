@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arrmatura • TicTacToe</title>
+    <link rel="stylesheet" href="tictactoe.css" />
+  </head>
+
+  <script type="text/x-template" id="App">
+    <div>
+      <Store ui:ref="store" />
+      <section class="todoapp">
+        <Caption title=":title" />
+        <Main />
+      </section>
+      <Footer/>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="Footer">
+    <footer class="info">
+      <p>Powered by <a href=":authorUrl">:author</a></p>
+    </footer>
+  </script>
+
+  <script type="text/x-template" id="Caption">
+    <header class="header" click="-> store.reset">
+      <h1>{title}</h1>
+    </header>
+  </script>
+
+  <script type="text/x-template" id="Main">
+    <section class="container">
+     <div class="columns" ui:for="row of <-store.board">
+        <Cell row={row.id} col={col.id} value={col.value} ui:for="col of row.cols"/>
+     </div>
+    </section>
+  </script>
+
+  <script type="text/x-template" id="Cell">
+    <div class="column-4 cell cell-{value}" data-row={row} data-col={col} data-value={value} click="-> store.next">
+    </div>
+  </script>
+
+  <script type="text/javascript" src="index.js"></script>
+
+  <script type="module">
+    const sizer = [0,1,2]
+    const reset = () => ({ 
+      board: sizer.map(r=>({id:r, cols: sizer.map(c => ({ id: c, value:0}))})),
+      step:0
+     })
+
+    // service component
+    class Store {
+      // hook on init
+      init($) {
+        return reset();
+      }
+      onReset() {
+        return reset();
+      }
+      onNext({ col, row, value }, { board, step}) {
+        if (value) return
+        // board[row].cols = [ ...board[row].cols];
+        board[row].cols[col].value = 1 + step % 2;
+        step++;
+
+        return {  
+          board: [...board], 
+          step
+        };
+      }
+    }
+
+    // resource bundle: strings and metadata
+    const resources = {
+      title: "Tic Tac Toe",
+      author: "arrmatura",
+      authorUrl: "https://github.com/alitskevich/arrmatura",
+    };
+
+    // pipes
+    const pipes = {
+      then: (cond, left = "", right = "") => (cond ? left : right),
+      equals: (a, b) => a === b,
+    };
+
+    // load components from templates
+    const tag2template = (e) =>
+      `<component id="${e.id}">${e.innerHTML}</component>`;
+    const templates = [...document.getElementsByTagName("script")]
+      .filter((e) => e.id)
+      .map(tag2template);
+
+    // launch with types, resources and pipes
+    launch({ types: [Store, ...templates], resources, pipes });
+  </script>
+</html>
