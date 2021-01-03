@@ -109,12 +109,7 @@
       save: ({ items }, { id, value }) => ({
         items: !value
           ? items.filter((e) => e.id !== id)
-          : items.map((e) => {
-              if (e.id === id) {
-                e.name = value;
-              }
-              return e;
-            }),
+          : items.map((e) =>  (e.id === id) ? {...e, name: value}:e),
       }),
       rm: ({ items }, { id }) => ({ items: items.filter((e) => e.id !== id) }),
       filter: (st, { filterId }) => ({
