@@ -903,9 +903,13 @@ function _recontent(parent, container, content) {
       snode.nodeMap = Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["filterSlotNodes"])(node.id, container);
       c = children.get(uid) || Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(children, new Component(Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["getByTag"])('ui:fragment'), snode, parent, container.container));
     } else {
-      var Registered = Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["getByTag"])(node.tag);
-      var Ctor = Ctors[node.tag] || (Registered ? ContainerComponent : Component);
-      c = children.get(uid) || Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(children, new Ctor(Registered || _element__WEBPACK_IMPORTED_MODULE_3__["Element"], node, parent, container));
+      c = children.get(uid);
+
+      if (!c) {
+        var Registered = Object(_register_js__WEBPACK_IMPORTED_MODULE_2__["getByTag"])(node.tag);
+        var Ctor = Ctors[node.tag] || (Registered ? ContainerComponent : Component);
+        c = Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(children, new Ctor(Registered || _element__WEBPACK_IMPORTED_MODULE_3__["Element"], node, parent, container));
+      }
     }
 
     c.next = null;
@@ -951,6 +955,8 @@ var ForComponent = /*#__PURE__*/function (_Component2) {
   _createClass(ForComponent, [{
     key: "recontent",
     value: function recontent() {
+      var _this6 = this;
+
       var nodes = new Map();
       var items = this.state.items;
 
@@ -961,18 +967,18 @@ var ForComponent = /*#__PURE__*/function (_Component2) {
 
         var itemNode = this.node.nodes[0];
         var itemName = itemNode.get('itemName');
-        var pkHash = {};
+        this.pkHash = {};
         items.forEach(function (datum) {
           var pk = "".concat(datum.id || '');
 
-          if (!pk || pkHash[pk]) {
-            console.error('ERROR: wrong item id: ' + pk, datum);
+          if (pk == null || _this6.pkHash[pk]) {
+            console.error('ERROR: empty/duplicate item id: ' + pk, datum);
             return;
           }
 
-          pkHash[pk] = pk;
-          Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(nodes, itemNode.clone(pk).addPropertyResolver(function (c) {
-            return datum;
+          _this6.pkHash[pk] = datum;
+          Object(_utils_js__WEBPACK_IMPORTED_MODULE_1__["setNodeMap"])(nodes, itemNode.clone(_this6.uid + '#' + pk).addPropertyResolver(function () {
+            return _this6.pkHash[pk];
           }, itemName));
         });
       }
@@ -1446,6 +1452,8 @@ function applyAttributes(changes) {
 
       if (setter) {
         setter.call(_this14, e, value);
+      } else if (key.slice(0, 5) === 'data-') {
+        ATTR_SETTERS.data.call(_this14, e, _objectSpread(_objectSpread({}, e.$dataset), {}, _defineProperty({}, key.slice(5), value)));
       } else {
         setAttribute.call(_this14, key, value);
       }
@@ -1666,7 +1674,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Node", function() { return Node; });
 /* harmony import */ var _compile_expr__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./compile.expr */ "./lib/compile.expr.js");
 /* harmony import */ var _xml_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./xml.utils */ "./lib/xml.utils.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./lib/utils.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1703,8 +1710,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-
 var UID = 1;
+var OBJ = {};
 var Node = /*#__PURE__*/function () {
   function Node(tag) {
     var attrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Map();
@@ -1789,14 +1796,14 @@ var Node = /*#__PURE__*/function () {
     key: "addPropertyResolver",
     value: function addPropertyResolver(getter, propKey) {
       (this.$propertyResolvers || (this.$propertyResolvers = [])).push(propKey ? function (c, acc) {
-        return Object(_utils__WEBPACK_IMPORTED_MODULE_2__["setKeyVal"])(acc, propKey, getter(c));
+        acc[propKey] = getter(c);
       } : function (c, acc) {
-        return Object.entries(getter(c) || {}).forEach(function (_ref3) {
+        return Object.entries(getter(c) || OBJ).forEach(function (_ref3) {
           var _ref4 = _slicedToArray(_ref3, 2),
               key = _ref4[0],
               val = _ref4[1];
 
-          return Object(_utils__WEBPACK_IMPORTED_MODULE_2__["setKeyVal"])(acc, key, val);
+          acc[key] = val;
         });
       });
       return this;
@@ -1804,13 +1811,13 @@ var Node = /*#__PURE__*/function () {
   }, {
     key: "addInitialState",
     value: function addInitialState(values) {
-      var obj = this.initialState || (this.initialState = {});
+      var acc = this.initialState || (this.initialState = {});
       Object.entries(values).forEach(function (_ref5) {
         var _ref6 = _slicedToArray(_ref5, 2),
             key = _ref6[0],
             val = _ref6[1];
 
-        return Object(_utils__WEBPACK_IMPORTED_MODULE_2__["setKeyVal"])(obj, key, val);
+        acc[key] = val;
       });
       return this;
     }
@@ -1874,9 +1881,8 @@ var Node = /*#__PURE__*/function () {
     key: "clone",
     value: function clone(uid) {
       var tag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.tag;
-      return Object.assign(new Node(this.tag), {
+      return Object.assign(new Node(tag), {
         uid: uid,
-        tag: tag,
         attrs: this.attrs,
         nodes: this.nodes,
         nodeMap: this.nodeMap,
@@ -1975,7 +1981,7 @@ var getByTag = function getByTag(tag) {
 /*!**********************!*\
   !*** ./lib/utils.js ***!
   \**********************/
-/*! exports provided: parseValue, setNodeMap, wrapNode, arrangeElements, hasSlot, filterMapKey, setKeyVal, stringifyComponent, filterSlotNodes */
+/*! exports provided: parseValue, setNodeMap, wrapNode, arrangeElements, hasSlot, filterMapKey, stringifyComponent, filterSlotNodes */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1986,7 +1992,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "arrangeElements", function() { return arrangeElements; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hasSlot", function() { return hasSlot; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterMapKey", function() { return filterMapKey; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setKeyVal", function() { return setKeyVal; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stringifyComponent", function() { return stringifyComponent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filterSlotNodes", function() { return filterSlotNodes; });
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -2008,12 +2013,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 Array.EMPTY = [];
 Object.assign(Function, {
@@ -2121,13 +2120,6 @@ var filterMapKey = function filterMapKey(src, key) {
   });
   return [src.get(key), r];
 };
-var setKeyVal = function setKeyVal(acc, k, val) {
-  if (k.slice(0, 5) === 'data-') {
-    acc.data = acc.data ? _objectSpread(_objectSpread({}, acc.data), {}, _defineProperty({}, k.slice(5), val)) : _defineProperty({}, k.slice(5), val);
-  } else {
-    acc[k] = val;
-  }
-};
 
 var stringifyAttrs = function stringifyAttrs(attrs) {
   if (!attrs) {
@@ -2135,10 +2127,10 @@ var stringifyAttrs = function stringifyAttrs(attrs) {
   }
 
   var r = [];
-  Object.entries(attrs).forEach(function (_ref2) {
-    var _ref3 = _slicedToArray(_ref2, 2),
-        k = _ref3[0],
-        v = _ref3[1];
+  Object.entries(attrs).forEach(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        k = _ref2[0],
+        v = _ref2[1];
 
     if (v && k !== '#text') {
       r.push(' ' + k + '="' + v + '"');
@@ -2147,13 +2139,13 @@ var stringifyAttrs = function stringifyAttrs(attrs) {
   return r.join('');
 };
 
-function stringifyComponent(_ref4) {
-  var uid = _ref4.uid,
-      tag = _ref4.tag,
-      state = _ref4.state,
-      container = _ref4.container,
-      _ref4$children = _ref4.children,
-      children = _ref4$children === void 0 ? new Map() : _ref4$children;
+function stringifyComponent(_ref3) {
+  var uid = _ref3.uid,
+      tag = _ref3.tag,
+      state = _ref3.state,
+      container = _ref3.container,
+      _ref3$children = _ref3.children,
+      children = _ref3$children === void 0 ? new Map() : _ref3$children;
   var tab = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
   var sattrs = stringifyAttrs(state);
 
